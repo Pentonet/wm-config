@@ -1,0 +1,24 @@
+# Wirepas Oy
+#
+# Gateway settings
+
+version: '3'
+services:
+    gw-settings:
+        container_name: gw-settings
+        image: ${WM_CFG_SETTINGS_IMAGE}:${WM_CFG_SETTINGS_VERSION}
+
+        stdin_open: true
+        tty: true
+
+        environment:
+            - GW_USER=$(id -u)
+            - GW_GROUP=$(id -g)
+
+        volumes:
+            - ${WM_SERVICE_HOME}:/opt/settings/
+
+        command: wmconfig-settings-updater ${WM_CFG_UPDATE}
+
+        logging:
+            driver: journald

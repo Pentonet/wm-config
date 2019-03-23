@@ -1,0 +1,16 @@
+[Unit]
+Description=Recreates docker services
+After=rc-local.service
+After=network-online.target
+Requires=rc-local.service
+Requires=network-online.target
+
+[Service]
+User=${WM_HOST_USER_NAME}
+ExecStart=/bin/bash ${WM_CFG_PERIODIC_WORK_PATH}/run.sh
+Restart=always
+RestartSec=${WM_CFG_SYSTEMD_UPDATER_INTERVAL}s
+
+[Install]
+WantedBy=multi-user.target
+

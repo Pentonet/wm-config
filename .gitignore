@@ -1,0 +1,9 @@
+deliverable/*
+*/*.tmp 
+build-**.txt 
+build-**.txt 
+docs/*.eval
+docs/*.gen
+docs/*.tmp
+docs/*.back
+

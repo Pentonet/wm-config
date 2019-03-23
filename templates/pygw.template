@@ -1,0 +1,40 @@
+# Wirepas Python API Gateway default configuration
+[general]
+
+#python_api_config_file: '${WM_PYTHON_API_CONFIG_FILE}'
+plugin_dirs: ${WM_PYTHON_API_PLUGIN_DIR}
+
+backends = ${WM_PYTHON_API_SERVICES_SELECTION}
+
+# mysql backend configuration
+[backend:mysql]
+type: 'mysql-v1'
+ip: '${WM_SERVICE_DB_IP}'
+port: ${WM_SERVICE_DB_PORT}
+username: '${WM_SERVICE_DB_USER}'
+password: '${WM_SERVICE_DB_PASSWORD}'
+database: '${WM_SERVICE_DB_NAME}'
+datapackets: {'neighborscan-v2':239, 'generic-v1': None, 'trafficdiagnostics-v1': 255, 'neighbordiagnostics-v1': 255, 'nodediagnostics-v1': 255, 'bootdiagnostics-v1': 255, 'commadapter-v1': 192, 'testnw-v1': 100, 'haltian-v1': 20}
+
+[backend:wnt]
+type: 'wnt-v2'
+host: '${WM_SERVICES_HOST}'
+mqttusername: '${WM_SERVICES_MQTT_USER}'
+mqttpassword: '${WM_SERVICES_MQTT_PASSWORD}'
+tlsenabled: ${WM_SERVICES_TLS_ENABLED}
+certfile: 'extwirepas.pem'
+heartbeatinterval: 10
+port: ${WM_SERVICES_MQTT_PORT}
+datapackets: {'trafficdiagnostics-v1': 255, 'neighbordiagnostics-v1': 255, 'nodediagnostics-v1': 255, 'bootdiagnostics-v1': 255, 'nondiagnostic-v1': None, 'remoteapi-v1': 255}
+whitelist: {'assettracking': {'source': [238, 239], 'destination': [238, 239]}}
+
+[backend:wpat]
+type: 'wpat-v1'
+websocket: ${WM_SERVICES_WPAT_API_WS_URL}
+apipath: '${WM_SERVICES_WPAT_API_URL}'
+username: '${WM_SERVICES_WPAT_API_USERNAME}'
+password: '${WM_SERVICES_WPAT_API_PASSWORD}'
+datapackets: {'neighborscan-v2':239, 'neighborscan-v3':238, 'nodediagnostics-v1': 255}
+time_filter: ${WM_SERVICES_WPAT_TIME_FILTER} # do not push network messages with travel time greater than 50 seconds
+last_update: ${WM_SERVICES_WPAT_LAST_UPDATE_FILTER} # do not push rss reports older than 80 seconds
+

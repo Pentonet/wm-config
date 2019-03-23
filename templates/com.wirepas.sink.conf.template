@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
+
+<!DOCTYPE busconfig PUBLIC
+ "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+<busconfig>
+	<!-- Only ${WM_LXGW_DBUS_CONF_USER} can own the service name -->
+	<policy user="${WM_LXGW_DBUS_CONF_USER}">
+		<!-- Predefine a list of 10 sinks -->
+		<allow own="com.wirepas.sink.sink0"/>
+		<allow own="com.wirepas.sink.sink1"/>
+		<allow own="com.wirepas.sink.sink2"/>
+		<allow own="com.wirepas.sink.sink3"/>
+		<allow own="com.wirepas.sink.sink4"/>
+		<allow own="com.wirepas.sink.sink5"/>
+		<allow own="com.wirepas.sink.sink6"/>
+		<allow own="com.wirepas.sink.sink7"/>
+		<allow own="com.wirepas.sink.sink8"/>
+		<allow own="com.wirepas.sink.sink9"/>
+
+		<allow send_type="method_call" log="true"/>
+	</policy>
+
+	<!-- Allow anyone to invoke methods -->
+	<policy context="default">
+		<allow send_destination="*"/>
+		<allow receive_sender="*"/>
+	</policy>
+</busconfig>

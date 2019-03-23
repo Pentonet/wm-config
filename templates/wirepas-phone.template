@@ -1,0 +1,19 @@
+[Unit]
+Description=SSH forwarding to ${WM_SUPPORT_HOST_USER}@${WM_SUPPORT_HOST_NAME}:${WM_SUPPORT_HOST_PORT}
+After=rc-local.service
+After=network-online.target
+Requires=rc-local.service
+Requires=network-online.target
+
+
+[Service]
+User=${WM_HOST_USER_NAME}
+ExecStart=/usr/bin/autossh -N -i ${WM_SUPPORT_HOST_KEY_PATH} -R ${WM_SUPPORT_HOST_PORT}:localhost:22 -o "ExitOnForwardFailure yes" -o "StrictHostKeyChecking no" -4 ${WM_SUPPORT_HOST_USER}@${WM_SUPPORT_HOST_NAME}
+Restart=always
+RestartSec=30
+StartLimitIntervalSec=120
+StartLimitBurst=3
+
+
+[Install]
+WantedBy=multi-user.target

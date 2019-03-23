@@ -1,0 +1,9 @@
+
+wmconfig*tar*
+*/.git*
+*/lxgw
+*/build-*.txt
+*/utils*
+*/*tmp
+*/*~
+**~
