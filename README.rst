@@ -211,7 +211,7 @@ by the `executable itself <./bin/wm-config.sh>`_.
 **WM_HOST_USER_NAME**                                 The username of the host's admin user (*default=pi*)
 **WM_HOST_USER_PASSWORD**                             The password of the host's admin user (*default=raspberry*)
 **WM_HOST_USER_PPKI**                                 The public key to authorize in the ssh authorized keys (*default=ssh-rsa*)
-**WM_WIFI_DISABLE**                                   When true, configures the wifi client to connect ot the specified SSID (*default=true*)
+**WM_WIFI_DISABLE**                                   When true forces the WiFi interface to be down (*default=true*)
 **WM_WIFI_AP_SSID**                                   The WiFi SSID to connect to (*default=*)
 **WM_WIFI_AP_PASSWORD**                               The WiFi's SSID password (*default=*)
 **WM_RPI_EXPAND_FILESYSTEM**                          When true expands the raspi filesystem (*default=true*)

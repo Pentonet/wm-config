@@ -95,7 +95,7 @@
 ##WM_HOST_USER_NAME                                 The username of the host's admin user (##WM_HOST_USER_NAME_DEFAULT)
 ##WM_HOST_USER_PASSWORD                             The password of the host's admin user (##WM_HOST_USER_PASSWORD_DEFAULT)
 ##WM_HOST_USER_PPKI                                 The public key to authorize in the ssh authorized keys (##WM_HOST_USER_PPKI_DEFAULT)
-##WM_WIFI_DISABLE                                   When true, configures the wifi client to connect ot the specified SSID (##WM_WIFI_DISABLE_DEFAULT)
+##WM_WIFI_DISABLE                                   When true forces the WiFi interface to be down (##WM_WIFI_DISABLE_DEFAULT)
 ##WM_WIFI_AP_SSID                                   The WiFi SSID to connect to (##WM_WIFI_AP_SSID_DEFAULT)
 ##WM_WIFI_AP_PASSWORD                               The WiFi's SSID password (##WM_WIFI_AP_PASSWORD_DEFAULT)
 ##WM_RPI_EXPAND_FILESYSTEM                          When true expands the raspi filesystem (##WM_RPI_EXPAND_FILESYSTEM_DEFAULT)

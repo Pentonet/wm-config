@@ -16,6 +16,11 @@ function replace_default
         _key=$(echo ${_entry} | awk '{split($0,a,"="); print a[1]}')
         _value=$(echo ${_entry} | awk '{split($0,a,"="); print a[2]}')
 
+        if [[ ${_key} != "WM_"* ]]
+        then
+            continue
+        fi
+
         echo "Replacing ##${_key}_DEFAULT -> *default=${_value}*"
         sed -i "s@##${_key}_DEFAULT\>@*default=${_value}*@" ${PARAM_TABLE}
     done
@@ -29,8 +34,12 @@ function replace_key
         _key=$(echo ${_entry} | awk '{split($0,a,"="); print a[1]}')
         _value=$(echo ${_entry} | awk '{split($0,a,"="); print a[2]}')
 
-        echo "Replacing ##${_key} -> **${_key}**"
+        if [[ ${_key} != "WM_"* ]]
+        then
+            continue
+        fi
 
+        echo "Replacing ##${_key} -> **${_key}**"
         sed -i "s@##${_key}\>@**${_key}**@" ${PARAM_TABLE}
 
     done
