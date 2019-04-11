@@ -58,6 +58,8 @@ function _check_for_tar
         mv ${HOME}/${ARCHIVE_NAME} ${WM_SERVICE_HOME}
         cd ${WM_SERVICE_HOME}
         tar -xvzf ${WM_SERVICE_HOME}/${ARCHIVE_NAME}
+    else
+        mkdir -p ${WM_SERVICE_HOME}
     fi
 }
 
