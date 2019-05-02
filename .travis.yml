@@ -1,0 +1,10 @@
+language: bash
+
+services:
+  - docker
+
+dist: "xenial"
+
+script:
+  - "./.ci/bundle.sh"
+  - "./.ci/build.sh"
