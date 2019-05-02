@@ -155,13 +155,41 @@ by the `executable itself <./bin/wm-config.sh>`_.
 **WM_DOCKER_STATUS_DELAY**                            The amount of seconds to wait before printing the status of the docker containers (*default=30*)
 **WM_DOCKER_CONFIGURE_DAEMON**                        When true, wm-config will attempt to configure the docker dameon with the JSON present in WM_DOCKER_DAEMON_JSON (*default=false*)
 **WM_DOCKER_DAEMON_JSON**                             The JSON text to configure the docker daemon with (*default=*)
-*Wirepas Linux Gateway*
+*Wirepas Linux Gateway - Docker Installation*
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **WM_LXGW_IMAGE**                                     The name of the WM Gateway Docker image to pull (*default=wirepas/gateway-rpi*)
 **WM_LXGW_VERSION**                                   The tag associated with the WM Gateway image (*default=latest*)
 **WM_LXGW_DBUS_CONF**                                 The DBUS configuration file to be present in the host environment (*default=com.wirepas.sink.conf*)
 **WM_LXGW_SINK_SERVICE_CMD**                          The sink command to use with the sink service (*default=sink*)
 **WM_LXGW_TRANSPORT_SERVICE_CMD**                     The transport command to use with the transport service (*default=transport*)
+*Wirepas Linux Gateway - Native Installation*
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+**WM_NLGW_NBR_OF_SINKS**                              The number of sinks in the gateway (*default=1*)
+**WM_NLGW_SINK_0_UART_PORT**                          The UART port used with sink 0 (*default=ttyUSB0*)
+**WM_NLGW_SINK_1_UART_PORT**                          The UART port used with sink 1 (*default=ttyUSB1*)
+**WM_NLGW_SINK_2_UART_PORT**                          The UART port used with sink 2 (*default=ttyUSB2*)
+**WM_NLGW_SINK_3_UART_PORT**                          The UART port used with sink 3 (*default=ttyUSB3*)
+**WM_NLGW_SINK_4_UART_PORT**                          The UART port used with sink 4 (*default=ttyUSB4*)
+**WM_NLGW_SINK_5_UART_PORT**                          The UART port used with sink 5 (*default=ttyUSB5*)
+**WM_NLGW_SINK_6_UART_PORT**                          The UART port used with sink 6 (*default=ttyUSB6*)
+**WM_NLGW_SINK_7_UART_PORT**                          The UART port used with sink 7 (*default=ttyUSB7*)
+**WM_NLGW_SINK_8_UART_PORT**                          The UART port used with sink 8 (*default=ttyUSB8*)
+**WM_NLGW_SINK_9_UART_PORT**                          The UART port used with sink 9 (*default=ttyUSB9*)
+**WM_NLGW_SINK_0_UART_BITRATE**                       The UART bitrate used with sink 0 (*default=125000*)
+**WM_NLGW_SINK_1_UART_BITRATE**                       The UART bitrate used with sink 1 (*default=125000*)
+**WM_NLGW_SINK_2_UART_BITRATE**                       The UART bitrate used with sink 2 (*default=125000*)
+**WM_NLGW_SINK_3_UART_BITRATE**                       The UART bitrate used with sink 3 (*default=125000*)
+**WM_NLGW_SINK_4_UART_BITRATE**                       The UART bitrate used with sink 4 (*default=125000*)
+**WM_NLGW_SINK_5_UART_BITRATE**                       The UART bitrate used with sink 5 (*default=125000*)
+**WM_NLGW_SINK_6_UART_BITRATE**                       The UART bitrate used with sink 6 (*default=125000*)
+**WM_NLGW_SINK_7_UART_BITRATE**                       The UART bitrate used with sink 7 (*default=125000*)
+**WM_NLGW_SINK_8_UART_BITRATE**                       The UART bitrate used with sink 8 (*default=125000*)
+**WM_NLGW_SINK_9_UART_BITRATE**                       The UART bitrate used with sink 9 (*default=125000*)
+**WM_NLGW_SINK_SERVICE_USER**                         The user on which account the sink service is run by systemd (*default=${USER}*)
+**WM_NLGW_SINK_SERVICE_CMD**                          The command with path to start sink service (*default=/usr/bin/sinkService*)
+**WM_NLGW_TRANSPORT_SERVICE_USER**                    The user on which account the transport service is run by systemd (*default=${USER}*)
+**WM_NLGW_TRANSPORT_SERVICE_CMD**                     The command with path to start transport service (*default=${HOME}/.local/bin/wm-gw*)
+**WM_NLGW_TRANSPORT_SERVICE_SETTINGS**
 *Custom Gateway*
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **WM_SDGW_TAR_PATH**                                  Path to a tar which will be extracted and brough up by docker compose if a run script is not present (*default=/wm-gateway.tar.gz*)
@@ -185,7 +213,7 @@ by the `executable itself <./bin/wm-config.sh>`_.
 **WM_SERVICES_CERTIFICATE_CHAIN**                     The path to the CA certificate (*default=/etc/extwirepas.pem*)
 *Gateway metadata*
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**WM_SERVICES_GATEWAY_ID**                            The id used to identifying the gateway at the MQTT level (*default=pos-silva*)
+**WM_SERVICES_GATEWAY_ID**                            The id used to identifying the gateway at the MQTT level (*default=`hostname`*)
 **WM_SERVICES_GATEWAY_MODEL**                         Metadata about the gateway model (*default=*)
 **WM_SERVICES_GATEWAY_VERSION**                       Metadata about the gateway version (*default=*)
 **WM_SERVICES_GATEWAY_IGNORED_ENDPOINTS_FILTER**      List of endpoints that should not be published to the MQTT broker (*default=*)
@@ -194,7 +222,7 @@ by the `executable itself <./bin/wm-config.sh>`_.
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **WM_SUPPORT_HOST_NAME**                              For Wirepas support (*default=host.extwirepas.com*)
 **WM_SUPPORT_HOST_KEY**                               For Wirepas support (*default=/support.pem*)
-**WM_SUPPORT_HOST_KEY_PATH**                          For Wirepas support (*default=/home/silva/.ssh/support.pem*)
+**WM_SUPPORT_HOST_KEY_PATH**                          For Wirepas support (*default=${HOME}/.ssh/support.pem*)
 **WM_SUPPORT_HOST_PORT**                              For Wirepas support (*default=*)
 **WM_SUPPORT_HOST_USER**                              For Wirepas support (*default=${USER}*)
 *Host settings*

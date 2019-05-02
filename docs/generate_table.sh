@@ -6,6 +6,13 @@ set -o allexport
 
 PARAM_TABLE="docs/readme_table.rst"
 
+# The single quatation is intentionally used here, so that reference to
+# environment varianble would be included to documentation, rather than
+# value from the document generation run.
+USER='${USER}'                      # [[ignore]] Expressions don't expand in single quotes, use double quotes for that.
+HOME='${HOME}'                      # [[ignore]] Expressions don't expand in single quotes, use double quotes for that.
+WM_SERVICES_GATEWAY_ID='`hostname`' # [[ignore]] Expressions don't expand in single quotes, use double quotes for that.
+
 source environment/default.env
 cp ${PARAM_TABLE} ${PARAM_TABLE}.tmp
 

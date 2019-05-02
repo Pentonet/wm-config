@@ -124,19 +124,44 @@ function wirepas_template_copy
     # input name is basename
     TEMPLATE_NAME=${1:-"defaults"}
     OUTPUT_PATH=${2:-"template.output"}
+    MULTI=${3:-""}
 
     # if set, changes the output filename
     mkdir -p "${WM_CFG_TEMPLATE_PATH}"
-    TEMPLATE=${WM_CFG_TEMPLATE_PATH}/${TEMPLATE_NAME}.template
 
-    web_notify "generating ${OUTPUT_PATH} based on ${TEMPLATE}"
-    rm -f ${OUTPUT_PATH} ${OUTPUT_PATH}.tmp
-    ( echo "cat <<EOF >${OUTPUT_PATH}";
-      cat ${TEMPLATE};
-      echo "EOF";
-    ) > ${OUTPUT_PATH}.tmp
-    . ${OUTPUT_PATH}.tmp
-    rm ${OUTPUT_PATH}.tmp
+    if [[ -z "${MULTI}" ]]
+    then
+        TEMPLATE=${WM_CFG_TEMPLATE_PATH}/${TEMPLATE_NAME}.template
+        web_notify "generating ${OUTPUT_PATH} based on ${TEMPLATE}"
+        rm -f ${OUTPUT_PATH} ${OUTPUT_PATH}.tmp
+        ( echo "cat <<EOF >${OUTPUT_PATH}";
+          cat ${TEMPLATE};
+          echo "EOF";
+        ) > ${OUTPUT_PATH}.tmp
+        . ${OUTPUT_PATH}.tmp
+        rm ${OUTPUT_PATH}.tmp
+    else
+        # Create multiple templates from master template
+        # Third argument format "string_in_template=start_index-end_index"
+        ARRAY=(${MULTI//[=-]/ })
+        STRING_IN_TEMPLATE=${ARRAY[0]}
+        START_INDEX=${ARRAY[1]}
+        END_INDEX=${ARRAY[2]}
+        MASTER_TEMPLATE=${WM_CFG_TEMPLATE_PATH}/${TEMPLATE_NAME}.template
+        for INDEX in {${START_INDEX}..${END_INDEX}}
+        do
+            TEMPLATE=${WM_CFG_TEMPLATE_PATH}/${TEMPLATE_NAME}_${INDEX}.template
+            sed "s/${STRING_IN_TEMPLATE}/${INDEX}/g" ${MASTER_TEMPLATE} >${TEMPLATE}
+            web_notify "generating ${OUTPUT_PATH} based on ${TEMPLATE}"
+            rm -f ${OUTPUT_PATH} ${OUTPUT_PATH}.tmp
+            ( echo "cat <<EOF >${OUTPUT_PATH}";
+              cat ${TEMPLATE};
+              echo "EOF";
+            ) > ${OUTPUT_PATH}.tmp
+            . ${OUTPUT_PATH}.tmp
+            rm ${OUTPUT_PATH}.tmp
+        done
+    fi
 }
 
 
@@ -313,6 +338,13 @@ function wirepas_gateway
                 wirepas_terminate_services "wm-sd*"
 
                 docker_redeploy ${_docker_compose_path}
+            fi
+
+
+            if [[ "${GW}" == "nlgw" ]]
+            then
+                web_notify "Native Linux Gateway software build"
+                ### TODO ###
             fi
 
 

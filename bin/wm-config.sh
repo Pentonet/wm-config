@@ -85,7 +85,6 @@ function wmconfig_defaults
     mkdir -p ${WM_GW_SETTINGS_PATH}
     mkdir -p ${WM_CFG_PERIODIC_WORK_PATH}
     mkdir -p ${WM_CFG_HOST_PATH}
-    mkdir -p ${WM_GW_SETTINGS_PATH}
     mkdir -p ${WM_CFG_TEMPLATE_PATH}
     mkdir -p ${WM_CFG_ARCHIVES_PATH}
     mkdir -p ${WM_CFG_DEPENDENCIES_PATH}

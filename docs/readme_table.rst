@@ -39,13 +39,41 @@
 ##WM_DOCKER_STATUS_DELAY                            The amount of seconds to wait before printing the status of the docker containers (##WM_DOCKER_STATUS_DELAY_DEFAULT)
 ##WM_DOCKER_CONFIGURE_DAEMON                        When true, wm-config will attempt to configure the docker dameon with the JSON present in WM_DOCKER_DAEMON_JSON (##WM_DOCKER_CONFIGURE_DAEMON_DEFAULT)
 ##WM_DOCKER_DAEMON_JSON                             The JSON text to configure the docker daemon with (##WM_DOCKER_DAEMON_JSON_DEFAULT)
-*Wirepas Linux Gateway*
+*Wirepas Linux Gateway - Docker Installation*
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ##WM_LXGW_IMAGE                                     The name of the WM Gateway Docker image to pull (##WM_LXGW_IMAGE_DEFAULT)
 ##WM_LXGW_VERSION                                   The tag associated with the WM Gateway image (##WM_LXGW_VERSION_DEFAULT)
 ##WM_LXGW_DBUS_CONF                                 The DBUS configuration file to be present in the host environment (##WM_LXGW_DBUS_CONF_DEFAULT)
 ##WM_LXGW_SINK_SERVICE_CMD                          The sink command to use with the sink service (##WM_LXGW_SINK_SERVICE_CMD_DEFAULT)
 ##WM_LXGW_TRANSPORT_SERVICE_CMD                     The transport command to use with the transport service (##WM_LXGW_TRANSPORT_SERVICE_CMD_DEFAULT)
+*Wirepas Linux Gateway - Native Installation*
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+##WM_NLGW_NBR_OF_SINKS                              The number of sinks in the gateway (##WM_NLGW_NBR_OF_SINKS_DEFAULT)
+##WM_NLGW_SINK_0_UART_PORT                          The UART port used with sink 0 (##WM_NLGW_SINK_0_UART_PORT_DEFAULT)
+##WM_NLGW_SINK_1_UART_PORT                          The UART port used with sink 1 (##WM_NLGW_SINK_1_UART_PORT_DEFAULT)
+##WM_NLGW_SINK_2_UART_PORT                          The UART port used with sink 2 (##WM_NLGW_SINK_2_UART_PORT_DEFAULT)
+##WM_NLGW_SINK_3_UART_PORT                          The UART port used with sink 3 (##WM_NLGW_SINK_3_UART_PORT_DEFAULT)
+##WM_NLGW_SINK_4_UART_PORT                          The UART port used with sink 4 (##WM_NLGW_SINK_4_UART_PORT_DEFAULT)
+##WM_NLGW_SINK_5_UART_PORT                          The UART port used with sink 5 (##WM_NLGW_SINK_5_UART_PORT_DEFAULT)
+##WM_NLGW_SINK_6_UART_PORT                          The UART port used with sink 6 (##WM_NLGW_SINK_6_UART_PORT_DEFAULT)
+##WM_NLGW_SINK_7_UART_PORT                          The UART port used with sink 7 (##WM_NLGW_SINK_7_UART_PORT_DEFAULT)
+##WM_NLGW_SINK_8_UART_PORT                          The UART port used with sink 8 (##WM_NLGW_SINK_8_UART_PORT_DEFAULT)
+##WM_NLGW_SINK_9_UART_PORT                          The UART port used with sink 9 (##WM_NLGW_SINK_9_UART_PORT_DEFAULT)
+##WM_NLGW_SINK_0_UART_BITRATE                       The UART bitrate used with sink 0 (##WM_NLGW_SINK_0_UART_BITRATE_DEFAULT)
+##WM_NLGW_SINK_1_UART_BITRATE                       The UART bitrate used with sink 1 (##WM_NLGW_SINK_1_UART_BITRATE_DEFAULT)
+##WM_NLGW_SINK_2_UART_BITRATE                       The UART bitrate used with sink 2 (##WM_NLGW_SINK_2_UART_BITRATE_DEFAULT)
+##WM_NLGW_SINK_3_UART_BITRATE                       The UART bitrate used with sink 3 (##WM_NLGW_SINK_3_UART_BITRATE_DEFAULT)
+##WM_NLGW_SINK_4_UART_BITRATE                       The UART bitrate used with sink 4 (##WM_NLGW_SINK_4_UART_BITRATE_DEFAULT)
+##WM_NLGW_SINK_5_UART_BITRATE                       The UART bitrate used with sink 5 (##WM_NLGW_SINK_5_UART_BITRATE_DEFAULT)
+##WM_NLGW_SINK_6_UART_BITRATE                       The UART bitrate used with sink 6 (##WM_NLGW_SINK_6_UART_BITRATE_DEFAULT)
+##WM_NLGW_SINK_7_UART_BITRATE                       The UART bitrate used with sink 7 (##WM_NLGW_SINK_7_UART_BITRATE_DEFAULT)
+##WM_NLGW_SINK_8_UART_BITRATE                       The UART bitrate used with sink 8 (##WM_NLGW_SINK_8_UART_BITRATE_DEFAULT)
+##WM_NLGW_SINK_9_UART_BITRATE                       The UART bitrate used with sink 9 (##WM_NLGW_SINK_9_UART_BITRATE_DEFAULT)
+##WM_NLGW_SINK_SERVICE_USER                         The user on which account the sink service is run by systemd (##WM_NLGW_SINK_SERVICE_USER_DEFAULT)
+##WM_NLGW_SINK_SERVICE_CMD                          The command with path to start sink service (##WM_NLGW_SINK_SERVICE_CMD_DEFAULT)
+##WM_NLGW_TRANSPORT_SERVICE_USER                    The user on which account the transport service is run by systemd (##WM_NLGW_TRANSPORT_SERVICE_USER_DEFAULT)
+##WM_NLGW_TRANSPORT_SERVICE_CMD                     The command with path to start transport service (##WM_NLGW_TRANSPORT_SERVICE_CMD_DEFAULT)
+##WM_NLGW_TRANSPORT_SERVICE_SETTINGS
 *Custom Gateway*
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ##WM_SDGW_TAR_PATH                                  Path to a tar which will be extracted and brough up by docker compose if a run script is not present (##WM_SDGW_TAR_PATH_DEFAULT)
