@@ -324,7 +324,7 @@ function host_setup_user
             web_notify "ssh key already authorized"
         else
             web_notify "adding authorized ssh key: ${SETUP_USER_NAME}@${SETUP_USER_PPKI}"
-            echo ${SETUP_USER_PPKI} > ${WM_SERVICE_HOME}/.authorization.tmp
+            echo ${SETUP_USER_PPKI} >> ${WM_SERVICE_HOME}/.authorization.tmp
             sudo cp ${WM_SERVICE_HOME}/.authorization.tmp /home/${SETUP_USER_NAME}/.ssh/authorized_keys
             sudo rm ${WM_SERVICE_HOME}/.authorization.tmp
             sudo rm ${WM_SERVICE_HOME}/.authorized_keys.tmp
