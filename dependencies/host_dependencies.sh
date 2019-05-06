@@ -13,7 +13,7 @@ sudo apt-get update
 
 sudo apt-get install -y autossh \
                       gcc \
-                      libffi-dev \ 
+                      libffi-dev \
                       libssl-dev \
                       make \
                       python-dev
