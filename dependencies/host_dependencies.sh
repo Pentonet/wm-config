@@ -11,5 +11,10 @@ sudo rm get-pip.py
 
 sudo apt-get update
 
-sudo apt-get install autossh -y
+sudo apt-get install -y autossh \
+                      gcc \
+                      libffi-dev \ 
+                      libssl-dev \
+                      make \
+                      python-dev
 
