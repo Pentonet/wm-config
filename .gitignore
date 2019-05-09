@@ -7,3 +7,9 @@ docs/*.gen
 docs/*.tmp
 docs/*.back
 
+.pre-commit-config.yaml
+.flake8
+.clang*
+.ci/manifest/*
+dev-requirements.txt
+

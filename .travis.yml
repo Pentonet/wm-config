@@ -5,6 +5,9 @@ services:
 
 dist: "xenial"
 
+install:
+  - "./.ci/install-devtools.sh"
+
 script:
   - "./.ci/bundle.sh"
   - "./.ci/build.sh"
