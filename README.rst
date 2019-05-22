@@ -5,7 +5,9 @@ wm-config
 The Wirepas Host Configurator (wm-config) is a shell utility that prepares the target host
 for specific Wirepas software *(see bin/wm-config.sh)*.
 
-The main goal of wm-config is to install the gateway software on a Raspberry pi (rpi) - running Raspbian.
+The main goal of wm-config is to install the gateway software on a target
+host, more specifically a Raspberry pi (RPi) - running Raspbian (release 2019-04-08)
+or a x86_64 host.
 
 
 .. attention::
@@ -20,7 +22,7 @@ The main goal of wm-config is to install the gateway software on a Raspberry pi 
 Installation
 ------------
 
-To install the wm-config clone this repository directly on the raspberry pi and run
+To install the wm-config clone this repository directly on the RPi and run
 
 ::
 
@@ -251,6 +253,138 @@ by the `executable itself <./bin/wm-config.sh>`_.
 
 .. _table_end:
 
+
+Accessing and customizing the gateway
+-----------------------------------------
+
+These steps require that you have physical access to a RPi, whose hostname
+is set as wm-evk.
+
+
+Logging into the RPi
+--------------------
+
+Assuming your host and RPi are on the same network, you have
+two options to connect remotely to the RPi:
+
+-   using private and public key pairs (more secure)
+
+-   using plain text logins over ssh (not recommended)
+
+The software shipped with the Wirepas EVK allows you to connect with both
+methods. The private and public method is always available but you can
+enable or disable the plain text login.
+
+*To enable the plain text logins*, insert the RPi sdcard on a host with a
+sdcard reader and open the file in /boot/wirepas/custom.env. Locate and
+ensure that the following key has value set to true
+
+::
+
+   WM_HOST_SSH_ENABLE_NETWORK_LOGIN="true"
+
+
+and that you change the password in
+
+::
+
+   WM_HOST_USER_PASSWORD
+
+
+It is also important to known what is the hostname of your device. You can
+read or change hostname from the key
+
+::
+
+   WM_HOST_SET_HOSTNAME=wm-evk
+
+
+After you insert the sdcard back on the RPi and power it on you can
+connect remotely using
+
+::
+
+   ssh pi@wm-evk.local
+
+   password: the value of WM_HOST_USER_PASSWORD
+
+
+*To enable the logins with private and public keys* you will need to have
+a private and public key pair. Generate a key pair using `ssh-keygen <https://linux.die.net/man/1/ssh-keygen>`_.
+
+Locate and copy the value of your *public key* to the following key in
+`/boot/wirepas/custom.env <https://github.com/wirepas/wm-config>`_.
+
+::
+
+   WM_HOST_USER_PPKI
+
+
+After you insert the sdcard back on the RPi and power it on you can
+connect remotely using
+
+::
+
+   ssh -i <path to private key> pi@wm-evk.local
+
+
+If you opt for private key login, it is recommended that you drop the
+plain text login by setting
+
+::
+
+   WM_HOST_SSH_ENABLE_NETWORK_LOGIN="false"
+
+
+Defining where to publish data
+-------------------------------
+
+On a RPi, the wm-config sources the destination of the data
+from */boot/wirepas/custom.env*.
+
+Ensure that the values in the following keys are correct:
+
+::
+
+    WM_SERVICES_HOST:  broker ip or hostname
+    WM_SERVICES_MQTT_PORT: broker secure port (8883 default)
+    WM_SERVICES_MQTT_USER: user defined in the MQTT broker credentials
+    WM_SERVICES_MQTT_PASSWORD: password defined in the MQTT broker credentials
+
+
+If you need to change a value, remember to run wm-config after each
+change to the configuration file.
+
+Assuming the keys have the correct values, ensure that the services are
+running by inspecting their status with:
+
+::
+
+   cd ~/wirepas/lxgw
+
+   docker-compose ps
+
+   docker-compose logs
+
+
+If everything is working as expected, you will see data being published from:
+
+::
+
+   2019-02-27 07:55:38,255 | [INFO] transport_service: (...)
+   2019-02-27 07:55:38,305 | [DEBUG] transport_service: (...)
+   2019-02-27 07:55:38,315 | [DEBUG] transport_service: (...)
+
+
+If there is no data being sent by the transport service ensure that:
+
+-   Your MQTT credentials are correct
+
+-   Your MQTT broker is running
+
+-   Your sink is properly connected (inspect the value of docker logs wm-sink)
+
+-   Your devices are powered on (make sure the battery protector has been removed. When shipped there is a plastic strip between the battery and one of the contacts inside the Ruuvi tag.)
 
 
 Contributing
