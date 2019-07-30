@@ -2,19 +2,20 @@
 # Wirepas Oy
 
 # install docker
-sudo curl -sSL https://get.docker.com | sh
+# if the convenience script fails, please refer to
+# https://github.com/docker/for-linux/issues/709
+sudo curl -sSL https://get.docker.com | sh 
 
 # pip
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-sudo -H python3 get-pip.py
-sudo rm get-pip.py
-
 sudo apt-get update
-
 sudo apt-get install -y autossh \
                       gcc \
                       libffi-dev \
                       libssl-dev \
                       make \
-                      python-dev
+                      python3-dev \
+                      python3 \
+                      python3-pip
+
+pip3 install --upgrade pip
 
