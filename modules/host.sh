@@ -162,7 +162,7 @@ function host_systemd_management
 # blacklists ipv6 module and reboot the host
 function host_blacklist_ipv6
 {
-    TARGET="/etc/modprobe.d/ipv6.conf"
+    TARGET="/etc/sysctl.conf"
     TEMPFILE=${WM_SERVICE_HOME}/ipv6.tmp
 
     if [[ "${WM_HOST_IPV6_DISABLE}" == "true" ]]
@@ -172,9 +172,9 @@ function host_blacklist_ipv6
         sudo cp ${TARGET} ${TEMPFILE}
         sudo chown $(id -u):$(id -g) ${TEMPFILE}
 
-        echo "alias ipv6 off" >> ${TEMPFILE}
-        echo "options ipv6 disable_ipv6=1" >> ${TEMPFILE}
-        echo "blacklist ipv6" >> ${TEMPFILE}
+        echo "net.ipv6.conf.all.disable_ipv6=1" >> ${TEMPFILE}
+        echo "net.ipv6.conf.default.disable_ipv6=1" >> ${TEMPFILE}
+        echo "net.ipv6.conf.lo.disable_ipv6=1" >> ${TEMPFILE}
 
         sudo cp ${TEMPFILE} ${TARGET}
         sudo chown root:root ${TARGET}
