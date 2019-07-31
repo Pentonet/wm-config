@@ -48,8 +48,8 @@ Copy the tar.gz file to the host's HOME directory and run
 By default the script will create the WM_SERVICE_HOME target and extract
 the tar contents inside it.
 
-If there is a file in the host's home with **custom** in its
-filename, the script will copy that file to the entrypoint path.
+If there is a file in the host's home named **custom.env**, 
+the script will copy that file to the entrypoint path.
 
 After the extraction the script will by default call wm-config.
 

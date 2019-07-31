@@ -152,16 +152,16 @@ function _restore_build_number
 ##
 function _copy_custom_env
 {
+    _CFILE="${HOME}/custom.env"
+
     if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
     then
-        set +e
-        for _cfile in ${HOME}/*custom*
-        do
+        if [[ -f "${_CFILE}"  ]]
+        then
             echo "copying custom file ${HOME}/*custom*"
-            sudo cp --no-preserve=mode,ownership ${_cfile} \
-                ${WM_SERVICE_ENTRYPOINT}/custom.env
-        done
-        set -e
+            sudo cp --no-preserve=mode,ownership "${_CFILE}" \
+                "${WM_SERVICE_ENTRYPOINT}/custom.env"
+        fi
     fi
 }
 
