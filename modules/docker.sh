@@ -37,13 +37,19 @@ function docker_cleanup
 
     if [[ "${_wipe_all}" == "true" ]]
     then
+        #Necessary to allow successful completion on Raspbian buster see #25
+        set +e
         web_notify "removing all containers"
         docker rm -f $(docker ps -aq) || true
         wirepas_remove_entry "WM_DOCKER_CLEANUP"
+        set -e
     fi
 
+    # Necessary to allow successful completion on Raspbian buster see #25
+    set +e
     web_notify "pruning all _unused_ docker elements"
     docker system prune --all --force || true
+    set -e
 
 }
 

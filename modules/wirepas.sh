@@ -192,9 +192,12 @@ function wirepas_terminate_services
 {
     NAME_FILTER=${1}
 
+    # Necessary to allow successful completion on Raspbian buster
+    set +e
     web_notify "terminating services matching: ${NAME_FILTER}"
-
     WM_RUNNING_CONTAINERS=$(docker ps --filter name=${NAME_FILTER} -qa)
+    set -e
+
     for REMOVE_CONTAINER in ${WM_RUNNING_CONTAINERS[@]}
     do
         echo ${REMOVE_CONTAINER}
