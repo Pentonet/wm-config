@@ -5,9 +5,39 @@ set -e
 
 RUN_AFTER=${1:-"true"}
 
+function _get_platform()
+{
+
+    _DEVICE_TREE_MODEL="/proc/device-tree/model"
+
+    HOST_IS_RPI="false"
+    HOST_MODEL="unknown"
+
+    if [[ -f "${_DEVICE_TREE_MODEL}" ]]
+    then
+        HOST_MODEL=$(tr -d '\0' < /proc/device-tree/model)
+    fi
+
+    if [[ "${HOST_MODEL}" == *"Raspberry"* ]]
+    then
+        HOST_IS_RPI="true"
+    fi
+
+    HOST_ARCHITECTURE=$(uname -m)
+
+    echo "Host details:"
+    echo "is_rpi=${HOST_IS_RPI}"
+    echo "model=${HOST_MODEL} "
+    echo "arch=${HOST_ARCHITECTURE}"
+}
+
+
+
+
 function _defaults
 {
-    HOST_ARCHITECTURE=$(uname -m)
+
+    _get_platform
 
     BUILD_VERSION="1.1.0"
 
@@ -16,7 +46,7 @@ function _defaults
     WM_SERVICE_ENTRYPOINT=${WM_SERVICE_ENTRYPOINT:-"/boot/wirepas"}
     WM_CFG_EXEC_NAME="wm-config"
 
-    if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+    if [[ "${HOST_IS_RPI}" == "true" ]]
     then
         INSTALL_SYSTEM_WIDE=true
         WM_CFG_INSTALL_PATH=/usr/local/bin/
@@ -35,7 +65,8 @@ function _defaults
 ##
 function _clean_path
 {
-    if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+    if [[ "${HOST_IS_RPI}" == "true" ]]
+
     then
        sudo mkdir -p ${WM_SERVICE_ENTRYPOINT}
     fi
@@ -154,7 +185,8 @@ function _copy_custom_env
 {
     _CFILE="${HOME}/custom.env"
 
-    if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+    if [[ "${HOST_IS_RPI}" == "true" ]]
+
     then
         if [[ -f "${_CFILE}"  ]]
         then

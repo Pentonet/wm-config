@@ -13,6 +13,15 @@ TAR_OUTPUT_PATH="deliverable"
 TAR_EXCLUDE_RULES=".tarignore"
 
 
+function _check_changes()
+{
+    if [[ ! -z "$(git status --porcelain)" ]]
+    then
+        echo "Please commit or stash your changes before packing"
+        exit 1
+    fi
+}
+
 
 function _fill_and_pack
 {
@@ -35,12 +44,13 @@ function _fill_and_pack
         _target="${target}"
         git checkout -- "${target}"
     done
-
 }
 
 
 function _main
 {
+    _check_changes
+
     mkdir -p "${TAR_OUTPUT_PATH}"
     rm -f "${TAR_OUTPUT_PATH}/${TAR_NAME}"
 

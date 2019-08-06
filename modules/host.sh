@@ -74,7 +74,8 @@ function host_install_dependencies
 
         docker_add_user
 
-        if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+        if [[ "${HOST_IS_RPI}" == "true" ]]
+
         then
             host_reboot 0
             exit 0
@@ -226,7 +227,7 @@ function host_ssh_network_login
 # expands the filesystem
 function host_expand_filesystem
 {
-    if [[ "${WM_RPI_EXPAND_FILESYSTEM}" == "true" ]] &&  [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+    if [[ "${WM_RPI_EXPAND_FILESYSTEM}" == "true" ]] &&  [[ "${HOST_IS_RPI}" == "armv7l" ]]
     then
         web_notify "expanding filesystem"
         wirepas_remove_entry "WM_RPI_EXPAND_FILESYSTEM"

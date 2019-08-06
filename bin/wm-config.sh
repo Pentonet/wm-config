@@ -42,10 +42,36 @@ function _import_modules
     trap 'wmconfig_finish "${BASH_SOURCE}"' EXIT
 }
 
+function _get_platform()
+{
+
+    _DEVICE_TREE_MODEL="/proc/device-tree/model"
+
+    export HOST_ARCHITECTURE
+    export HOST_IS_RPI
+    export HOST_MODEL
+
+    HOST_ARCHITECTURE=$(uname -m)
+    HOST_IS_RPI="false"
+    HOST_MODEL="unknown"
+
+    if [[ -f "${_DEVICE_TREE_MODEL}" ]]
+    then
+        HOST_MODEL=$(tr -d '\0' < /proc/device-tree/model)
+    fi
+
+    if [[ "${HOST_MODEL}" == *"Raspberry"* ]]
+    then
+        HOST_IS_RPI="true"
+    fi
+}
+
+
+
 function wmconfig_defaults
 {
     WM_CFG_VERSION="#FILLVERSION"
-    HOST_ARCHITECTURE=$(uname -m)
+    _get_platform
 
     DEFAULT_IFS="${IFS}"
     SAFER_IFS=$'\n\t'
@@ -53,7 +79,8 @@ function wmconfig_defaults
 
     _ME=$(basename "${0}")
 
-    if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+    if [[ "${HOST_IS_RPI}" == "true" ]]
+
     then
         WM_CFG_INSTALL_PATH=${WM_CFG_INSTALL_PATH:-/usr/local/bin/wm-config}
         WM_SERVICE_HOME=${WM_SERVICE_HOME:-"${HOME}/wirepas/wm-config"}
@@ -192,7 +219,8 @@ function wmconfig_error
     echo "${TIME_NOW} : Aborting due to errexit on ${@}" > ${WM_SERVICE_HOME}/error.log
     web_notify $(cat "${WM_SERVICE_HOME}/error.log")
 
-    if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+    if [[ "${HOST_IS_RPI}" == "true" ]]
+
     then
         sudo rm -f ${WM_ENTRYPOINT_SETTINGS}/error.log || true
 
@@ -213,7 +241,8 @@ function wmconfig_error
 # end of the script
 function wmconfig_finish
 {
-    if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+    if [[ "${HOST_IS_RPI}" == "true" ]]
+
     then
 
         web_notify "Work completed - writing session info to ${WM_ENTRYPOINT_SETTINGS}"
@@ -266,7 +295,8 @@ function _main
 
     wirepas_session_cleanup
 
-    if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+    if [[ "${HOST_IS_RPI}" == "true" ]]
+
     then
         host_sync_clock
         host_systemd_management
@@ -278,7 +308,8 @@ function _main
     host_install_dependencies
     host_set_aws_credentials
 
-    if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+    if [[ "${HOST_IS_RPI}" == "true" ]]
+
     then
         host_tty_pseudo_names
         host_ssh_network_login
@@ -296,7 +327,8 @@ function _main
     wirepas_wmconfig_update
     wirepas_gateway "$@"
 
-    if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+    if [[ "${HOST_IS_RPI}" == "true" ]]
+
     then
         docker_cleanup "false"
     fi

@@ -106,7 +106,8 @@ function wirepas_wmconfig_update
 
         wirepas_remove_entry "WM_CFG_UPDATE"
 
-        if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+        if [[ "${HOST_IS_RPI}" == "true" ]]
+
         then
             host_reboot 0
             exit 0
@@ -269,7 +270,8 @@ function wirepas_dbus_policies
         sudo cp --no-preserve=mode,ownership ${_target_tmp} ${_target}
         rm ${_target_tmp}
 
-        if [[ "${HOST_ARCHITECTURE}" == "armv7l" ]]
+        if [[ "${HOST_IS_RPI}" == "true" ]]
+
         then
             host_reboot 0
             exit 0
