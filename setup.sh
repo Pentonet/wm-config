@@ -158,7 +158,8 @@ function _copy_custom_env
     then
         if [[ -f "${_CFILE}"  ]]
         then
-            echo "copying custom file ${HOME}/*custom*"
+            echo "copying custom file ${_CFILE}"
+            sudo mkdir -p "${WM_SERVICE_ENTRYPOINT}"
             sudo cp --no-preserve=mode,ownership "${_CFILE}" \
                 "${WM_SERVICE_ENTRYPOINT}/custom.env"
         fi
