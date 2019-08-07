@@ -5,6 +5,35 @@ set -e
 
 RUN_AFTER=${1:-"true"}
 
+##
+## @brief      Default values
+##
+function _defaults
+{
+
+    _get_platform
+
+    BUILD_VERSION="1.1.2"
+
+    ARCHIVE_NAME="wmconfig.tar.gz"
+    WM_SERVICE_HOME=${HOME}/wirepas/wm-config
+    WM_SERVICE_ENTRYPOINT=${WM_SERVICE_ENTRYPOINT:-"/boot/wirepas"}
+    WM_CFG_EXEC_NAME="wm-config"
+
+    if [[ "${HOST_IS_RPI}" == "true" ]]
+    then
+        INSTALL_SYSTEM_WIDE=true
+        WM_CFG_INSTALL_PATH=/usr/local/bin/
+    else
+        INSTALL_SYSTEM_WIDE=false
+        WM_CFG_INSTALL_PATH=${HOME}/.local/bin
+        export PATH=${PATH}:${HOME}/.local/bin/
+    fi
+}
+
+##
+## @brief      Obtains platform details such as architecture and model
+##
 function _get_platform()
 {
 
@@ -31,31 +60,6 @@ function _get_platform()
     echo "arch=${HOST_ARCHITECTURE}"
 }
 
-
-
-
-function _defaults
-{
-
-    _get_platform
-
-    BUILD_VERSION="1.1.0"
-
-    ARCHIVE_NAME="wmconfig.tar.gz"
-    WM_SERVICE_HOME=${HOME}/wirepas/wm-config
-    WM_SERVICE_ENTRYPOINT=${WM_SERVICE_ENTRYPOINT:-"/boot/wirepas"}
-    WM_CFG_EXEC_NAME="wm-config"
-
-    if [[ "${HOST_IS_RPI}" == "true" ]]
-    then
-        INSTALL_SYSTEM_WIDE=true
-        WM_CFG_INSTALL_PATH=/usr/local/bin/
-    else
-        INSTALL_SYSTEM_WIDE=false
-        WM_CFG_INSTALL_PATH=${HOME}/.local/bin
-        export PATH=${PATH}:${HOME}/.local/bin/
-    fi
-}
 
 ##
 ## @brief      Removes any existing software and ensures entrypoint creation
@@ -131,25 +135,26 @@ function _copy_wmconfig
     if [[ ${INSTALL_SYSTEM_WIDE} == true ]]
     then
         echo "installing wm-config system wide"
-        sudo cp  --no-preserve=mode,ownership ${_copy_target} ${WM_CFG_INSTALL_PATH}/${WM_CFG_EXEC_NAME}
+        sudo cp -v --no-preserve=mode,ownership ${_copy_target} ${WM_CFG_INSTALL_PATH}/${WM_CFG_EXEC_NAME}
         sudo chmod +x ${WM_CFG_INSTALL_PATH}/${WM_CFG_EXEC_NAME}
     else
         echo "installing wm-config for current user"
-        mkdir -p /home/${USER}/.local/bin || true
-        cp  --no-preserve=mode,ownership ${_copy_target} ${WM_CFG_INSTALL_PATH}/${WM_CFG_EXEC_NAME}
+        mkdir -p ${WM_CFG_INSTALL_PATH} || true
+        cp -v --no-preserve=mode,ownership ${_copy_target} ${WM_CFG_INSTALL_PATH}/${WM_CFG_EXEC_NAME}
         sudo chmod +x ${WM_CFG_INSTALL_PATH}/${WM_CFG_EXEC_NAME}
         export PATH=$PATH:/home/${USER}/.local/bin
     fi
 
-
-    if [[ ${_is_clone} == "true" ]]
+    if [[ "${_is_clone}" == "true" ]]
     then
         _restore_build_number "${_TARGETS[@]}"
     fi
 
 }
 
-
+##
+## @brief      Replaces the build version strings in the main script file
+##
 function _set_build_number
 {
     _targets=("$@")
@@ -165,6 +170,9 @@ function _set_build_number
     done
 }
 
+##
+## @brief      Checkout any changes made to target files
+##
 function _restore_build_number
 {
     _targets=("$@")
