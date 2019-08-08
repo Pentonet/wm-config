@@ -64,13 +64,13 @@ function wirepas_load_settings
     then
         web_notify "loading ${WM_ENVIRONMENT_DEFAULT}"
 
-        sudo cp ${WM_ENVIRONMENT_DEFAULT} ${TEMP_FILE}
+        cp ${WM_ENVIRONMENT_DEFAULT} ${TEMP_FILE}
         host_rm_win_linefeed ${TEMP_FILE} ${TEMP_FILE}.load
 
         source ${WM_ENVIRONMENT_DEFAULT}
 
-        sudo rm ${TEMP_FILE}
-        sudo rm ${TEMP_FILE}.load
+        rm ${TEMP_FILE}
+        rm ${TEMP_FILE}.load
     else
         web_notify "could not find ${WM_ENVIRONMENT_DEFAULT}"
         exit 1
@@ -164,6 +164,30 @@ function wirepas_template_copy
         done
     fi
 }
+
+
+# wirepas_template_append
+# Evaluates the template but instead of overwriting the output the contents
+# are appended to it
+function wirepas_template_append
+{
+    # input name is basename
+    TEMPLATE_NAME=${1:-"defaults"}
+    OUTPUT_PATH=${2:-"template.output"}
+
+    # if set, changes the output filename
+    TEMPLATE=${WM_CFG_TEMPLATE_PATH}/${TEMPLATE_NAME}.template
+
+    web_notify "appending to ${OUTPUT_PATH} definitions from ${TEMPLATE}"
+    rm -f  ${OUTPUT_PATH}.tmp
+    ( echo "cat <<EOF >>${OUTPUT_PATH}";
+      cat ${TEMPLATE};
+      echo "EOF";
+    ) > ${OUTPUT_PATH}.tmp
+    . ${OUTPUT_PATH}.tmp
+    rm ${OUTPUT_PATH}.tmp
+}
+
 
 
 
@@ -282,6 +306,68 @@ function wirepas_dbus_policies
 }
 
 
+# _lookup_devices
+#  Iterates local devices
+function wirepas_generate_device_service()
+{
+    _TEMPLATE_NAME=${1:-"lxgw-sink"}
+    _COMPOSE_PATH=${2}
+
+    if [[ -z "${WM_LXGW_SINK_BITRATE_CONFIGURATION}" ]]
+    then
+        WM_LXGW_SINK_BITRATE_CONFIGURATION=()
+        for _ in $(seq 0 1 20)
+        do
+            WM_LXGW_SINK_BITRATE_CONFIGURATION+=( "125000" )
+        done
+    else
+        WM_LXGW_SINK_BITRATE_CONFIGURATION=($(echo "${WM_LXGW_SINK_BITRATE_CONFIGURATION}" | tr " " "\n"))
+    fi
+
+    WM_LXGW_SINK_PORT_RULE=($(echo "${WM_LXGW_SINK_PORT_RULE}" | tr " " "\n"))
+
+    _device_id=-1
+    for _device in ${WM_LXGW_SINK_PORT_RULE[@]}
+    do
+        if [[ -z "${_device}" || "${_device}" == *"*"* ]]
+        then
+            web_notify "Could not find any device under ${_device}"
+            continue
+        fi
+
+        if [[ ! -z "${WM_LXGW_SINK_BLACKLIST}" ]]
+        then
+            _BLACKLIST_ARRAY=($(echo "${WM_LXGW_SINK_BLACKLIST}" | tr " " "\n"))
+
+            for _blacklisted in "${_BLACKLIST_ARRAY[@]}"
+            do
+                if [[ "${_blacklisted}" == "${_device}" ]]
+                then
+                    web_notify "Device is blacklisted, skipping it (list=${_blacklisted} == device=${_device})"
+                    break
+                fi
+            done
+            continue
+        fi
+
+        _device_id=$((_device_id+1))
+
+        # apply filter based on input
+        # shellcheck disable=SC2034
+        WM_SINK_UART_PORT_SERVICE_NAME="${_device/\/dev\//}"
+        WM_SINK_UART_PORT=${_device}
+        WM_SINK_UART_BITRATE="${WM_LXGW_SINK_BITRATE_CONFIGURATION["${_device_id}"]}"
+        WM_SINK_ID=${_device_id}
+
+        web_notify "Configuring ${_device} (bitrate=${WM_SINK_UART_BITRATE}, id=${WM_SINK_ID})"
+        wirepas_template_append "${_TEMPLATE_NAME}" "${_COMPOSE_PATH}"
+
+    done
+}
+
+
+
+
 # wirepas_gateway
 #
 # starts and switches between WM services
@@ -305,11 +391,10 @@ function wirepas_gateway
         date > ${WM_SERVICE_HOME}/.wirepas_session
         for GW in ${WM_GATEWAY[@]}
         do
-            mkdir -p ${WM_SERVICE_HOME}/${GW}
+            mkdir -p "${WM_SERVICE_HOME}/${GW}"
 
             _docker_compose_path="${WM_SERVICE_HOME}/${GW}/docker-compose.yml"
-
-            wirepas_template_copy docker-compose.${GW} ${_docker_compose_path}
+            wirepas_template_copy "docker-compose.${GW}" "${_docker_compose_path}"
 
             if [[ "${GW}" == "pygw" ]] && [[ ! -z "${WM_PYGW_IMAGE}" ]]
             then
@@ -342,7 +427,14 @@ function wirepas_gateway
                 wirepas_terminate_services "wm-py*"
                 wirepas_terminate_services "wm-sd*"
 
-                docker_redeploy ${_docker_compose_path}
+                # multi sink support
+                if [[ "${WM_CONFIG_MULTI_SINK}" == "true" ]]
+                then
+                    wirepas_template_copy docker-compose.lxgw-transport "${_docker_compose_path}"
+                    wirepas_generate_device_service docker-compose.lxgw-sink "${_docker_compose_path}"
+                fi
+
+                docker_redeploy "${_docker_compose_path}"
             fi
 
 

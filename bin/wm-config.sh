@@ -98,6 +98,7 @@ function wmconfig_defaults
     WM_CFG_STARTUP_DELAY=${WM_CFG_STARTUP_DELAY:-"0"}
     WM_SLACK_WEBHOOK=${WM_SLACK_WEBHOOK:-""}
     WM_MSTEAMS_WEBHOOK=${WM_MSTEAMS_WEBHOOK:-""}
+    WM_DOCKER_FORCE_RECREATE=${WM_DOCKER_FORCE_RECREATE:-""}
 
     WM_CFG_PERIODIC_WORK_PATH=${WM_CFG_PERIODIC_WORK_PATH:-"${WM_SERVICE_HOME}/periodic_work"}
     WM_CFG_HOST_PATH=${WM_CFG_HOST_PATH:-"${WM_SERVICE_HOME}/host"}
@@ -106,8 +107,7 @@ function wmconfig_defaults
     WM_CFG_ARCHIVES_PATH=${WM_CFG_ARCHIVES_PATH:-"${WM_SERVICE_HOME}/archives"}
     WM_CFG_DEPENDENCIES_PATH=${WM_CFG_DEPENDENCIES_PATH:-"${WM_SERVICE_HOME}/dependencies"}
 
-
-
+    WM_CONFIG_MULTI_SINK=${WM_CONFIG_MULTI_SINK:-"true"}
 
     mkdir -p ${WM_GW_SETTINGS_PATH}
     mkdir -p ${WM_CFG_PERIODIC_WORK_PATH}
@@ -135,7 +135,7 @@ Options:
   --update              Forces an update of the base script (default: ${WM_CFG_UPDATE})
   --pull-settings       Pulls a settings container (default: ${WM_CFG_PULL_SETTINGS})
 
-  --force-recreate      Forces running containers to be recreated (default: ${WM_FORCE_RECREATE})
+  --force-recreate      Forces running containers to be recreated (default: ${WM_DOCKER_FORCE_RECREATE})
   --force-clean         Force removes any running container (default: ${WM_DOCKER_CLEANUP})
 
   --disable-updater     Stops and disables the systemd periodic job - ${WM_CFG_SYSTEMD_UPDATER}
@@ -168,17 +168,19 @@ function wmconfig_parse
             shift
             shift
             ;;
+
             --update)
             WM_CFG_UPDATE=true
             shift
             ;;
+
             --pull-settings)
             WM_CFG_PULL_SETTINGS=true
             shift
             ;;
 
             --force-recreate)
-            WM_FORCE_RECREATE=true
+            WM_DOCKER_FORCE_RECREATE=true
             shift
             ;;
             --force-clean)
@@ -190,6 +192,12 @@ function wmconfig_parse
             WM_CFG_SYSTEMD_UPDATER_DISABLE=true
             shift
             ;;
+
+            --disable-sink-discovery)
+            WM_CONFIG_MULTI_SINK=false
+            shift
+            ;;
+
             --enable-updater)
             WM_CFG_SYSTEMD_UPDATER_ENABLE=true
             shift
@@ -197,12 +205,18 @@ function wmconfig_parse
 
             --debug)
             set -x
-            env |grep WM_
+            env |grep WM_ > ~/env.log
             shift
             ;;
 
+            --help)
+            wmconfig_help
+            exit 1
+            ;;
+
             *) # unsupported flags
-            echo "Unknown ${1}"
+            echo "unknown option: ${1}"
+            wmconfig_help
             exit 1
             ;;
         esac
@@ -278,12 +292,6 @@ function _main
     # parameter evaluation
     wirepas_load_settings
     wmconfig_parse "$@"
-
-    if [[ "${1:-}" =~ ^-h|--help$   ]]
-    then
-        wmconfig_help
-        exit 1
-    fi
 
     web_notify "delaying startup for ${WM_CFG_STARTUP_DELAY}"
     sleep ${WM_CFG_STARTUP_DELAY}

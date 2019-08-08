@@ -1,6 +1,6 @@
 
-    wm-sink-${WM_SINK_ID}:
-        container_name: wm-sink-${WM_SINK_ID}
+    wm-dbus-sink-${WM_SINK_UART_PORT_SERVICE_NAME}-id-${WM_SINK_ID}:
+        container_name: wm-dbus-sink-${WM_SINK_UART_PORT_SERVICE_NAME}-id-${WM_SINK_ID}
         image: ${WM_LXGW_IMAGE}:${WM_LXGW_VERSION}
 
         user: root

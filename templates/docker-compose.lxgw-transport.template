@@ -9,7 +9,7 @@ services:
         privileged: true
         stdin_open: true
         tty: true
-        ${TRANSPORT_NETWORK_MODE}
+        ${WM_LXGW_TRANSPORT_SERVICE_NETWORK}
 
         restart: always
         environment:
@@ -18,6 +18,13 @@ services:
             - WM_SERVICES_MQTT_USER=${WM_SERVICES_MQTT_USER}
             - WM_SERVICES_MQTT_PASSWORD=${WM_SERVICES_MQTT_PASSWORD}
             - WM_SERVICES_CERTIFICATE_CHAIN=${WM_SERVICES_CERTIFICATE_CHAIN}
+            - WM_SERVICES_GATEWAY_ID=${WM_SERVICES_GATEWAY_ID}
+            - WM_SERVICES_ALLOW_UNSECURE=${WM_SERVICES_ALLOW_UNSECURE}
+            - WM_SERVICES_GATEWAY_MODEL=${WM_SERVICES_GATEWAY_MODEL}
+            - WM_SERVICES_GATEWAY_VERSION=${WM_SERVICES_GATEWAY_VERSION}
+            - WM_SERVICES_GATEWAY_IGNORED_ENDPOINTS_FILTER=${WM_SERVICES_GATEWAY_IGNORED_ENDPOINTS_FILTER}
+            - WM_SERVICES_GATEWAY_WHITENED_ENDPOINTS_FILTER=${WM_SERVICES_GATEWAY_WHITENED_ENDPOINTS_FILTER}
+            - PYTHONUNBUFFERED=true
 
         volumes:
             - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
