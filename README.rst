@@ -332,7 +332,7 @@ running by inspecting their status with:
 
 ::
 
-   cd ~/wirepas/lxgw
+   cd ~/wirepas/wm-config/lxgw
 
    docker-compose ps
 
