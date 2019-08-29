@@ -13,7 +13,7 @@ function _defaults
 
     _get_platform
 
-    BUILD_VERSION="1.1.2"
+    BUILD_VERSION="2.0.0"
 
     ARCHIVE_NAME="wmconfig.tar.gz"
     WM_SERVICE_HOME=${HOME}/wirepas/wm-config

@@ -6,8 +6,13 @@ services:
 dist: "xenial"
 
 install:
+#  - ".ci/install-buildx.sh"
   - "./.ci/install-devtools.sh"
 
 script:
   - "./.ci/bundle.sh"
-  - "./.ci/build.sh"
+#  - "./.ci/build.sh"
+
+env:
+  global:
+    - export DOCKER_BUILDKIT=1

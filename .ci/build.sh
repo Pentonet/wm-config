@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-docker build -t wm-config .
+set -e
+
+./container/build.sh
