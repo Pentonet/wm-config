@@ -1,5 +1,5 @@
 # Wirepas Oy
 
-awscli==1.16.212
+awscli==1.16.228
 docker-compose==1.24.1
 
