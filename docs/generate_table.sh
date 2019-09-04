@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Wirepas Oy
 
-
 set -o allexport
 
-PARAM_TABLE="docs/readme_table.rst"
+PARAM_TABLE="docs/readme_table.md"
+README_PATH="README.md"
 
 # The single quatation is intentionally used here, so that reference to
 # environment varianble would be included to documentation, rather than
@@ -26,6 +26,11 @@ function replace_default
         if [[ ${_key} != "WM_"* ]]
         then
             continue
+        fi
+
+        if [[ -z "${_value}" ]]
+        then
+            _value="unset"
         fi
 
         echo "Replacing ##${_key}_DEFAULT -> *default=${_value}*"
@@ -63,10 +68,9 @@ function _main
     cp ${PARAM_TABLE}.tmp ${PARAM_TABLE}
     rm ${PARAM_TABLE}.tmp
 
-    sed -i -ne "/.. _table_start:/ {p; r ${PARAM_TABLE}.gen" -e ":a; n; /.. _table_end:/ {p; b}; ba}; p" README.rst
+
+    sed -i -ne "/<!-- table_start -->/ {p; r ${PARAM_TABLE}.gen" -e ":a; n; /<!-- table_end -->/ {p; b}; ba}; p" "${README_PATH}"
 }
 
 
 _main "${@}"
-
-
