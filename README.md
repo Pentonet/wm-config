@@ -19,14 +19,14 @@ Values set in *custom.env* will override any default value set within [default.e
 To install the wm-config clone this repository, checkout [a release tag][here_releases] and run
 
 ```shell
-	./setup.sh false
+   ./setup.sh false
 ```
 
 The repository files will be copied under [WM_SERVICE_HOME][here_bin_wmconfig_service_home]. Copy your custom.env
 file inside the path [WM_ENVIRONMENT_CUSTOM][here_entrypoint_settings] and call the tool with
 
 ```shell
-  wm-config
+   wm-config
 ```
 
 ### Creating an installation bundle
@@ -38,7 +38,7 @@ To build an archive, clone the repository on a machine with bash and run the
 following script:
 
 ```shell
-	./pack.sh
+   ./pack.sh
 ```
 
 The pack.sh will create an archive under *./deliverable/wm-config.tar.gz*.
@@ -46,14 +46,12 @@ The pack.sh will create an archive under *./deliverable/wm-config.tar.gz*.
 Copy the archive, the setup.sh and your custom.env to your host's home directory
 
 ```shell
+   scp ./deliverable/wm-config.tar.gz <user>@<ip>:
+   scp ./deliverable/setup.sh <user>@<ip>:
+   scp ./deliverable/custom.env <user>@<ip>:
 
-  scp ./deliverable/wm-config.tar.gz <user>@<ip>:
-  scp ./deliverable/setup.sh <user>@<ip>:
-  scp ./deliverable/custom.env <user>@<ip>:
-
-  ssh <user>@<ip>
-  ./setup.sh
-
+   ssh <user>@<ip>
+   ./setup.sh
 ```
 
 The setup script will create the directory [WM_SERVICE_HOME][here_bin_wmconfig_service_home], extract the
@@ -77,7 +75,7 @@ To monitor the status of wm-config you can rely on systemctl, journalctl and the
 With systemctl type on the host's shell
 
 ```shell
-    systemctl status wirepas-updater
+   systemctl status wirepas-updater
 ```
 
 which will show you the current status of the service.
@@ -85,7 +83,7 @@ which will show you the current status of the service.
 With journalctl type on the host's shell
 
 ```shell
-    journalctl -fu wirepas-updater
+   journalctl -fu wirepas-updater
 ```
 
 which will present you the latest status of the service and keep tracking
@@ -322,11 +320,8 @@ Assuming the keys have the correct values, ensure that the services are
 running by inspecting their status with:
 
 ```shell
-
    cd ~/wirepas/wm-config/lxgw
-
    docker-compose ps
-
    docker-compose logs
 ```
 
