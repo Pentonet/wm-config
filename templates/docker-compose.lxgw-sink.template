@@ -1,7 +1,7 @@
 
-    wm-dbus-sink-${WM_SINK_UART_PORT_SERVICE_NAME}-id-${WM_SINK_ID}:
-        container_name: wm-dbus-sink-${WM_SINK_UART_PORT_SERVICE_NAME}-id-${WM_SINK_ID}
-        image: ${WM_LXGW_IMAGE}:${WM_LXGW_VERSION}
+    wm-gw-sink-${WM_GW_SINK_UART_PORT_SERVICE_NAME}-id-${WM_GW_SINK_ID}:
+        container_name: wm-gw-sink-${WM_GW_SINK_UART_PORT_SERVICE_NAME}-id-${WM_GW_SINK_ID}
+        image: ${WM_GW_IMAGE}:${WM_GW_VERSION}
 
         user: root
         privileged: true
@@ -9,14 +9,13 @@
         tty: true
 
         restart: always
-        environment:
-            - WM_SINK_UART_PORT=${WM_SINK_UART_PORT}
-            - WM_SINK_UART_BITRATE=${WM_SINK_UART_BITRATE}
-            - WM_SINK_ID=${WM_SINK_ID}
+        env_file:
+            - ${WM_GW_SERVICES_ENV_FILE}
 
         volumes:
             - /dev:/dev
             - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+            - ${WM_GW_SERVICES_USER_PATH}:/etc/lxgw/usr
 
         logging:
            driver: journald

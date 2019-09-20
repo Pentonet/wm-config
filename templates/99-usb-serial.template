@@ -1,8 +1,8 @@
 #wirepas Oy
 
-SUBSYSTEM=="tty", ATTRS{idVendor}=="1366", ATTRS{idProduct}=="0105", SYMLINK+="${WM_SERIAL_NICKNAME}"
-SUBSYSTEM=="tty", ATTRS{idVendor}=="1366", ATTRS{idProduct}=="1015", SYMLINK+="${WM_SERIAL_NICKNAME}"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1366", ATTRS{idProduct}=="0105", SYMLINK+="${WM_HOST_TTY_SYMLINK}"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1366", ATTRS{idProduct}=="1015", SYMLINK+="${WM_HOST_TTY_SYMLINK}"
 
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="${WM_SERIAL_NICKNAME}"
-SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015", SYMLINK+="${WM_SERIAL_NICKNAME}"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="${WM_HOST_TTY_SYMLINK}"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6015", SYMLINK+="${WM_HOST_TTY_SYMLINK}"
 

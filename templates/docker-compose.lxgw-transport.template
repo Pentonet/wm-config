@@ -1,33 +1,27 @@
 version: '3'
 services:
 
-    wm-dbus-transport:
-        container_name: wm-dbus-transport
-        image: ${WM_LXGW_IMAGE}:${WM_LXGW_VERSION}
+    wm-gw-transport:
+        container_name: wm-gw-transport
+        image: ${WM_GW_IMAGE}:${WM_GW_VERSION}
 
         user: root
         privileged: true
         stdin_open: true
         tty: true
-        ${WM_LXGW_TRANSPORT_SERVICE_NETWORK}
+        ${WM_GW_TRANSPORT_SERVICE_NETWORK}
 
         restart: always
+
+        env_file:
+            - ${WM_GW_SERVICES_ENV_FILE}
+
         environment:
-            - WM_SERVICES_HOST=${WM_SERVICES_HOST}
-            - WM_SERVICES_MQTT_PORT=${WM_SERVICES_MQTT_PORT}
-            - WM_SERVICES_MQTT_USER=${WM_SERVICES_MQTT_USER}
-            - WM_SERVICES_MQTT_PASSWORD=${WM_SERVICES_MQTT_PASSWORD}
-            - WM_SERVICES_CERTIFICATE_CHAIN=${WM_SERVICES_CERTIFICATE_CHAIN}
-            - WM_SERVICES_GATEWAY_ID=${WM_SERVICES_GATEWAY_ID}
-            - WM_SERVICES_ALLOW_UNSECURE=${WM_SERVICES_ALLOW_UNSECURE}
-            - WM_SERVICES_GATEWAY_MODEL=${WM_SERVICES_GATEWAY_MODEL}
-            - WM_SERVICES_GATEWAY_VERSION=${WM_SERVICES_GATEWAY_VERSION}
-            - WM_SERVICES_GATEWAY_IGNORED_ENDPOINTS_FILTER=${WM_SERVICES_GATEWAY_IGNORED_ENDPOINTS_FILTER}
-            - WM_SERVICES_GATEWAY_WHITENED_ENDPOINTS_FILTER=${WM_SERVICES_GATEWAY_WHITENED_ENDPOINTS_FILTER}
             - PYTHONUNBUFFERED=true
 
         volumes:
             - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+            - ${WM_GW_SERVICES_USER_PATH}:/etc/lxgw/usr
 
         logging:
             driver: journald

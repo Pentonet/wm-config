@@ -1,0 +1,3 @@
+# Copyright 2019 Wirepas Ltd
+
+docker-compose==1.24.1

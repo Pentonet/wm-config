@@ -4,8 +4,8 @@
  "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
  "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
 <busconfig>
-	<!-- Only ${WM_LXGW_DBUS_CONF_USER} can own the service name -->
-	<policy user="${WM_LXGW_DBUS_CONF_USER}">
+	<!-- Only ${WM_GW_DBUS_CONF_USER} can own the service name -->
+	<policy user="${WM_GW_DBUS_CONF_USER}">
 		<!-- Predefine a list of 10 sinks -->
 		<allow own="com.wirepas.sink.sink0"/>
 		<allow own="com.wirepas.sink.sink1"/>

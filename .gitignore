@@ -1,15 +1,16 @@
 deliverable/*
-*/*.tmp 
-build-**.txt 
-build-**.txt 
+*/*.tmp
+build-**.txt
+build-**.txt
 docs/*.eval
-docs/*.gen
+**/*.gen
 docs/*.tmp
 docs/*.back
 
 .pre-commit-config.yaml
 .flake8
 .clang*
+.remark*
 .ci/manifest/*
 dev-requirements.txt
 

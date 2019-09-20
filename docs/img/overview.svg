@@ -1,0 +1,1086 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="764.33167pt"
+   height="315.86423pt"
+   viewBox="0 0 269.63921 111.42988"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (f8dce91, 2019-08-02)"
+   sodipodi:docname="overview.svg"
+   inkscape:export-filename="/home/silva/Documents/workspace/github/wm-config/docs/img/overview.png"
+   inkscape:export-xdpi="96.199997"
+   inkscape:export-ydpi="96.199997">
+  <defs
+     id="defs2">
+    <linearGradient
+       gradientTransform="rotate(-90,0.5,0.5)"
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-351">
+      <stop
+         id="stop4593"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="0" />
+      <stop
+         id="stop4595"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="0.74" />
+      <stop
+         id="stop4597"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="0.83" />
+      <stop
+         id="stop4599"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="1" />
+    </linearGradient>
+    <pattern
+       patternContentUnits="objectBoundingBox"
+       height="1"
+       width="1"
+       y="0"
+       x="0"
+       id="grad11-356">
+      <path
+         id="path4602"
+         style="fill:url(#grad0-357)"
+         d="M 0 1 L 0 0 L 1 0 z" />
+      <path
+         id="path4604"
+         style="fill:url(#grad0-358)"
+         d="M 0 1 L 1 1 L 1 0 z" />
+    </pattern>
+    <linearGradient
+       gradientTransform="rotate(180,0.5,0.5)"
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-357">
+      <stop
+         id="stop4607"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="0" />
+      <stop
+         id="stop4609"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="0.74" />
+      <stop
+         id="stop4611"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="0.83" />
+      <stop
+         id="stop4613"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="rotate(90,0.5,0.5)"
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-358">
+      <stop
+         id="stop4616"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="0" />
+      <stop
+         id="stop4618"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="0.74" />
+      <stop
+         id="stop4620"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="0.83" />
+      <stop
+         id="stop4622"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="1" />
+    </linearGradient>
+    <pattern
+       patternContentUnits="objectBoundingBox"
+       height="1"
+       width="1"
+       y="0"
+       x="0"
+       id="grad12-363">
+      <path
+         id="path4625"
+         style="fill:url(#grad0-358)"
+         d="M 0 0 L 0 1 L 1 1 z" />
+      <path
+         id="path4627"
+         style="fill:url(#grad0-364)"
+         d="M 0 0 L 1 0 L 1 1 z" />
+    </pattern>
+    <linearGradient
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-364">
+      <stop
+         id="stop4630"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="0" />
+      <stop
+         id="stop4632"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="0.74" />
+      <stop
+         id="stop4634"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="0.83" />
+      <stop
+         id="stop4636"
+         stop-opacity="1"
+         stop-color="#3f5765"
+         offset="1" />
+    </linearGradient>
+    <pattern
+       patternContentUnits="objectBoundingBox"
+       height="1"
+       width="1"
+       y="0"
+       x="0"
+       id="grad8-383">
+      <path
+         id="path4639"
+         style="fill:url(#grad0-351)"
+         d="M 0 0 L 1 0 L 1 1 z" />
+      <path
+         id="path4641"
+         style="fill:url(#grad0-357)"
+         d="M 0 0 L 0 1 L 1 1 z" />
+    </pattern>
+    <pattern
+       patternContentUnits="objectBoundingBox"
+       height="1"
+       width="1"
+       y="0"
+       x="0"
+       id="grad10-387">
+      <path
+         id="path4644"
+         style="fill:url(#grad0-357)"
+         d="M 0.5 0.5 L 0 0 L 0 1 z" />
+      <path
+         id="path4646"
+         style="fill:url(#grad0-364)"
+         d="M 0.5 0.5 L 1 0 L 1 1 z" />
+      <path
+         id="path4648"
+         style="fill:url(#grad0-351)"
+         d="M 0.5 0.5 L 0 0 L 1 0 z" />
+      <path
+         id="path4650"
+         style="fill:url(#grad0-358)"
+         d="M 0.5 0.5 L 0 1 L 1 1 z" />
+    </pattern>
+    <pattern
+       patternContentUnits="objectBoundingBox"
+       height="1"
+       width="1"
+       y="0"
+       x="0"
+       id="grad8-733">
+      <path
+         id="path4653"
+         style="fill:url(#grad0-734)"
+         d="M 0 0 L 1 0 L 1 1 z" />
+      <path
+         id="path4655"
+         style="fill:url(#grad0-735)"
+         d="M 0 0 L 0 1 L 1 1 z" />
+    </pattern>
+    <linearGradient
+       gradientTransform="rotate(-90,0.5,0.5)"
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-734">
+      <stop
+         id="stop4658"
+         stop-opacity="1"
+         stop-color="#e6e6e6"
+         offset="0" />
+      <stop
+         id="stop4660"
+         stop-opacity="1"
+         stop-color="#c0c0c0"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="rotate(180,0.5,0.5)"
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-735">
+      <stop
+         id="stop4663"
+         stop-opacity="1"
+         stop-color="#e6e6e6"
+         offset="0" />
+      <stop
+         id="stop4665"
+         stop-opacity="1"
+         stop-color="#c0c0c0"
+         offset="1" />
+    </linearGradient>
+    <radialGradient
+       r="1.4"
+       cy="1"
+       cx="1"
+       id="grad1-743">
+      <stop
+         id="stop4668"
+         stop-opacity="1"
+         stop-color="#e6e6e6"
+         offset="0" />
+      <stop
+         id="stop4670"
+         stop-opacity="1"
+         stop-color="#9a9a9a"
+         offset="1" />
+    </radialGradient>
+    <radialGradient
+       r="1.4"
+       cy="1"
+       cx="1"
+       id="grad1-747">
+      <stop
+         id="stop4673"
+         stop-opacity="1"
+         stop-color="#9a9a9a"
+         offset="0" />
+      <stop
+         id="stop4675"
+         stop-opacity="1"
+         stop-color="#e6e6e6"
+         offset="1" />
+    </radialGradient>
+    <radialGradient
+       r="1.4"
+       cy="1"
+       cx="1"
+       id="grad1-754">
+      <stop
+         id="stop4678"
+         stop-opacity="1"
+         stop-color="#00ff00"
+         offset="0" />
+      <stop
+         id="stop4680"
+         stop-opacity="1"
+         stop-color="#ffff00"
+         offset="1" />
+    </radialGradient>
+    <pattern
+       patternContentUnits="objectBoundingBox"
+       height="1"
+       width="1"
+       y="0"
+       x="0"
+       id="grad10-760">
+      <path
+         id="path4683"
+         style="fill:url(#grad0-735)"
+         d="M 0.5 0.5 L 0 0 L 0 1 z" />
+      <path
+         id="path4685"
+         style="fill:url(#grad0-761)"
+         d="M 0.5 0.5 L 1 0 L 1 1 z" />
+      <path
+         id="path4687"
+         style="fill:url(#grad0-734)"
+         d="M 0.5 0.5 L 0 0 L 1 0 z" />
+      <path
+         id="path4689"
+         style="fill:url(#grad0-762)"
+         d="M 0.5 0.5 L 0 1 L 1 1 z" />
+    </pattern>
+    <linearGradient
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-761">
+      <stop
+         id="stop4692"
+         stop-opacity="1"
+         stop-color="#e6e6e6"
+         offset="0" />
+      <stop
+         id="stop4694"
+         stop-opacity="1"
+         stop-color="#c0c0c0"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="rotate(90,0.5,0.5)"
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-762">
+      <stop
+         id="stop4697"
+         stop-opacity="1"
+         stop-color="#e6e6e6"
+         offset="0" />
+      <stop
+         id="stop4699"
+         stop-opacity="1"
+         stop-color="#c0c0c0"
+         offset="1" />
+    </linearGradient>
+    <pattern
+       patternContentUnits="objectBoundingBox"
+       height="1"
+       width="1"
+       y="0"
+       x="0"
+       id="grad10-769">
+      <path
+         id="path4702"
+         style="fill:url(#grad0-770)"
+         d="M 0.5 0.5 L 0 0 L 0 1 z" />
+      <path
+         id="path4704"
+         style="fill:url(#grad0-771)"
+         d="M 0.5 0.5 L 1 0 L 1 1 z" />
+      <path
+         id="path4706"
+         style="fill:url(#grad0-772)"
+         d="M 0.5 0.5 L 0 0 L 1 0 z" />
+      <path
+         id="path4708"
+         style="fill:url(#grad0-773)"
+         d="M 0.5 0.5 L 0 1 L 1 1 z" />
+    </pattern>
+    <linearGradient
+       gradientTransform="rotate(180,0.5,0.5)"
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-770">
+      <stop
+         id="stop4711"
+         stop-opacity="1"
+         stop-color="#e6e6e6"
+         offset="0" />
+      <stop
+         id="stop4713"
+         stop-opacity="1"
+         stop-color="#9a9a9a"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-771">
+      <stop
+         id="stop4716"
+         stop-opacity="1"
+         stop-color="#e6e6e6"
+         offset="0" />
+      <stop
+         id="stop4718"
+         stop-opacity="1"
+         stop-color="#9a9a9a"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="rotate(-90,0.5,0.5)"
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-772">
+      <stop
+         id="stop4721"
+         stop-opacity="1"
+         stop-color="#e6e6e6"
+         offset="0" />
+      <stop
+         id="stop4723"
+         stop-opacity="1"
+         stop-color="#9a9a9a"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="rotate(90,0.5,0.5)"
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-773">
+      <stop
+         id="stop4726"
+         stop-opacity="1"
+         stop-color="#e6e6e6"
+         offset="0" />
+      <stop
+         id="stop4728"
+         stop-opacity="1"
+         stop-color="#9a9a9a"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-789">
+      <stop
+         id="stop4731"
+         stop-opacity="1"
+         stop-color="#666666"
+         offset="0" />
+      <stop
+         id="stop4733"
+         stop-opacity="1"
+         stop-color="#c0c0c0"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="rotate(180,0.5,0.5)"
+       y2="0"
+       x2="1"
+       y1="0"
+       x1="0"
+       id="grad0-793">
+      <stop
+         id="stop4736"
+         stop-opacity="1"
+         stop-color="#666666"
+         offset="0" />
+      <stop
+         id="stop4738"
+         stop-opacity="1"
+         stop-color="#c0c0c0"
+         offset="1" />
+    </linearGradient>
+    <g
+       id="lend5">
+      <path
+         id="path4742"
+         style="stroke:none"
+         d="M 2,1 0,0 1.98117,-0.993387 C 1.67173,-0.364515 1.67301,0.372641 1.98465,1.00043"
+         inkscape:connector-curvature="0" />
+    </g>
+    <marker
+       overflow="visible"
+       markerUnits="strokeWidth"
+       orient="auto"
+       refX="7.1500001"
+       v:setback="7.15"
+       v:arrowSize="2"
+       v:arrowType="5"
+       class="st19"
+       id="mrkr5-327"
+       style="overflow:visible;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.22935779;stroke-opacity:1">
+      <use
+         id="use4745"
+         transform="scale(4.36)"
+         xlink:href="#lend5"
+         x="0"
+         y="0"
+         width="100%"
+         height="100%" />
+    </marker>
+    <marker
+       overflow="visible"
+       markerUnits="strokeWidth"
+       orient="auto"
+       refX="-7.6300001"
+       v:setback="7.63"
+       v:arrowSize="2"
+       v:arrowType="5"
+       class="st19"
+       id="mrkr5-329"
+       style="overflow:visible;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.22935779;stroke-opacity:1">
+      <use
+         id="use4748"
+         transform="scale(-4.36)"
+         xlink:href="#lend5"
+         x="0"
+         y="0"
+         width="100%"
+         height="100%" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="572.77361"
+     inkscape:cy="70.073998"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1874"
+     inkscape:window-height="1016"
+     inkscape:window-x="1966"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     fit-margin-top="10"
+     fit-margin-left="10"
+     fit-margin-right="10"
+     fit-margin-bottom="10"
+     units="pt" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-300.18943,-129.87232)">
+    <text
+       font-size="12.8"
+       style="font-style:normal;font-weight:normal;font-size:2.08410263px;font-family:sans-serif;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.1628205"
+       x="541.36383"
+       y="159.38684"
+       id="text1251">
+      <tspan
+         x="541.36383"
+         y="159.38684"
+         id="tspan1249"
+         style="stroke-width:0.1628205" />
+    </text>
+    <g
+       id="Background"
+       transform="matrix(0.2593681,0,0,0.24573641,407.30823,102.73588)">
+      <text
+         id="text1429"
+         y="306.72"
+         x="647.86401"
+         style="font-style:normal;font-weight:normal;font-size:12.80000019px;font-family:sans-serif;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+         font-size="12.8">
+        <tspan
+           id="tspan1427"
+           y="306.72"
+           x="647.86401" />
+      </text>
+      <g
+         id="g1441">
+        <rect
+           id="rect1431"
+           ry="0"
+           rx="0"
+           height="70"
+           width="304"
+           y="320.47198"
+           x="308"
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1" />
+        <text
+           id="text1439"
+           y="343.37201"
+           x="460"
+           style="font-style:normal;font-weight:normal;font-size:12.80000019px;font-family:sans-serif;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+           font-size="12.8">
+          <tspan
+             id="tspan1433"
+             y="343.37201"
+             x="460">Host management</tspan>
+          <tspan
+             id="tspan1435"
+             y="359.37201"
+             x="460">Install dependencies (all)</tspan>
+          <tspan
+             id="tspan1437"
+             y="375.37201"
+             x="460">Only RPi: enable wifi, ssh keys, (...)</tspan>
+        </text>
+      </g>
+      <g
+         id="g1447">
+        <line
+           id="line1443"
+           y2="198.60001"
+           x2="460"
+           y1="179.785"
+           x1="460"
+           style="fill:none;stroke:#000000;stroke-width:2;stroke-opacity:1" />
+        <polygon
+           id="polygon1445"
+           points="455,196.1 460,198.6 465,196.1 460,206.1 "
+           style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-opacity:1" />
+      </g>
+      <g
+         id="g1459">
+        <rect
+           id="rect1449"
+           ry="0"
+           rx="0"
+           height="70"
+           width="304"
+           y="208.336"
+           x="308"
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1" />
+        <text
+           id="text1457"
+           y="231.23599"
+           x="460"
+           style="font-style:normal;font-weight:normal;font-size:12.80000019px;font-family:sans-serif;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+           font-size="12.8">
+          <tspan
+             id="tspan1451"
+             y="231.23599"
+             x="460">wm_config sources settings from:</tspan>
+          <tspan
+             id="tspan1453"
+             y="247.23599"
+             x="460">WM_CFG_SETTINGS_CUSTOM</tspan>
+          <tspan
+             id="tspan1455"
+             y="263.23599"
+             x="460">WM_CFG_SETTINGS_DEFAULT</tspan>
+        </text>
+      </g>
+      <g
+         id="g1465">
+        <line
+           id="line1461"
+           y2="309.80399"
+           x2="460"
+           y1="278.336"
+           x1="460"
+           style="fill:none;stroke:#000000;stroke-width:2;stroke-opacity:1" />
+        <polygon
+           id="polygon1463"
+           points="455,307.304 460,309.804 465,307.304 460,317.304 "
+           style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-opacity:1" />
+      </g>
+      <g
+         id="g1471">
+        <line
+           id="line1467"
+           y2="414.22699"
+           x2="460"
+           y1="391.42599"
+           x1="460"
+           style="fill:none;stroke:#000000;stroke-width:2;stroke-opacity:1" />
+        <polygon
+           id="polygon1469"
+           points="455,411.727 460,414.227 465,411.727 460,421.727 "
+           style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-opacity:1" />
+      </g>
+      <g
+         id="g1481">
+        <rect
+           id="rect1473"
+           ry="0"
+           rx="0"
+           height="54"
+           width="304"
+           y="125.785"
+           x="308"
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1" />
+        <text
+           id="text1479"
+           y="148.685"
+           x="460"
+           style="font-style:normal;font-weight:normal;font-size:12.80000019px;font-family:sans-serif;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+           font-size="12.8">
+          <tspan
+             id="tspan1475"
+             y="148.685"
+             x="460">In the shell type:</tspan>
+          <tspan
+             id="tspan1477"
+             y="164.685"
+             x="460">$ wm-config</tspan>
+        </text>
+      </g>
+      <g
+         id="g1493">
+        <rect
+           id="rect1483"
+           ry="0"
+           rx="0"
+           height="70"
+           width="304"
+           y="424.91699"
+           x="308"
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-opacity:1" />
+        <text
+           id="text1491"
+           y="447.81699"
+           x="460"
+           style="font-style:normal;font-weight:normal;font-size:12.80000019px;font-family:sans-serif;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+           font-size="12.8">
+          <tspan
+             id="tspan1485"
+             y="447.81699"
+             x="460">Generate composition files</tspan>
+          <tspan
+             id="tspan1487"
+             y="463.81699"
+             x="460">&amp;</tspan>
+          <tspan
+             id="tspan1489"
+             y="479.81699"
+             x="460">Start/Stop gateway services</tspan>
+        </text>
+      </g>
+      <g
+         id="g1499">
+        <line
+           id="line1495"
+           y2="519.78998"
+           x2="460.022"
+           y1="494.91699"
+           x1="460"
+           style="fill:none;stroke:#000000;stroke-width:2;stroke-opacity:1" />
+        <polygon
+           id="polygon1497"
+           points="455.02,517.295 460.022,519.79 465.02,517.286 460.029,527.29 "
+           style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-opacity:1" />
+      </g>
+      <circle
+         id="ellipse1501"
+         cy="539.526"
+         cx="460.03101"
+         style="fill:#000000;fill-opacity:1;stroke:none"
+         r="10" />
+    </g>
+    <g
+       id="g6315">
+      <rect
+         y="203.35022"
+         x="313.37299"
+         height="10.31875"
+         width="153.53355"
+         id="rect1528-9"
+         style="fill:#ececec;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <g
+         transform="translate(0.07587547,-2.4552876)"
+         id="g6213">
+        <g
+           id="g6181">
+          <path
+             id="path5513-1-6-3-7-0"
+             class="st4"
+             d="m 358.57422,189.08082 h 41.5768 a 5.1968464,3.7666105 0 0 0 5.19188,-3.76731 v -13.05377 a 5.1968464,3.7666105 0 0 0 -5.19188,-3.76734 h -41.5768 a 5.1968464,3.7666105 0 0 0 -5.19786,3.76734 v 13.05377 a 5.1968464,3.7666105 0 0 0 5.19786,3.76731 z"
+             inkscape:connector-curvature="0"
+             style="font-size:12px;color-interpolation-filters:sRGB;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.12193325;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3" />
+          <path
+             id="path5513-1-6-3-7"
+             class="st4"
+             d="m 361.08,191.08312 h 41.5768 a 5.1968464,3.7666105 0 0 0 5.19188,-3.76732 V 174.26203 A 5.1968464,3.7666105 0 0 0 402.6568,170.4947 H 361.08 a 5.1968464,3.7666105 0 0 0 -5.19786,3.76733 v 13.05377 a 5.1968464,3.7666105 0 0 0 5.19786,3.76732 z"
+             inkscape:connector-curvature="0"
+             style="font-size:12px;color-interpolation-filters:sRGB;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.12193325;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3" />
+          <path
+             id="path5513-1-6-3"
+             class="st4"
+             d="m 363.63369,193.0131 h 41.5768 a 5.1968462,3.7666105 0 0 0 5.19188,-3.76732 v -13.05377 a 5.1968462,3.7666105 0 0 0 -5.19188,-3.76733 h -41.5768 a 5.1968462,3.7666105 0 0 0 -5.19785,3.76733 v 13.05377 a 5.1968462,3.7666105 0 0 0 5.19785,3.76732 z"
+             inkscape:connector-curvature="0"
+             style="font-size:12px;color-interpolation-filters:sRGB;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.12193325;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3" />
+          <path
+             id="path5513-1-6-3-6"
+             class="st4"
+             d="m 418.18254,193.10599 h 43.15766 a 5.3944434,3.7666105 0 0 0 5.38928,-3.76732 V 176.2849 a 5.3944434,3.7666105 0 0 0 -5.38928,-3.76733 h -43.15766 a 5.3944434,3.7666105 0 0 0 -5.39549,3.76733 v 13.05377 a 5.3944434,3.7666105 0 0 0 5.39549,3.76732 z"
+             inkscape:connector-curvature="0"
+             style="font-size:12px;color-interpolation-filters:sRGB;fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.12422974;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3" />
+          <g
+             transform="matrix(1.5042157,0,0,1.7133527,-272.00521,-129.83351)"
+             id="g13178-7">
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3.52777767px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="426.01312"
+               y="183.73668"
+               id="text13158-5"><tspan
+                 id="tspan1705"
+                 sodipodi:role="line"
+                 x="426.01312"
+                 y="183.73668"
+                 style="font-style:italic;stroke-width:0.26458332">sink service</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-style:normal;font-weight:normal;font-size:3.52777767px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+               x="445.4581"
+               y="192.41743"
+               id="text13168-6"><tspan
+                 sodipodi:role="line"
+                 x="445.4581"
+                 y="195.5387"
+                 style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222223px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Italic';stroke-width:0.26458332"
+                 id="tspan13170-2" /></text>
+          </g>
+          <text
+             transform="scale(0.93698291,1.0672553)"
+             xml:space="preserve"
+             style="font-style:normal;font-weight:normal;font-size:5.66343164px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.42475733"
+             x="445.13205"
+             y="172.85393"
+             id="text13158-5-9"><tspan
+               id="tspan1518"
+               sodipodi:role="line"
+               x="445.13205"
+               y="172.85393"
+               style="font-style:italic;stroke-width:0.42475733">transport service</tspan></text>
+          <rect
+             y="194.33801"
+             x="352.58862"
+             height="8.7455359"
+             width="114.24205"
+             id="rect1528"
+             style="fill:#cccccc;fill-opacity:1;stroke:none;stroke-width:0.53857279;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+          <text
+             transform="scale(0.89495766,1.1173713)"
+             id="text19624-8"
+             y="141.3038"
+             x="443.75696"
+             style="font-style:normal;font-weight:normal;font-size:2.67585802px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.20068936"
+             xml:space="preserve"><tspan
+               id="tspan4867-9"
+               style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold Italic';stroke-width:0.20068936"
+               y="141.3038"
+               x="443.75696"
+               sodipodi:role="line">Wirepas Gateway</tspan></text>
+          <path
+             inkscape:connector-curvature="0"
+             id="path5894"
+             d="m 353.11362,168.45484 v -6.95158 h 113.9892 v 8.52129"
+             style="fill:none;stroke:#000000;stroke-width:0.44868284;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:2.6920971, 0.44868285;stroke-dashoffset:0;stroke-opacity:1" />
+          <text
+             id="text1581-6"
+             y="199.87866"
+             x="394.30182"
+             style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             xml:space="preserve"><tspan
+               style="stroke-width:0.30000001;stroke-miterlimit:4;stroke-dasharray:none"
+               y="199.87866"
+               x="394.30182"
+               id="tspan1579-7"
+               sodipodi:role="line">Docker engine</tspan></text>
+        </g>
+        <g
+           id="g6152">
+          <rect
+             transform="rotate(-90)"
+             y="313.29712"
+             x="-203.08354"
+             height="10.31875"
+             width="39.498135"
+             id="rect1528-9-5"
+             style="fill:#ececec;fill-opacity:1;stroke:none;stroke-width:0.1521626;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+          <text
+             transform="rotate(-90)"
+             id="text6085"
+             y="319.64014"
+             x="-199.51178"
+             style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             xml:space="preserve"><tspan
+               style="font-size:3.17499995px;stroke-width:0.26458332"
+               y="319.64014"
+               x="-199.51178"
+               id="tspan6083"
+               sodipodi:role="line">Other native service</tspan></text>
+        </g>
+        <g
+           id="g6157"
+           transform="translate(-0.39654394)">
+          <rect
+             transform="rotate(-90)"
+             y="326.79083"
+             x="-203.08354"
+             height="10.31875"
+             width="39.498135"
+             id="rect1528-9-5-5"
+             style="fill:#ececec;fill-opacity:1;stroke:none;stroke-width:0.1521626;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+          <text
+             transform="rotate(-90)"
+             id="text6085-6"
+             y="333.13385"
+             x="-199.51178"
+             style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             xml:space="preserve"><tspan
+               style="font-size:3.17499995px;stroke-width:0.26458332"
+               y="333.13385"
+               x="-199.51178"
+               id="tspan6083-2"
+               sodipodi:role="line">Other native service</tspan></text>
+        </g>
+        <g
+           id="g6162"
+           transform="translate(-0.62554725)">
+          <rect
+             transform="rotate(-90)"
+             y="340.117"
+             x="-203.20932"
+             height="10.31875"
+             width="39.498135"
+             id="rect1528-9-5-5-1"
+             style="fill:#ececec;fill-opacity:1;stroke:none;stroke-width:0.1521626;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+          <text
+             transform="rotate(-90)"
+             id="text6085-6-2"
+             y="346.46002"
+             x="-199.63756"
+             style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+             xml:space="preserve"><tspan
+               style="font-size:3.17499995px;stroke-width:0.26458332"
+               y="346.46002"
+               x="-199.63756"
+               id="tspan6083-2-7"
+               sodipodi:role="line">Other native service</tspan></text>
+        </g>
+      </g>
+      <text
+         id="text1581"
+         y="209.67747"
+         x="379.2009"
+         style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.30000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.30000001;stroke-miterlimit:4;stroke-dasharray:none"
+           y="209.67747"
+           x="379.2009"
+           id="tspan1579"
+           sodipodi:role="line">wm-config</tspan></text>
+    </g>
+    <rect
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.565;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect5899"
+       width="172.77292"
+       height="82.285416"
+       x="304.00156"
+       y="142.27272" />
+    <rect
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.486;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect5899-3"
+       width="52.258476"
+       height="6.2998877"
+       x="303.96021"
+       y="135.99352" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="308.14041"
+       y="139.97519"
+       id="text5918"><tspan
+         sodipodi:role="line"
+         id="tspan5916"
+         x="308.14041"
+         y="139.97519"
+         style="font-size:3.17499995px;stroke-width:0.26458332">Linux host (x86_64 or ARM)</tspan></text>
+  </g>
+  <style
+     id="style4591"
+     type="text/css"><![CDATA[
+		.st1 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st2 {fill:#000000;font-family:Cambria;font-size:0.666664em}
+		.st3 {font-size:1em}
+		.st4 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st5 {fill:#000000;font-family:Cambria;font-size:0.833336em}
+		.st6 {fill:#3f5765;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st7 {fill:#19486f;stroke:none;stroke-linecap:butt;stroke-width:0.75}
+		.st8 {fill:#3f5765;stroke:none;stroke-linecap:butt;stroke-width:0.75}
+		.st9 {fill:#000000;font-family:Cambria;font-size:1.00001em}
+		.st10 {fill:#5b9bd5;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st11 {fill:#ffffff;stroke:#ffffff;stroke-linecap:butt;stroke-width:1.275}
+		.st12 {fill:#3f5765;stroke:none;stroke-linecap:butt;stroke-width:0.6375}
+		.st13 {stroke:#127575;stroke-linecap:butt;stroke-width:2.5}
+		.st14 {stroke:#127575;stroke-linecap:butt;stroke-width:1.5}
+		.st15 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st16 {fill:#000000;font-family:Cambria;font-size:1.5em;font-weight:bold}
+		.st17 {stroke:#127575;stroke-linecap:butt;stroke-width:11.25}
+		.st18 {marker-end:url(#mrkr5-329);marker-start:url(#mrkr5-327);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st19 {fill:#000000;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.22935779816514}
+		.st20 {fill:#ff00ff;fill-opacity:0;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0;stroke-width:0.72}
+		.st21 {fill:url(#grad0-351)}
+		.st22 {stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.36}
+		.st23 {fill:url(#grad11-356)}
+		.st24 {stroke:#a78450;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.36}
+		.st25 {fill:url(#grad12-363);stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.36}
+		.st26 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5}
+		.st27 {fill:url(#grad12-363);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.36}
+		.st28 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.6}
+		.st29 {fill:#3f5765;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.36}
+		.st30 {fill:url(#grad8-383);stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.12}
+		.st31 {fill:url(#grad10-387);stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.12}
+		.st32 {fill:#3f5765;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st33 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.36}
+		.st34 {fill:#ffffff;stroke:#127575;stroke-linecap:round;stroke-linejoin:round;stroke-width:3.5}
+		.st35 {fill:#00b0f0;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st36 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st37 {fill:#ffffff;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.25}
+		.st38 {stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.25}
+		.st39 {fill:#3f5765;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st40 {stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.613151}
+		.st41 {fill:#ffffff;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st42 {fill:#3f5765;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st43 {stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st44 {fill:#ffffff;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.5}
+		.st45 {visibility:visible}
+		.st46 {marker-end:url(#mrkr5-329);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st47 {fill:#9a9a9a;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st48 {fill:#e6e6e6;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st49 {fill:#c0c0c0;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st50 {fill:url(#grad8-733);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st51 {fill:#c0c0c0;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.12}
+		.st52 {fill:url(#grad1-743);stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.12}
+		.st53 {fill:url(#grad1-747);stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st54 {fill:url(#grad1-754);stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st55 {fill:#9a9a9a;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st56 {fill:url(#grad10-760);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.12}
+		.st57 {fill:url(#grad10-769);stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.12}
+		.st58 {fill:#dbdac6;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.12}
+		.st59 {stroke:#00ff00;stroke-linecap:butt;stroke-width:0.24}
+		.st60 {fill:url(#grad0-789);stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st61 {fill:url(#grad0-793);stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st62 {fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st63 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75;visibility:hidden}
+		.st64 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]></style>
+</svg>

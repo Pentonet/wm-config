@@ -56,7 +56,7 @@ log message such as:
 
 One liners are acceptable if the change is very minimal.
 
-For merging strategies, pick either *squash and merge* or *rebase and merge*.
+For merging strategies, pick either _squash and merge_ or _rebase and merge_.
 The strategy depends on the nature of the pull request. If the pull request
 contains several commits that would make sense to keep separated in the
 master history, please use rebase and merge. Otherwise, pick squash and merge.
@@ -66,15 +66,15 @@ master history, please use rebase and merge. Otherwise, pick squash and merge.
 We would like to keep the branches under order. Please try to observe the
 following rules:
 
--   **feature-\<name\>** : for a branch related to feature *name*
+-   **feature-\\&lt;name>** : for a branch related to feature _name_
 
--   **fix-\<name\>** : for a branch that addresses the *name* bug
+-   **fix-\\&lt;name>** : for a branch that addresses the _name_ bug
 
--   **update-\<name\>** : for a branch that aims to update *name*
-    documentation or supporting *name* files
+-   **update-\\&lt;name>** : for a branch that aims to update _name_
+    documentation or supporting _name_ files
 
--   **add-\<name\>** : for a branch that aims to add configuration file
-    for an integration/tool *name*
+-   **add-\\&lt;name>** : for a branch that aims to add configuration file
+    for an integration/tool _name_
 
 ## Coding conventions
 

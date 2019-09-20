@@ -1,0 +1,22 @@
+# Copyright 2019 Wirepas Ltd
+#
+# WM-CONFIG updater
+
+version: '3'
+services:
+    wm-config-updater:
+        container_name: wm-config-updater
+        image: ${WM_CFG_UPDATER_IMAGE}:${WM_CFG_UPDATER_VERSION}
+
+        stdin_open: true
+        tty: true
+
+        environment:
+            - GW_USER=$(id -u)
+            - GW_GROUP=$(id -g)
+
+        volumes:
+            - ${WM_CFG_INSTALL_PATH}:/wm-config/host
+
+        logging:
+            driver: journald
