@@ -198,16 +198,14 @@ function wm_config_bitrate_configuration
     # create default bitrate array
     if [[ -z "${WM_GW_SINK_BITRATE_CONFIGURATION}" ]]
     then
-        _SINK_BITRATE=()
+        WM_GW_SINK_BITRATE_CONFIGURATION=( )
         for _ in $(seq 0 1 10)
         do
-            _SINK_BITRATE+=( "125000" )
+            WM_GW_SINK_BITRATE_CONFIGURATION+=( "125000" )
         done
     else
-        _SINK_BITRATE=($(echo "${WM_GW_SINK_BITRATE_CONFIGURATION}" | tr " " "\\n"))
+        WM_GW_SINK_BITRATE_CONFIGURATION=($(echo "${WM_GW_SINK_BITRATE_CONFIGURATION}" | tr " " "\\n"))
     fi
-
-    WM_GW_SINK_BITRATE_CONFIGURATION="${_SINK_BITRATE}"
 }
 
 # wm_config_device_enumeration

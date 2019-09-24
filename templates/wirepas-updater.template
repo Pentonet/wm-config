@@ -7,7 +7,7 @@ Requires=network-online.target
 
 [Service]
 User=${WM_HOST_USER_NAME}
-ExecStart=/bin/bash ${WM_CFG_HOST_DEPENDENCIES_PATH}/periodic_work.sh
+ExecStart=/bin/bash ${HOME}/.local/bin/wm-config
 Restart=always
 RestartSec=${WM_SYSTEMD_UPDATER_INTERVAL}s
 

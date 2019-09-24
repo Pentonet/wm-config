@@ -2,7 +2,7 @@
 # Copyright 2019 Wirepas Ltd
 
 # install docker if not yet present
-if ! which docker
+if ! command -v docker
 then
     if [[ "${WM_CFG_HOST_IS_RPI}" == "true" ]]
     then
@@ -38,33 +38,35 @@ then
     else
         # if the convenience script fails, please refer to
         # https://github.com/docker/for-linux/issues/709
-        sudo curl -sSL https://get.docker.com | sh
+        curl -fsSL https://get.docker.com -o get-docker.sh || true
+        sudo sh get-docker.sh
+        rm get-docker.sh
     fi
 fi
 
-# pip
-if ! which python3
+# These must be met
+sudo apt-get update
+sudo apt-get install -y \
+                    python3 \
+                    python3-dev \
+                    python3-distutils
+
+if ! command -v pip3
 then
-    sudo apt-get update
-    sudo apt-get install -y \
-                        python3-dev \
-                        python3
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py || true
+    python3 get-pip.py --user
+    rm get-pip.py
 fi
 
-if ! which pip3
+if ! command -v virtualenv
 then
-    sudo apt-get install -y python3-pip
-    pip3 install --upgrade pip
+    python3 -m pip install --user virtualenv
 fi
 
-if ! which virtualenv
-then
-    pip3 install --user virtualenv
-fi
-
-if [[ ! -d "${WM_CFG_PYTHON_VIRTUAL_ENV}" ]]
+if [[ ! -f "${WM_CFG_PYTHON_VIRTUAL_ENV}/bin/activate" ]]
 then
     echo "creating environment at ${WM_CFG_PYTHON_VIRTUAL_ENV}"
+    mkdir -pv "${WM_CFG_PYTHON_VIRTUAL_ENV}"
     virtualenv --python "${WM_CFG_PYTHON_VERSION}" "${WM_CFG_PYTHON_VIRTUAL_ENV}"
 fi
 

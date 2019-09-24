@@ -139,7 +139,6 @@ function _defaults
     WM_CFG_SETTINGS_PATH=${WM_CFG_SETTINGS_PATH:-"${HOME}/wirepas/wm-config"}
 
     PATH="${PATH}:${HOME}/.local/bin/"
-
 }
 
 ##

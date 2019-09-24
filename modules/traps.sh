@@ -19,10 +19,11 @@ function wm_config_error
     then
         sudo mkdir -p "/boot/wirepas/"
         journalctl -u "${WM_SYSTEMD_UPDATER}" >> "${WM_CFG_SESSION_STORAGE_PATH}/error.log"
-        sudo cp --no-preserve=mode,ownership "${WM_CFG_SESSION_STORAGE_PATH}/*.log" "/boot/wirepas"
+        sudo cp --no-preserve=mode,ownership "${WM_CFG_SESSION_STORAGE_PATH}"/*.log "/boot/wirepas"
     fi
 
     web_notify "Something went wrong! Please checks the logs from ${WM_CFG_SESSION_STORAGE_PATH}"
+    set -e
 }
 
 # wm_config_finish
@@ -39,14 +40,9 @@ function wm_config_finish
     then
         sudo mkdir -p "/boot/wirepas/"
         journalctl -u "${WM_SYSTEMD_UPDATER}" > "${WM_CFG_SESSION_STORAGE_PATH}/journal.log"
-        sudo cp "${WM_CFG_SESSION_STORAGE_PATH}/env.log" "/boot/wirepas/env.log"
-        sudo cp "${WM_CFG_SESSION_STORAGE_PATH}/journal.log" "/boot/wirepas/journal.log"
-
-        if [[ -f "${WM_CFG_SESSION_STORAGE_PATH}/.wirepas_session" ]]
-        then
-            sudo cp "${WM_CFG_SESSION_STORAGE_PATH}/.wirepas_session" "/boot/wirepas/session.log"
-        fi
+        sudo cp "${WM_CFG_SESSION_STORAGE_PATH}"/*.log "/boot/wirepas"
     fi
 
     web_notify "All done :sparkles:"
+    set -e
 }

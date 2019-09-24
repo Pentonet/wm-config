@@ -29,7 +29,7 @@ function docker_service_status
     web_notify "presenting service status in +${WM_DOCKER_STATUS_DELAY}"
     sleep "${WM_DOCKER_STATUS_DELAY}"
 
-    docker ps -a >> "${WM_CFG_INSTALL_PATH}/.wirepas_session"
+    docker ps -a >> "${WM_CFG_INSTALL_PATH}/session.log"
     #shellcheck disable=SC2046
     web_notify "$(printf "%s\\n" $(docker ps --format '{{.Names}} : {{.Status}} : {{.Image}} '))"
 }
@@ -188,7 +188,6 @@ function docker_terminate_services
     _NAME_FILTER=${1}
 
     # Necessary to allow successful completion on Raspbian buster
-    set +e
     web_notify "terminating services matching: ${_NAME_FILTER}"
 
     #shellcheck disable=SC2086
@@ -290,7 +289,7 @@ function docker_gateway
 
     if [[ "${WM_GW_STATE}" == "start" || "${WM_GW_STATE}" == "up" ]]
     then
-        date > "${WM_CFG_SESSION_STORAGE_PATH}/.wirepas_session"
+        date > "${WM_CFG_SESSION_STORAGE_PATH}/session.log"
         mkdir -p "${WM_CFG_GATEWAY_PATH}"
         mkdir -p "${WM_GW_SERVICES_USER_PATH}"
 

@@ -81,8 +81,8 @@ function wm_config_parser
             export WM_GW_STATE
             WM_GW_STATE=list
             env | grep "WM_"
-            env | grep "WM_" > "${WM_CFG_SESSION_STORAGE_PATH}/.wirepas_session"
-            docker ps -a >> "${WM_CFG_SESSION_STORAGE_PATH}/.wirepas_session"
+            env | grep "WM_" > "${WM_CFG_SESSION_STORAGE_PATH}/session.log"
+            docker ps -a >> "${WM_CFG_SESSION_STORAGE_PATH}/session.log"
             exit
             ;;
 

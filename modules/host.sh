@@ -38,19 +38,15 @@ function host_docker_daemon_management
         if [[ "${_WIPE_ALL}" == "true" ]]
         then
             #Necessary to allow successful completion on Raspbian buster see #25
-            set +e
             web_notify "removing all containers"
             #shellcheck disable=SC2046
             docker rm -f $( docker ps -aq) || true
             wm_config_set_entry "WM_DOCKER_CLEANUP" "false"
-            set -e
         fi
 
         # Necessary to allow successful completion on Raspbian buster see #25
-        set +e
         web_notify "pruning all _unused_ docker elements"
         docker system prune --all --force || true
-        set -e
     fi
 
     if [[ ! -z "${WM_DOCKER_USERNAME}" && ! -z "${WM_DOCKER_PASSWORD}" ]]
@@ -138,7 +134,7 @@ function host_pip_install
         source "${WM_CFG_PYTHON_VIRTUAL_ENV}/bin/activate"
 
         web_notify "installing python requirements ${_REQUIREMENTS} (under ${WM_CFG_PYTHON_VIRTUAL_ENV})"
-        pip3 install -r "${_REQUIREMENTS}"
+        pip install -r "${_REQUIREMENTS}"
     fi
 }
 
@@ -153,7 +149,7 @@ function host_clock_management
     then
         web_notify "restarting systemd-timesyncd"
         sudo systemctl daemon-reload
-        systemctl status systemd-timesyncd >> "${WM_CFG_INSTALL_PATH}/.wirepas_session" || true
+        systemctl status systemd-timesyncd >> "${WM_CFG_INSTALL_PATH}/session.log" || true
         sudo systemctl restart systemd-timesyncd  || true
     fi
 }
