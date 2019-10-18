@@ -50,68 +50,51 @@ function _import_modules
     do
         echo "importing module ${_CFILE}"
         chmod +x "${_CFILE}" || true
-        # shellcheck disable=SC1090
-        set -o allexport
         source "${_CFILE}" || true
-        set +o allexport
     done
 
     trap 'wm_config_error "${BASH_SOURCE}:${LINENO} (rc: ${?})"' ERR
     trap 'wm_config_finish "${BASH_SOURCE}"' EXIT
 }
 
-
 function _defaults
 {
     export WM_CFG_VERSION
     export WM_CFG_ENTRYPOINT
-    export WM_CFG_SETTINGS_PATH
-    export WM_CFG_SETTINGS_DEFAULT
-    export WM_CFG_SETTINGS_CUSTOM
-    export WM_CFG_SUDO
-    export WM_CFG_HOST_PATH
-    export WM_CFG_UPDATE_PATH
-    export WM_CFG_TEMPLATE_PATH
-    export WM_CFG_GATEWAY_PATH
+    export WM_CFG_INSTALL_PATH
 
     _get_platform
 
-    WM_CFG_VERSION="Fri 18 Oct 20:40:08 UTC 2019 - 6b28c3a"
+    WM_CFG_VERSION="#FILLVERSION"
+    WM_CFG_ENTRYPOINT="${HOME}/.local/bin/wm-config"
+    WM_CFG_INSTALL_PATH="${HOME}/.local/wirepas/wm-config"
 
+    set -o allexport
+    source "${WM_CFG_INSTALL_PATH}/environment/path.env"
+    set +o allexport
+
+    # create a symbolic link to the boot sector
     if [[ "${WM_CFG_HOST_IS_RPI}" == "true" ]]
     then
+        WM_CFG_SETTINGS_RPI_BOOT=${WM_CFG_SETTINGS_RPI_BOOT:-"/boot/wirepas/custom.env"}
 
-        WM_CFG_ENTRYPOINT=${WM_CFG_ENTRYPOINT:-${HOME}/.local/bin/wm-config}
-        WM_CFG_INSTALL_PATH=${WM_CFG_INSTALL_PATH:-"${HOME}/.local/wirepas/wm-config"}
-        WM_CFG_SETTINGS_DEFAULT=${WM_CFG_SETTINGS_DEFAULT:-"${WM_CFG_INSTALL_PATH}/environment/default.env"}
-
-        WM_CFG_SETTINGS_PATH=${WM_CFG_SETTINGS_PATH:-"/boot/wirepas"}
-        WM_CFG_SETTINGS_CUSTOM=${WM_CFG_SETTINGS_CUSTOM:-"${WM_CFG_SETTINGS_PATH}/custom.env"}
-        WM_CFG_SUDO=${WM_CFG_SUDO:-"sudo"}
-        WM_CFG_SESSION_STORAGE_PATH=${WM_CFG_SESSION_STORAGE_PATH:-"${HOME}/wirepas/.session"}
-        WM_CFG_GATEWAY_PATH="${HOME}/wirepas/wm-config/lxgw"
-    else
-        WM_CFG_ENTRYPOINT=${WM_CFG_ENTRYPOINT:-${HOME}/.local/bin/wm-config}
-        WM_CFG_INSTALL_PATH=${WM_CFG_INSTALL_PATH:-"${HOME}/.local/wirepas/wm-config"}
-        WM_CFG_SETTINGS_DEFAULT=${WM_CFG_SETTINGS_DEFAULT:-"${WM_CFG_INSTALL_PATH}/environment/default.env"}
-
-        WM_CFG_SETTINGS_PATH=${WM_CFG_SETTINGS_PATH:-"${HOME}/wirepas/wm-config"}
-        WM_CFG_SETTINGS_CUSTOM=${WM_CFG_SETTINGS_CUSTOM:-"${WM_CFG_SETTINGS_PATH}/custom.env"}
-        WM_CFG_SESSION_STORAGE_PATH=${WM_CFG_SESSION_STORAGE_PATH:-"${WM_CFG_SETTINGS_PATH}/.session"}
-
-        WM_CFG_GATEWAY_PATH="${WM_CFG_SETTINGS_PATH}/lxgw"
-
-        WM_CFG_SUDO=${WM_CFG_SUDO:-""}
+        if [[ -f "${WM_CFG_SETTINGS_RPI_BOOT}" ]]
+        then
+            rm -fv "${WM_CFG_SETTINGS_CUSTOM}"
+            sudo cp --no-preserve=mode,ownership "${WM_CFG_SETTINGS_RPI_BOOT}" "${WM_CFG_SETTINGS_CUSTOM}"
+            sudo chown "$(id -u):$(id -g)" "${WM_CFG_SETTINGS_CUSTOM}"
+        fi
     fi
 
-    WM_CFG_HOST_PATH=${WM_CFG_HOST_PATH:-"${WM_CFG_INSTALL_PATH}/host"}
-    WM_CFG_UPDATE_PATH=${WM_CFG_UPDATE_PATH:-"${WM_CFG_INSTALL_PATH}/update"}
-    WM_CFG_TEMPLATE_PATH=${WM_CFG_TEMPLATE_PATH:-"${WM_CFG_INSTALL_PATH}/templates"}
-
     mkdir -p "${WM_CFG_UPDATE_PATH}"
-    mkdir -p "${WM_CFG_HOST_PATH}"
+    mkdir -p "${WM_CFG_HOST_DEPENDENCIES_PATH}"
     mkdir -p "${WM_CFG_TEMPLATE_PATH}"
     mkdir -p "${WM_CFG_SESSION_STORAGE_PATH}"
+
+    if [[ -f "${WM_CFG_SETTINGS_CUSTOM}" ]]
+    then
+        touch "${WM_CFG_SETTINGS_CUSTOM}"
+    fi
 }
 
 # call wm_config_main

@@ -73,7 +73,7 @@ Open a text editor and copy the following settings:
 WM_SERVICES_MQTT_HOSTNAME=mqttbroker.atmydomain.com
 
 # MQTT credentials
-WM_SERVICES_MQTT_USER=mqttuser
+WM_SERVICES_MQTT_USERNAME=mqttuser
 WM_SERVICES_MQTT_PASSWORD=mqttuserpassword
 WM_SERVICES_MQTT_PORT=8883
 ```
@@ -89,7 +89,7 @@ WM_GW_IMAGE=wirepas/gateway
 ```
 
 As a last step we change the RPi hostname from the default
-hostname, _raspberry_, to  a custom one, _wm-config-rpi_.
+hostname, *raspberry*, to  a custom one, *wm-config-rpi*.
 
 We do so by appending the following information file:
 
@@ -106,7 +106,7 @@ After these steps, your text editor should contain the following information:
 WM_SERVICES_MQTT_HOSTNAME=mqttbroker.atmydomain.com
 
 # MQTT credentials
-WM_SERVICES_MQTT_USER=mqttuser
+WM_SERVICES_MQTT_USERNAME=mqttuser
 WM_SERVICES_MQTT_PASSWORD=mqttuserpassword
 WM_SERVICES_MQTT_PORT=8883
 
@@ -123,7 +123,7 @@ WM_GW_IMAGE=wirepas/gateway
 WM_HOST_HOSTNAME="myrpi"
 ```
 
-Save it under your filesystem, eg, under _~/custom.env_.
+Save it under your filesystem, eg, under *~/custom.env*.
 
 ## Cloning and installing wm-config
 
@@ -165,7 +165,7 @@ The installation of wm-config is now complete.
 
 ## Executing wm-config
 
-Confirm that custom.env is present under _/boot/wirepas/custom.env_ and
+Confirm that custom.env is present under */boot/wirepas/custom.env* and
 that it matches the settings
 as [outlined above](#Creating-the-custom.env-file).
 
@@ -225,7 +225,7 @@ Start by locating the public key that you want to use to access the
 RPi or
 [create a new private public key pair](https://linux.die.net/man/1/ssh-keygen).
 
-Assuming your public key is located under _~/.ssh/mykey.pub_,
+Assuming your public key is located under *~/.ssh/mykey.pub*,
 copy it inside your RPi with the following command:
 
 ```bash
@@ -246,7 +246,7 @@ to update the password and disable plain text login with ssh.
 Add the following keys to the local copy of the custom.env:
 
 ```bash
-   echo "WM_HOST_SSH_ENABLE_NETWORK_LOGIN=true" >> ./custom.env
+   echo "WM_HOST_SSH_ENABLE_PASSWORD_LOGIN=true" >> ./custom.env
    echo "WM_HOST_USER_PASSWORD=mypassword" >> ./custom.env
 ```
 

@@ -7,42 +7,52 @@
 # Sources the default and custom file to retrieve the parameter values
 function wm_config_load_settings
 {
-    # load settings from environment files
-    set -o allexport
-    local _TARGET_TMP
-
-    _TARGET_TMP="${WM_CFG_SESSION_STORAGE_PATH}/load.tmp"
 
     if [[ -f "${WM_CFG_SETTINGS_CUSTOM}" ]]
     then
         web_notify "read settings from ${WM_CFG_SETTINGS_CUSTOM}"
-        cp "${WM_CFG_SETTINGS_CUSTOM}" "${_TARGET_TMP}"
-        host_rm_win_linefeed "${_TARGET_TMP}" "${_TARGET_TMP}.load"
-        source "${_TARGET_TMP}.load"
-
-        rm "${_TARGET_TMP}"
-        rm "${_TARGET_TMP}.load"
+        set -o allexport
+        host_ensure_linux_lf "${WM_CFG_SETTINGS_CUSTOM}"
+        source "${WM_CFG_SETTINGS_CUSTOM}"
+        set +o allexport
     else
         web_notify "could not find ${WM_CFG_SETTINGS_CUSTOM}"
-        ${WM_CFG_SUDO} cp "${WM_CFG_INSTALL_PATH}/environment/custom.env" "${WM_CFG_SETTINGS_CUSTOM}"
+        mkdir -p "${WM_CFG_SETTINGS_CUSTOM}"
+        cp "${WM_CFG_INSTALL_PATH}/environment/custom.env" "${WM_CFG_SETTINGS_CUSTOM}"
     fi
 
     if [[ -f "${WM_CFG_SETTINGS_DEFAULT}" ]]
     then
-        cp "${WM_CFG_SETTINGS_DEFAULT}" "${_TARGET_TMP}"
-        host_rm_win_linefeed "${_TARGET_TMP}" "${_TARGET_TMP}.load"
-
-        source "${WM_CFG_SETTINGS_DEFAULT}"
-
-        rm "${_TARGET_TMP}"
-        rm "${_TARGET_TMP}.load"
-
         web_notify "read settings from ${WM_CFG_SETTINGS_DEFAULT}"
+        set -o allexport
+        source "${WM_CFG_SETTINGS_DEFAULT}"
+        set +o allexport
     else
         web_notify "could not find ${WM_CFG_SETTINGS_DEFAULT}"
         exit 1
     fi
+}
+
+
+# wm_config_feature_selection
+#
+# Handles the feature selection customization
+function wm_config_feature_selection
+{
+
+    web_notify "read settings from ${WM_CFG_SETTINGS_DEFAULT}"
+    set -o allexport
+    source "${WM_CFG_INSTALL_PATH}/environment/feature.env"
     set +o allexport
+
+    if [[ "${WM_CFG_FRAMEWORK_DEBUG}" == "true" ]]
+    then
+        echo "WM-CONFIG FEATURE SELECTION:"
+        for key in $(env | grep WM_HOST_)
+        do
+            echo "$key" | awk -F"=" '{print $1 " enabled? " $2 ;}'
+        done
+    fi
 }
 
 
@@ -51,38 +61,42 @@ function wm_config_load_settings
 # Meant to initiate an execution round of the wm_config
 function wm_config_session_init
 {
-    web_notify "delaying startup for ${WM_CFG_STARTUP_DELAY}"
-    sleep "${WM_CFG_STARTUP_DELAY}"
-
-    source "${WM_CFG_PYTHON_VIRTUAL_ENV}/bin/activate" || true
-    web_notify "using python venv: $(which python)"
-
-    rm -f "${WM_CFG_SESSION_STORAGE_PATH}"/*.log || true
-    rm -f "${WM_CFG_SESSION_STORAGE_PATH}"/*.tmp || true
-    rm -f "${WM_CFG_SESSION_STORAGE_PATH}"/*.load || true
-
-    if [[ "${WM_CFG_HOST_IS_RPI}" == "true" ]]
+    if [[ -z "${WM_CFG_STARTUP_DELAY}" ]]
     then
-        host_sync_clock
-        host_systemd_management
-        host_set_keyboard_layout
-        host_blacklist_ipv6
-        host_upgrade
-        host_install_dependencies
-        host_tty_pseudo_names
-        host_ssh_network_login
-        host_expand_filesystem
-        host_setup_user "${WM_HOST_USER_NAME}" "${WM_HOST_USER_PASSWORD}" "${WM_HOST_USER_PPKI}"
-        host_setup_hostname
-        host_setup_wifi
-        host_service_tunnel
-        docker_cleanup
-    else
-        host_install_dependencies
+        web_notify "delaying startup for ${WM_CFG_STARTUP_DELAY}"
+        sleep "${WM_CFG_STARTUP_DELAY}"
     fi
 
-    host_dbus_policies
+    if [[ -d "${WM_CFG_PYTHON_VIRTUAL_ENV}" ]]
+    then
+        source "${WM_CFG_PYTHON_VIRTUAL_ENV}/bin/activate" || true
+        web_notify "python virtual environment: $(command -v python)"
+    else
+        web_notify "using system's python environment: $(command -v python) (not found: ${WM_CFG_PYTHON_VIRTUAL_ENV})"
+    fi
+
+    rm -fr "${WM_CFG_SESSION_STORAGE_PATH}" || true
+    mkdir -p "${WM_CFG_SESSION_STORAGE_PATH}" || true
+
+    host_clock_management
+    host_systemd_management
+    host_keyboard_management
+    host_ip_management
+    host_dependency_management
+    host_tty_management
+    host_ssh_daemon_management
+    host_filesystem_management
+    host_user_management
+    host_hostname_management
+    host_wifi_management
+    host_support_management
+    host_dbus_management
+    host_docker_daemon_management
+
+    # framework updates and device enumeration
     wm_config_update
+    wm_config_bitrate_configuration
+    wm_config_device_enumeration
 }
 
 
@@ -91,7 +105,8 @@ function wm_config_session_init
 # Meant to perform any operation prior the execution end
 function wm_config_session_end
 {
-    :
+    # exits the python venv
+    deactivate || true
 }
 
 # wm_config_update
@@ -107,10 +122,10 @@ function wm_config_update
         docker_fetch_settings
         web_notify "I am updating the base program and scheduling a job restart"
 
-        ${WM_CFG_SUDO} cp --no-preserve=mode,ownership \
+        sudo cp --no-preserve=mode,ownership \
             "${WM_CFG_INSTALL_PATH}/bin/wm-config.sh" "${WM_CFG_ENTRYPOINT}"
-        ${WM_CFG_SUDO} chmod +x "${WM_CFG_ENTRYPOINT}"
-        ${WM_CFG_SUDO} chown root:root "${WM_CFG_ENTRYPOINT}"
+        sudo chmod +x "${WM_CFG_ENTRYPOINT}"
+        sudo chown root:root "${WM_CFG_ENTRYPOINT}"
 
         wm_config_set_entry "WM_CFG_FRAMEWORK_UPDATE" "false"
 
@@ -135,12 +150,12 @@ function wm_config_set_entry
     local _VALUE=${2:-}
 
     web_notify "set setting entry: ${_ENTRY}=${_VALUE}"
-    ${WM_CFG_SUDO} sed -i "/${_ENTRY}/d" "${WM_CFG_SETTINGS_CUSTOM}"
+    sed -i "/${_ENTRY}/d" "${WM_CFG_SETTINGS_CUSTOM}"
     # force it to false in custom
     cp "${WM_CFG_SETTINGS_CUSTOM}" "${WM_CFG_SESSION_STORAGE_PATH}/.custom.tmp"
 
-    ${WM_CFG_SUDO} echo "${_ENTRY}=${_VALUE}" >> "${WM_CFG_SESSION_STORAGE_PATH}/.custom.tmp"
-    ${WM_CFG_SUDO} cp --no-preserve=mode,ownership "${WM_CFG_SESSION_STORAGE_PATH}/.custom.tmp" "${WM_CFG_SETTINGS_CUSTOM}"
+    echo "${_ENTRY}=${_VALUE}" >> "${WM_CFG_SESSION_STORAGE_PATH}/.custom.tmp"
+    cp --no-preserve=mode,ownership "${WM_CFG_SESSION_STORAGE_PATH}/.custom.tmp" "${WM_CFG_SETTINGS_CUSTOM}"
 
     rm "${WM_CFG_SESSION_STORAGE_PATH}/.custom.tmp"
 }
@@ -148,7 +163,8 @@ function wm_config_set_entry
 
 # wm_config_template_copy
 #
-# copies and fills in the template
+# copies and fills in the template by default the target
+# file is replace. Pass in an optional operator as a 3rd argument
 function wm_config_template_copy
 {
     # input name is basename
@@ -161,7 +177,7 @@ function wm_config_template_copy
 
     TEMPLATE=${WM_CFG_TEMPLATE_PATH}/${_TEMPLATE_NAME}.template
     web_notify "generating ${_OUTPUT_PATH} based on ${TEMPLATE}"
-    rm -f "${_OUTPUT_PATH}" "${_OUTPUT_PATH}.tmp"
+    rm -f "${_OUTPUT_PATH}.tmp"
     ( echo "cat <<EOF ${_OPERATOR} ${_OUTPUT_PATH}" && \
       cat "${TEMPLATE}" && \
       echo "EOF" \
@@ -171,43 +187,92 @@ function wm_config_template_copy
 }
 
 
-# wm_config_template_append
-# Evaluates the template but instead of overwriting the output the contents
-# are appended to it
-function wm_config_template_append
+# wm_config_bitrate_configuration
+#
+# creates a bitrate list to be index by the device id.
+#
+function wm_config_bitrate_configuration
 {
-    # input name is basename
-    TEMPLATE_NAME=${1:-"defaults"}
-    OUTPUT_PATH=${2:-"template.output"}
+    export WM_GW_SINK_BITRATE_CONFIGURATION
 
-    # if set, changes the output filename
-    TEMPLATE=${WM_CFG_TEMPLATE_PATH}/${TEMPLATE_NAME}.template
+    # create default bitrate array
+    if [[ -z "${WM_GW_SINK_BITRATE_CONFIGURATION}" ]]
+    then
+        _SINK_BITRATE=()
+        for _ in $(seq 0 1 10)
+        do
+            _SINK_BITRATE+=( "125000" )
+        done
+    else
+        _SINK_BITRATE=($(echo "${WM_GW_SINK_BITRATE_CONFIGURATION}" | tr " " "\\n"))
+    fi
 
-    web_notify "appending to ${OUTPUT_PATH} definitions from ${TEMPLATE}"
-    rm -f  "${OUTPUT_PATH}.tmp"
-    ( echo "cat <<EOF >>${OUTPUT_PATH}" && \
-      cat "${TEMPLATE}" && \
-      echo "EOF" \
-    ) > "${OUTPUT_PATH}.tmp"
-    . "${OUTPUT_PATH}.tmp"
-    rm "${OUTPUT_PATH}.tmp"
+    WM_GW_SINK_BITRATE_CONFIGURATION="${_SINK_BITRATE}"
 }
 
+# wm_config_device_enumeration
+#
+# creates a list of tty ports. If they are blacklisted
+# the ports wont be added to the list.
+#
+function wm_config_device_enumeration
+{
+    export WM_GW_SINK_LIST
+    WM_GW_SINK_LIST=( )
+
+    local _SINK_ENUMERATION_PATTERN
+    local _SINK_ENUMERATION_IGNORE
+
+    local _DEVICE
+    local _BLACKLISTED
+
+    # multi sink support
+    if [[ "${WM_GW_SINK_ENUMERATION}" == "true" ]]
+    then
+        _SINK_ENUMERATION_PATTERN=($(echo "${WM_GW_SINK_PORT_RULE}" | tr " " "\\n"))
+        for _DEVICE in "${_SINK_ENUMERATION_PATTERN[@]}"
+        do
+            if [[ -z "${_DEVICE}" || "${_DEVICE}" == *"*"* ]]
+            then
+                web_notify "Could not find any device under ${_DEVICE}"
+                continue
+            fi
+
+            if [[ ! -z "${WM_GW_SINK_BLACKLIST}" ]]
+            then
+                _SINK_ENUMERATION_IGNORE=($(echo "${WM_GW_SINK_BLACKLIST}" | tr " " "\\n"))
+
+                for _BLACKLISTED in "${_SINK_ENUMERATION_IGNORE[@]}"
+                do
+                    if [[ "${_BLACKLISTED}" == "${_DEVICE}" ]]
+                    then
+                        web_notify "Device is blacklisted, skipping it (list=${_BLACKLISTED} == device=${_DEVICE})"
+                        break
+                    fi
+                done
+                continue
+            fi
+            WM_GW_SINK_LIST+=("${_DEVICE}")
+        done
+    else
+        web_notify "Skipping device enumeration - setting sink to ${WM_GW_SINK_UART_PORT} (WM_GW_SINK_UART_PORT)"
+        WM_GW_SINK_LIST=( "${WM_GW_SINK_UART_PORT}" )
+    fi
+}
 
 
 # call wm_config_main
 function wm_config_main
 {
     wm_config_load_settings
+    wm_config_feature_selection
 
-    web_notify ":wirepas:-config build - ${WM_CFG_VERSION}"
-    web_notify "my known ips: $(hostname -I)"
+    web_notify ":wirepas:-config ${WM_CFG_VERSION}/${WM_CFG_HOST_ARCH}"
+    web_notify "ip addresses: $(hostname -I)"
 
     wm_config_parser "$@"
     wm_config_session_init
-
-    docker_gateway
-
+    wm_config_session_main
     wm_config_session_end
 
     exit "${?}"

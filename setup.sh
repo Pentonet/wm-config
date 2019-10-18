@@ -6,6 +6,16 @@ set -o errexit
 set -o errtrace
 
 
+function _requirements
+{
+    if ! which rsync
+    then
+        echo "rsync not found and needed. Proceeding with installation"
+        sudo apt-get install rsync -y
+    fi
+}
+
+
 ##
 ## @brief      help text
 ##
@@ -64,6 +74,11 @@ function wm_cfg_setup_parser
             exit 0
             ;;
 
+            --uninstall)
+            wm_cfg_uninstall
+            exit 0
+            ;;
+
             --debug)
             env |grep "WM_"
             set -x
@@ -103,9 +118,10 @@ function _defaults
     export WM_CFG_INSTALL_PATH
     export WM_CFG_SETTINGS_PATH
     export WM_CFG_EXEC_NAME
+    export WM_CFG_UNINSTALL
+    export PATH
 
     WM_SETUP_SKIP_CALL=false
-
     WM_CFG_VERSION="2.0.0"
 
     WM_CFG_TARGETS=( ./bin/*.sh )
@@ -114,21 +130,15 @@ function _defaults
     WM_SETUP_TAR_OUTPUT_PATH="deliverable"
     WM_SETUP_TAR_EXCLUDES=".tarignore"
 
-    WM_CFG_ENTRYPOINT_PATH=${HOME}/.local/bin
-    WM_CFG_INSTALL_PATH=${HOME}/.local/wirepas/wm-config
-    WM_CFG_EXEC_NAME="wm-config"
+    WM_CFG_ENTRYPOINT_PATH="${HOME}/.local/bin"
+    WM_CFG_INSTALL_PATH="${HOME}/.local/wirepas/wm-config"
+    WM_CFG_PATH_SETTINGS="${WM_CFG_INSTALL_PATH}/environment/path.env"
+    WM_CFG_SETTINGS_DEFAULT="${WM_CFG_INSTALL_PATH}/environment/default.env"
+    WM_CFG_EXEC_NAME=wm-config
+    WM_CFG_UNINSTALL=false
+    WM_CFG_SETTINGS_PATH=${WM_CFG_SETTINGS_PATH:-"${HOME}/wirepas/wm-config"}
 
-
-    if [[ "${WM_SETUP_WM_CFG_HOST_IS_RPI}" == "true" ]]
-    then
-        WM_CFG_SETTINGS_PATH=${WM_CFG_SETTINGS_PATH:-"/boot/wirepas"}
-        WM_CFG_SUDO=${WM_CFG_SUDO:-"sudo"}
-    else
-        WM_CFG_SETTINGS_PATH=${WM_CFG_SETTINGS_PATH:-"${HOME}/wirepas/wm-config"}
-        WM_CFG_SUDO=${WM_CFG_SUDO:-}
-    fi
-
-    export PATH=${PATH}:${HOME}/.local/bin/
+    PATH="${PATH}:${HOME}/.local/bin/"
 
 }
 
@@ -164,7 +174,7 @@ function _get_platform()
 
 
 ##
-## @brief      Removes any existing wm-config files and entrypoint
+## @brief  Removes any existing wm-config files and entrypoint
 ##
 function wm_cfg_setup_clean_files
 {
@@ -172,18 +182,52 @@ function wm_cfg_setup_clean_files
 
     if [[ -d "${WM_SETUP_TAR_OUTPUT_PATH}/" ]]
     then
-        ${WM_CFG_SUDO} rm -vrf "${WM_SETUP_TAR_OUTPUT_PATH}/"
+        rm -vrf "${WM_SETUP_TAR_OUTPUT_PATH:?}"
     fi
 
     if [[ -d "${WM_CFG_INSTALL_PATH}/" ]]
     then
-        ${WM_CFG_SUDO} rm -vrf "${WM_CFG_INSTALL_PATH}"
+        rm -vrf "${WM_CFG_INSTALL_PATH:?}"
     fi
 
     if [[ -f "${WM_CFG_ENTRYPOINT_PATH}/${WM_CFG_EXEC_NAME}" ]]
     then
-        ${WM_CFG_SUDO} rm -vrf "${WM_CFG_ENTRYPOINT_PATH}/${WM_CFG_EXEC_NAME}"
+        rm -vrf "${WM_CFG_ENTRYPOINT_PATH}/${WM_CFG_EXEC_NAME:?}"
     fi
+}
+
+
+
+# wm_cfg_uninstall
+#
+# Removes all system files installed by the framework
+function wm_cfg_uninstall
+{
+    if [[ -f "${WM_CFG_SETTINGS_DEFAULT}" ]]
+    then
+        # load defaults from installation prior to uninstall
+        set -o allexport
+        source "${WM_CFG_PATH_SETTINGS}"
+        source "${WM_CFG_SETTINGS_DEFAULT}"
+        set +o allexport
+
+        if [[ -f "/etc/dbus-1/system.d/${WM_GW_DBUS_CONF}" ]]
+        then
+            sudo rm -vf /etc/dbus-1/system.d/com.wirepas.sink.conf
+        fi
+
+        if [[ -f "/etc/udev/rules.d/${WM_HOST_TTY_SIMLINK_FILENAME}" ]]
+        then
+            sudo rm -vf "/etc/udev/rules.d/${WM_HOST_TTY_SIMLINK_FILENAME}"
+        fi
+
+        if [[ -d "${WM_CFG_SETTINGS_PATH}" ]]
+        then
+            rm -vfr "${WM_CFG_SETTINGS_PATH:-?}"
+        fi
+    fi
+
+    wm_cfg_setup_clean_files
 }
 
 
@@ -211,7 +255,7 @@ function wm_cfg_setup_unpack
     then
         mkdir -pv "${WM_CFG_INSTALL_PATH}"
         cp "${HOME}/${WM_SETUP_TAR_NAME}" "${WM_CFG_INSTALL_PATH}"
-        rm "${HOME}/${WM_SETUP_TAR_NAME}"
+        rm "${HOME}/${WM_SETUP_TAR_NAME:?}"
         cd "${WM_CFG_INSTALL_PATH}"
         tar -xvzf "${WM_CFG_INSTALL_PATH}/${WM_SETUP_TAR_NAME}"
     fi
@@ -316,19 +360,26 @@ function wm_cfg_setup_copy_custom_env
 
     _CFILE=${1:-"${HOME}/custom.env"}
 
+    mkdir -vp "${WM_CFG_SETTINGS_PATH}"
+    cp -v "${WM_CFG_INSTALL_PATH}/environment/custom.env" \
+              "${WM_CFG_SETTINGS_PATH}/custom.env"
+
     if [[ -f "${_CFILE}" ]]
     then
         echo "copying custom file: ${_CFILE}"
-        ${WM_CFG_SUDO} mkdir -vp "${WM_CFG_SETTINGS_PATH}"
-        ${WM_CFG_SUDO} mv -v "${_CFILE}" \
-                             "${WM_CFG_SETTINGS_PATH}/custom.env"
+        mv -v "${_CFILE}" "${WM_CFG_SETTINGS_PATH}/custom.env"
+    fi
+
+    if [[ -f "${WM_SETUP_WM_CFG_HOST_IS_RPI}" ]]
+    then
+        sudo mkdir -pv /boot/wirepas
     fi
 }
 
 ##
 ## @brief      Checks if there are changes to be saved
 ##
-function repo_has_changes()
+function _repo_has_changes()
 {
 
     if [[ -d .git ]]
@@ -366,7 +417,8 @@ function _main
 {
     _defaults
 
-    repo_has_changes
+    _repo_has_changes
+    _requirements
 
     wm_cfg_setup_parser "${@}"
     _install

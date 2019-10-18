@@ -2,15 +2,16 @@
 
 <!-- MarkdownTOC -->
 
-- [Introduction](#introduction)
-- [Customizing wm-config - creating a custom.env file](#customizing-wm-config---creating-a-customenv-file)
-- [Installation](#installation)
-  - [Installing from github](#installing-from-github)
-  - [Creating and installing from an archive](#creating-and-installing-from-an-archive)
-- [Inspecting the services status](#inspecting-the-services-status)
-- [Guides](#guides)
-- [Contributing](#contributing)
-- [License](#license)
+-   [Introduction](#introduction)
+-   [Requirements](#requirements)
+-   [Customizing wm-config - creating a custom.env file](#customizing-wm-config---creating-a-customenv-file)
+-   [Installation](#installation)
+    -   [Installing from github](#installing-from-github)
+    -   [Creating and installing from an archive](#creating-and-installing-from-an-archive)
+-   [Inspecting the services status](#inspecting-the-services-status)
+-   [Guides](#guides)
+-   [Contributing](#contributing)
+-   [License](#license)
 
 <!-- /MarkdownTOC -->
 
@@ -54,6 +55,14 @@ For non-RPi hosts, wm-config is restricted on its operations,
 which consist of setting up symlinks for the tty ports and
 installing system dependencies.
 
+## Requirements
+
+This framework requires a debian based distribution in order to
+function properly.
+
+Dependencies needed by the tool are automatically installed if
+you allow it to do do.
+
 <!-- auto_start -->
 ## Customizing wm-config - creating a custom.env file
 
@@ -76,27 +85,27 @@ understand how you can control where to publish data and which version of the ga
 
 The keys that allow you to change such behaviour are the following ones:
 
-| **Key**                         | **Description and default value**                                                                          |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **WM_GW_IMAGE**                 | The name of the WM Gateway Docker image to pull  (*default=wirepas/gateway*)                                 |
-| **WM_GW_VERSION**               | The build or docker tag to use (*default=latest*)                                                 |
-| _MQTT hostname and credentials_ |                                                                                                            |
-| **WM_SERVICES_MQTT_HOSTNAME**              | A host where to push the gateway data, eg, MQTT broker hostname or ip  (*default=host.extwirepas.com*)        |
-| **WM_SERVICES_MQTT_USER**         | The MQTT username (*default=mqttuser*)                                                        |
-| **WM_SERVICES_MQTT_PASSWORD**     | The MQTT's username password corresponding (*default=uiaidujfk1897fyeu023849sdh?(*)                           |
-| **WM_SERVICES_MQTT_PORT**         | Defines the MQTT port to use (unsecure 1883, secure 8883) (*default=8883*)                |
-| **WM_SERVICES_ALLOW_UNSECURE**    | Must be set to true to allow unsecure connections, eg, to port 1883 (*default=unset*) |
+| **Key**                         | **Description and default value**                                                                            |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **WM_GW_IMAGE**                   | The name of the WM Gateway Docker image to pull  (*default=wirepas/gateway*)                                     |
+| **WM_GW_VERSION**                 | The build or docker tag to use (*default=latest*)                                                     |
+| *MQTT hostname and credentials* |                                                                                                              |
+| **WM_SERVICES_MQTT_HOSTNAME**     | A host where to push the gateway data, eg, MQTT broker hostname or ip  (*default=host.extwirepas.com*) |
+| **WM_SERVICES_MQTT_USERNAME**     | The MQTT username (*default=mqttuser*)                                                      |
+| **WM_SERVICES_MQTT_PASSWORD**     | The MQTT's username password corresponding (*default=uiaidujfk1897fyeu023849sdh?(*)                             |
+| **WM_SERVICES_MQTT_PORT**         | Defines the MQTT port to use (unsecure 1883, secure 8883) (*default=8883*)                  |
+| ##WM_SERVICES_ALLOW_UNSECURE    | Must be set to true to allow unsecure connections, eg, to port 1883 (##WM_SERVICES_ALLOW_UNSECURE_DEFAULT)   |
 
 When using a Raspberry Pi, it is useful to set a unique hostname to allow easy ssh through the advertised avahi name.
 Besides that, you can also enable and disable password based access as well as private public key based access.
 
 Here are the keys for such purpose:
 
-| **Key**                            | **Description and default value**                                                         |
-| ---------------------------------- | ----------------------------------------------------------------------------------------- |
-| **WM_HOST_HOSTNAME**             | Sets the hostname of the host (##WM_HOST_SET_HOSTNAME_DEFAULT)                            |
-| **WM_HOST_USER_PPKI**                | The public key to authorize in the ssh authorized keys (*default=unset*)      |
-| **WM_HOST_SSH_ENABLE_NETWORK_LOGIN** | Enables ssh login using plain text passwords (*default=true*) |
+| **Key**                             | **Description and default value**                                                          |
+| ----------------------------------- | ------------------------------------------------------------------------------------------ |
+| **WM_HOST_HOSTNAME**                  | Sets the hostname of the host (##WM_HOST_SET_HOSTNAME_DEFAULT)                             |
+| **WM_HOST_USER_PPKI**                 | The public key to authorize in the ssh authorized keys (*default=unset*)       |
+| **WM_HOST_SSH_ENABLE_PASSWORD_LOGIN** | Enables ssh login using plain text passwords (*default=true*) |
 
 Please refer to [environment/custom.env][here_environment_custom] for an example on how to define a custom.env file.
 
@@ -142,7 +151,7 @@ with bash and run the following script:
    ./setup.sh --pack
 ```
 
-An archive will be created under ./deliverable/wm-config.tar.gz_.
+An archive will be created under ./deliverable/wm-config.tar.gz\_.
 
 Copy the following files to the host where you want to perform
 the installation:
@@ -156,7 +165,7 @@ setup.sh. The script will extract the files, copy them
 to [WM_CFG_INSTALL_PATH][here_bin_wmconfig_service_home] and
 call wm-config.
 
-As an example, let's assume your user is _someuser_
+As an example, let's assume your user is *someuser*
 and the machine where you want to install wm-config
 is known in your network with IP 192.168.1.10.
 

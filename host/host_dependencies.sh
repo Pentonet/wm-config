@@ -9,8 +9,7 @@ then
         # make sure everything is upgraded before starting
         sudo apt-get update
         sudo apt-get upgrade -y
-
-        sudo apt-get install \
+        sudo apt-get install -y \
              apt-transport-https \
              ca-certificates \
              curl \
@@ -60,8 +59,12 @@ fi
 
 if ! which virtualenv
 then
-    sudo pip3 install virtualenv
+    pip3 install --user virtualenv
 fi
 
-virtualenv --python "${WM_CFG_PYTHON_VERSION}" "${WM_CFG_PYTHON_VIRTUAL_ENV}"
+if [[ ! -d "${WM_CFG_PYTHON_VIRTUAL_ENV}" ]]
+then
+    echo "creating environment at ${WM_CFG_PYTHON_VIRTUAL_ENV}"
+    virtualenv --python "${WM_CFG_PYTHON_VERSION}" "${WM_CFG_PYTHON_VIRTUAL_ENV}"
+fi
 

@@ -4,7 +4,7 @@ ARG BUILD_VERSION
 ENV BUILD_VERSION=${BUILD_VERSION:-"2.0.0"}
 ENV WM_CFG_UPDATER_WORKDIR="/wm-config/updater"
 
-WORKDIR "${WM_CFG_UPDATER_WORKDIR}"
+WORKDIR /wm-config/updater
 COPY . .
 RUN cp ./bin/wm-config-updater.sh /usr/local/bin/wm-config-updater
 RUN sed -i.bak "s/#FILLVERSION/$(date -u) - ${BUILD_VERSION}/g" /usr/local/bin/wm-config-updater

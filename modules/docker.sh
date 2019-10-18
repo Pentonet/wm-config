@@ -16,20 +16,7 @@ function docker_add_user
     if ! groups "${_USERNAME}" | grep &>/dev/null '\bdocker\b'
     then
         web_notify "adding user to docker group"
-        ${WM_CFG_SUDO} usermod -aG docker "${_USERNAME}" || true
-    fi
-}
-
-# docker_login
-#
-# logins with given user and password credentials
-function docker_login
-{
-
-    if [[ ! -z "${WM_DOCKER_USERNAME}" && ! -z "${WM_DOCKER_PASSWORD}" ]]
-    then
-        web_notify "Setting docker credentials for ${WM_DOCKER_USERNAME}"
-        ${WM_CFG_SUDO} docker login --username "${WM_DOCKER_USERNAME}" --password "${WM_DOCKER_PASSWORD}"
+        sudo usermod -aG docker "${_USERNAME}" || true
     fi
 }
 
@@ -42,9 +29,9 @@ function docker_service_status
     web_notify "presenting service status in +${WM_DOCKER_STATUS_DELAY}"
     sleep "${WM_DOCKER_STATUS_DELAY}"
 
-    ${WM_CFG_SUDO} docker ps -a >> "${WM_CFG_INSTALL_PATH}/.wirepas_session"
+    docker ps -a >> "${WM_CFG_INSTALL_PATH}/.wirepas_session"
     #shellcheck disable=SC2046
-    web_notify "$(printf "%s\\n" $(${WM_CFG_SUDO} docker ps --format '{{.Names}} : {{.Status}} : {{.Image}} '))"
+    web_notify "$(printf "%s\\n" $(docker ps --format '{{.Names}} : {{.Status}} : {{.Image}} '))"
 }
 
 # docker_service_logs
@@ -54,38 +41,7 @@ function docker_service_logs
 {
     local _COMPOSE_PATH
     _COMPOSE_PATH=${1:-"${WM_CFG_GATEWAY_PATH}/docker-compose.yml"}
-
-    web_notify "$(docker-compose -f "${_COMPOSE_PATH}" logs -t)"
-}
-
-
-
-# docker_cleanup management
-#
-# cleans up dangling images
-function docker_cleanup
-{
-    local _WIPE_ALL
-
-    _WIPE_ALL=${1:-"${WM_DOCKER_CLEANUP}"}
-
-    if [[ "${_WIPE_ALL}" == "true" ]]
-    then
-        #Necessary to allow successful completion on Raspbian buster see #25
-        set +e
-        web_notify "removing all containers"
-        #shellcheck disable=SC2046
-        ${WM_CFG_SUDO} docker rm -f $( ${WM_CFG_SUDO} docker ps -aq) || true
-        wm_config_set_entry "WM_DOCKER_CLEANUP" "false"
-        set -e
-    fi
-
-    # Necessary to allow successful completion on Raspbian buster see #25
-    set +e
-    web_notify "pruning all _unused_ docker elements"
-    ${WM_CFG_SUDO} docker system prune --all --force || true
-    set -e
-
+    docker-compose -f "${_COMPOSE_PATH}" logs -t --tail 20
 }
 
 
@@ -103,6 +59,60 @@ function docker_stop
 
 
 
+# docker_backwards_compat
+#
+# Ensures that <1.2.x env parameters are propagated properly
+# in later releases (up to when they are deprecated)
+#
+# If any old setting is available from the environment, it will
+# be used, instead of the new names.
+#
+function docker_backwards_compat_transport_service(){
+
+    export WM_SERVICES_GATEWAY_ID
+    export WM_SERVICES_GATEWAY_MODEL
+    export WM_SERVICES_GATEWAY_VERSION
+
+    export WM_SERVICES_HOST
+    export WM_SERVICES_MQTT_USER
+    export WM_SERVICES_ALLOW_UNSECURE
+    export WM_SERVICES_CERTIFICATE_CHAIN
+
+    export WM_SERVICES_GATEWAY_IGNORED_ENDPOINTS_FILTER
+    export WM_SERVICES_GATEWAY_WHITENED_ENDPOINTS_FILTER
+
+
+    WM_SERVICES_GATEWAY_ID=${WM_SERVICES_GATEWAY_ID:-${WM_GW_ID}}
+    WM_SERVICES_GATEWAY_MODEL=${WM_SERVICES_GATEWAY_MODEL:-${WM_GW_MODEL}}
+    WM_SERVICES_GATEWAY_VERSION=${WM_SERVICES_GATEWAY_VERSION:-${WM_GW_VERSION}}
+
+    WM_SERVICES_HOST=${WM_SERVICES_HOST:-${WM_SERVICES_MQTT_HOSTNAME}}
+    WM_SERVICES_MQTT_USER=${WM_SERVICES_MQTT_USER:-${WM_SERVICES_MQTT_USERNAME}}
+
+    # No change for WM_SERVICES_MQTT_PORT, WM_SERVICES_MQTT_USERNAME,
+    # WM_SERVICES_MQTT_PASSWORD, WM_SERVICES_ALLOW_UNSECURE, WM_SERVICES_MQTT_PERSIST_SESSION, WM_SERVICES_CERTIFICATE_CHAIN
+    # WM_SERVICES_CERTIFICATE_CHAIN, WM_SERVICES_TLS_CLIENT_CERTIFICATE, WM_SERVICES_TLS_CLIENT_KEY
+    # WM_SERVICES_TLS_CERT_REQS, WM_SERVICES_TLS_VERSION, WM_SERVICES_TLS_CIPHERS
+
+    WM_SERVICES_ALLOW_UNSECURE=${WM_SERVICES_ALLOW_UNSECURE:-${WM_SERVICES_MQTT_ALLOW_UNSECURE}}
+    WM_SERVICES_CERTIFICATE_CHAIN=${WM_SERVICES_CERTIFICATE_CHAIN:-${WM_SERVICES_MQTT_CERTIFICATE_CHAIN}}
+
+    WM_SERVICES_GATEWAY_IGNORED_ENDPOINTS_FILTER=${WM_SERVICES_GATEWAY_IGNORED_ENDPOINTS_FILTER:-${WM_GW_IGNORED_ENDPOINTS_FILTER}}
+    WM_SERVICES_GATEWAY_WHITENED_ENDPOINTS_FILTER=${WM_SERVICES_GATEWAY_WHITENED_ENDPOINTS_FILTER:-${WM_GW_WHITENED_ENDPOINTS_FILTER}}
+}
+
+function docker_backwards_compat_sink_service()
+{
+    export WM_SINK_UART_PORT
+    export WM_SINK_UART_BITRATE
+    export WM_SINK_ID
+
+    WM_SINK_UART_PORT=${WM_SINK_UART_PORT:-${WM_GW_SINK_UART_PORT}}
+    WM_SINK_UART_BITRATE=${WM_SINK_UART_BITRATE:-${WM_GW_SINK_BITRATE_CONFIGURATION}}
+    WM_SINK_ID=${WM_SINK_ID:-${WM_GW_SINK_ID}}
+}
+
+
 # docker_redeploy
 #
 # pulls and recreates the services
@@ -117,10 +127,7 @@ function docker_redeploy
     _AS_DAEMON=${2:-"true"}
     _FORCE_RECREATE=${3:-"${WM_DOCKER_FORCE_RECREATE}"}
 
-    env | grep WM_ > "${WM_GW_SERVICES_ENV_FILE}"
-
-    docker_login
-    _cmd="yes | ${WM_CFG_SUDO} docker-compose -f ${_COMPOSE_PATH} pull --ignore-pull-failures || true"
+    _cmd="yes | docker-compose -f ${_COMPOSE_PATH} pull --ignore-pull-failures || true"
     web_notify "pulling updates to service images: ${_cmd}"
     eval "${_cmd}"
 
@@ -138,7 +145,7 @@ function docker_redeploy
         FLAG_DAEMON=""
     fi
 
-    _cmd="yes | ${WM_CFG_SUDO} docker-compose -f ${_COMPOSE_PATH} up ${FLAG_DAEMON} ${FLAG_RECREATE} --remove-orphans || true"
+    _cmd="yes | docker-compose -f ${_COMPOSE_PATH} up ${FLAG_DAEMON} ${FLAG_RECREATE} --remove-orphans || true"
     web_notify "starting composition: ${_cmd}"
     eval "${_cmd}"
 }
@@ -154,9 +161,9 @@ function docker_daemon_configuration
     then
         web_notify "setting docker daemon with ${WM_DOCKER_DAEMON_JSON}"
         wm_config_template_copy docker_daemon "${WM_CFG_SESSION_STORAGE_PATH}/docker_daemon.tmp"
-        ${WM_CFG_SUDO} cp "${WM_CFG_SESSION_STORAGE_PATH}/docker_daemon.tmp" /etc/docker/daemon.json
-        ${WM_CFG_SUDO} chown root:root /etc/docker/daemon.json
-        ${WM_CFG_SUDO} systemctl restart docker.service
+        sudo cp "${WM_CFG_SESSION_STORAGE_PATH}/docker_daemon.tmp" /etc/docker/daemon.json
+        sudo chown root:root /etc/docker/daemon.json
+        sudo systemctl restart docker.service
     fi
 }
 
@@ -171,8 +178,8 @@ function docker_fetch_settings
     then
         wm_config_template_copy "docker-compose.settings" "${WM_CFG_UPDATE_PATH}/docker-compose.yml"
         docker_redeploy "${WM_CFG_UPDATE_PATH}/docker-compose.yml" "false" "true"
-        ${WM_CFG_SUDO} systemctl daemon-reload
-        ${WM_CFG_SUDO} udevadm trigger
+        sudo systemctl daemon-reload
+        sudo udevadm trigger
     fi
 }
 
@@ -193,7 +200,7 @@ function docker_terminate_services
     web_notify "terminating services matching: ${_NAME_FILTER}"
 
     #shellcheck disable=SC2086
-    _WM_RUNNING_CONTAINERS=$(${WM_CFG_SUDO} docker ps --filter name=${_NAME_FILTER} -qa)
+    _WM_RUNNING_CONTAINERS=$(docker ps --filter name=${_NAME_FILTER} -qa)
     set -e
 
     for _TARGET_CONTAINER in "${_WM_RUNNING_CONTAINERS[@]}"
@@ -201,7 +208,7 @@ function docker_terminate_services
         web_notify "removing ${_TARGET_CONTAINER}"
         if [[ "${_TARGET_CONTAINER}" ]]
         then
-            ${WM_CFG_SUDO} docker rm -f "${_TARGET_CONTAINER}" || true
+            docker rm -f "${_TARGET_CONTAINER}" || true
         else
             web_notify "nothing to cleanup"
         fi
@@ -210,76 +217,76 @@ function docker_terminate_services
 }
 
 
-# _lookup_devices
-#  Iterates local devices
-function docker_generate_device_service()
+#  docker_append_service_logging
+#  Outputs a transport service with expanded environment variables
+function docker_append_service_logging()
+{
+    local _COMPOSE_PATH
+    _COMPOSE_PATH=${1}
+
+    if [[ ! -z "${WM_SERVICES_FLUENTD_HOSTNAME}" ]]
+    then
+        wm_config_template_copy docker-compose.lxgw-fluentd-logging "${_COMPOSE_PATH}" ">>"
+    else
+        wm_config_template_copy docker-compose.lxgw-journald-logging "${_COMPOSE_PATH}" ">>"
+    fi
+
+}
+
+#  docker_append_transport_service
+#  Outputs a transport service with expanded environment variables
+function docker_append_transport_service()
 {
     local _TEMPLATE_NAME
     local _COMPOSE_PATH
 
-    local _SINK_ENUMERATION_PATTERN
-    local _SINK_ENUMERATION_IGNORE
-
-    local _DEVICE
-    local _DEVICE_ID
-    local _BLACKLISTED
-
-    _TEMPLATE_NAME=${1:-"lxgw-sink"}
+    _TEMPLATE_NAME=${1:-"docker-compose.lxgw-transport"}
     _COMPOSE_PATH=${2}
 
-    _SINK_ENUMERATION_PATTERN=($(echo "${WM_GW_SINK_PORT_RULE}" | tr " " "\\n"))
+    docker_backwards_compat_transport_service
+    wm_config_template_copy "${_TEMPLATE_NAME}" "${_COMPOSE_PATH}" ">>"
+    docker_append_service_logging "${_COMPOSE_PATH}"
+}
+
+
+#  docker_append_sink_service
+#  Generates a sink service based on the discovered devices
+function docker_append_sink_service()
+{
+    local _TEMPLATE_NAME
+    local _COMPOSE_PATH
+
+    _TEMPLATE_NAME=${1:-"docker-compose.lxgw-sink"}
+    _COMPOSE_PATH=${2}
+
     _DEVICE_ID=-1
-    for _DEVICE in "${_SINK_ENUMERATION_PATTERN[@]}"
+    for _DEVICE in "${WM_GW_SINK_LIST[@]}"
     do
-        if [[ -z "${_DEVICE}" || "${_DEVICE}" == *"*"* ]]
-        then
-            web_notify "Could not find any device under ${_DEVICE}"
-            continue
-        fi
-
-        if [[ ! -z "${WM_GW_SINK_BLACKLIST}" ]]
-        then
-            _SINK_ENUMERATION_IGNORE=($(echo "${WM_GW_SINK_BLACKLIST}" | tr " " "\\n"))
-
-            for _BLACKLISTED in "${_SINK_ENUMERATION_IGNORE[@]}"
-            do
-                if [[ "${_BLACKLISTED}" == "${_DEVICE}" ]]
-                then
-                    web_notify "Device is blacklisted, skipping it (list=${_BLACKLISTED} == device=${_DEVICE})"
-                    break
-                fi
-            done
-            continue
-        fi
-
         _DEVICE_ID=$((_DEVICE_ID+1))
 
         # apply filter based on input
         # shellcheck disable=SC2034
-        WM_GW_SINK_UART_PORT_SERVICE_NAME="${_DEVICE/\/dev\//}"
+        WM_GW_SINK_UART_PORT_NAME="${_DEVICE/\/dev\//}"
         WM_GW_SINK_UART_PORT=${_DEVICE}
-        WM_SINK_UART_BITRATE="${WM_GW_SINK_BITRATE_CONFIGURATION["${_DEVICE_ID}"]}"
+        WM_GW_SINK_UART_BITRATE="${WM_GW_SINK_BITRATE_CONFIGURATION}[${_DEVICE_ID}]"
         WM_GW_SINK_ID=${_DEVICE_ID}
 
-        web_notify "Configuring ${_DEVICE} (bitrate=${WM_SINK_UART_BITRATE}, id=${WM_GW_SINK_ID})"
+        web_notify "configuring ${_DEVICE} (bitrate=${WM_GW_SINK_UART_BITRATE}, id=${WM_GW_SINK_ID})"
+        docker_backwards_compat_sink_service
         wm_config_template_copy "${_TEMPLATE_NAME}" "${_COMPOSE_PATH}" ">>"
-
+        docker_append_service_logging "${_COMPOSE_PATH}"
     done
 }
 
 
-# docker_gateway_hook_pre_loop
+# docker_gateway
 #
-# Hook that is called before launching the gateway services
+# Hook that is called in order to launch the gateway services.
 #
-# This hook should perform any cleanup, such as ensuring the
-# that the sink is not acquired multiple times.
-#
-function docker_gateway_hook_pre_loop
+function docker_gateway
 {
-    export WM_GW_SINK_BITRATE_CONFIGURATION
-
-    web_notify "${WM_GW_STATE} -> ${WM_CFG_GATEWAY_PATH}"
+    local WM_CFG_DOCKER_GATEWAY_COMPOSE_PATH
+    WM_CFG_DOCKER_GATEWAY_COMPOSE_PATH="${WM_CFG_GATEWAY_PATH}/docker-compose.yml"
 
     # ensure no gateway service is running
     if [[ "${WM_GW_CLEANUP}" == "true" ]]
@@ -287,94 +294,40 @@ function docker_gateway_hook_pre_loop
         docker_terminate_services "wm-gw*"
     fi
 
-    # create default bitrate array
-    if [[ -z "${WM_GW_SINK_BITRATE_CONFIGURATION}" ]]
+    web_notify "setting docker gateway: ${WM_GW_STATE} --> ${WM_CFG_DOCKER_GATEWAY_COMPOSE_PATH}"
+
+    if [[ "${WM_GW_STATE}" == "start" || "${WM_GW_STATE}" == "up" ]]
     then
-        _SINK_BITRATE=()
-        for _ in $(seq 0 1 20)
-        do
-            _SINK_BITRATE+=( "125000" )
-        done
-    else
-        _SINK_BITRATE=($(echo "${WM_GW_SINK_BITRATE_CONFIGURATION}" | tr " " "\\n"))
-    fi
-
-    WM_GW_SINK_BITRATE_CONFIGURATION="${_SINK_BITRATE}"
-
-}
-
-# docker_gateway_hook_loop
-#
-# Hook that is called in order to launch the gateway services.
-#
-function docker_gateway_hook_loop
-{
-    export WM_SINK_UART_BITRATE
-
-    # main loop
-    if [[ "${WM_GW_STATE}" == "start" ]]
-    then
-        # forces an update of the symlinks
-        ${WM_CFG_SUDO} udevadm trigger || true
-
         date > "${WM_CFG_SESSION_STORAGE_PATH}/.wirepas_session"
         mkdir -p "${WM_CFG_GATEWAY_PATH}"
         mkdir -p "${WM_GW_SERVICES_USER_PATH}"
 
-        if [[ "${WM_CFG_GATEWAY_PATH}" == "lxgw" ]] && [[ ! -z "${WM_GW_IMAGE}" ]]
-        then
-            local _DOCKER_COMPOSE_PATH
+        # creates the composition file
+        wm_config_template_copy docker-compose.lxgw "${WM_CFG_DOCKER_GATEWAY_COMPOSE_PATH}" ">"
+        docker_append_transport_service docker-compose.lxgw-transport "${WM_CFG_DOCKER_GATEWAY_COMPOSE_PATH}"
+        docker_append_sink_service docker-compose.lxgw-sink "${WM_CFG_DOCKER_GATEWAY_COMPOSE_PATH}"
 
-            _DOCKER_COMPOSE_PATH="${WM_CFG_GATEWAY_PATH}/docker-compose.yml"
-            WM_SINK_UART_BITRATE="${WM_GW_SINK_BITRATE_CONFIGURATION["${WM_GW_SINK_ID}"]}"
-
-            wm_config_template_copy "docker-compose.${WM_CFG_GATEWAY_PATH}" "${_DOCKER_COMPOSE_PATH}"
-
-            web_notify "\\n\\t*SINK* |  id: ${WM_GW_SINK_ID}, port: ${WM_GW_SINK_UART_PORT}, bitrate: ${WM_SINK_UART_BITRATE}
-                        \\n\\t*GW* | gw_id: ${WM_GW_ID}, gw_model: ${WM_GW_MODEL}, gw_version: ${WM_GW_VERSION}
-                        \\n\\t*MQTT* | broker: ${WM_SERVICES_MQTT_HOSTNAME}"
-
-            # multi sink support
-            if [[ "${WM_GW_SINK_ENUMERATION}" == "true" ]]
-            then
-                wm_config_template_copy docker-compose.lxgw-transport "${_DOCKER_COMPOSE_PATH}"
-                docker_generate_device_service docker-compose.lxgw-sink "${_DOCKER_COMPOSE_PATH}"
-            fi
-
-            docker_redeploy "${_DOCKER_COMPOSE_PATH}"
-        fi
+        docker_redeploy "${WM_CFG_DOCKER_GATEWAY_COMPOSE_PATH}"
     fi
 
-    if [[ "${WM_GW_STATE}" == "stop" ]]
+    if [[ "${WM_GW_STATE}" == "stop" || "${WM_GW_STATE}" == "down" ]]
     then
-        echo "stopping gateway ${WM_CFG_GATEWAY_PATH}"
-        docker_stop "${WM_CFG_GATEWAY_PATH}"
+        docker_stop "${WM_CFG_DOCKER_GATEWAY_COMPOSE_PATH}"
     fi
-}
-
-# docker_gateway_hook_post_loop
-#
-# Hook that is called after the gateway services are up
-#
-function docker_gateway_hook_post_loop
-{
 
     docker_service_status
     docker_service_logs
 
     if [[ "${WM_CFG_HOST_IS_RPI}" == "true" ]]
     then
-        docker_cleanup "false"
+        host_docker_daemon_management "false"
     fi
-
-    deactivate || true
 }
 
 
-
-function docker_gateway
+# wm_config_session_main
+# Implements the main hook to allow setting up the gateway on top of docker
+function wm_config_session_main
 {
-    docker_gateway_hook_pre_loop
-    docker_gateway_hook_loop
-    docker_gateway_hook_post_loop
+    docker_gateway
 }

@@ -144,6 +144,8 @@ function wm_config_parser
             --debug)
             set -x
             env |grep WM_ > "${WM_CFG_SESSION_STORAGE_PATH}/env.log"
+            export WM_CFG_FRAMEWORK_DEBUG
+            WM_CFG_FRAMEWORK_DEBUG=true
             shift
             ;;
 

@@ -2,96 +2,123 @@
 # Copyright 2019 Wirepas Ltd
 #
 
-
 #shellcheck disable=SC1090
+
 
 # host_reboot
 #
 # performs a system reboot
 function host_reboot
 {
-    local _MIN_TO_REBOOT
 
-    _MIN_TO_REBOOT=${1:-"${WM_CFG_REBOOT_DELAY}"}
+    if [[ "${WM_HOST_REBOOT}" == "true" ]]
+    then
+        local _MIN_TO_REBOOT
 
-    web_notify "device rebooting in +${_MIN_TO_REBOOT}"
-    ${WM_CFG_SUDO} shutdown --reboot "+${_MIN_TO_REBOOT}"
+        _MIN_TO_REBOOT=${1:-"${WM_CFG_REBOOT_DELAY}"}
+
+        web_notify "device rebooting in +${_MIN_TO_REBOOT}"
+        sudo shutdown --reboot "+${_MIN_TO_REBOOT}"
+    fi
 }
 
 
-# host_upgrade
+# host_docker_daemon_management management
 #
-# Fetches updates from the package manager
-function host_upgrade
+# cleans up dangling images
+function host_docker_daemon_management
+{
+    if [[ "${WM_HOST_DOCKER_PRUNE_ALL}" == "true" ]]
+    then
+
+        local _WIPE_ALL
+
+        _WIPE_ALL=${1:-"${WM_DOCKER_CLEANUP}"}
+
+        if [[ "${_WIPE_ALL}" == "true" ]]
+        then
+            #Necessary to allow successful completion on Raspbian buster see #25
+            set +e
+            web_notify "removing all containers"
+            #shellcheck disable=SC2046
+            docker rm -f $( docker ps -aq) || true
+            wm_config_set_entry "WM_DOCKER_CLEANUP" "false"
+            set -e
+        fi
+
+        # Necessary to allow successful completion on Raspbian buster see #25
+        set +e
+        web_notify "pruning all _unused_ docker elements"
+        docker system prune --all --force || true
+        set -e
+    fi
+
+    if [[ ! -z "${WM_DOCKER_USERNAME}" && ! -z "${WM_DOCKER_PASSWORD}" ]]
+    then
+        web_notify "Setting docker credentials for ${WM_DOCKER_USERNAME}"
+        docker login --username "${WM_DOCKER_USERNAME}" --password "${WM_DOCKER_PASSWORD}"
+    fi
+}
+
+
+## host_ensure_linux_lf
+##
+## Ensures a file does not contain linux line endings
+function host_ensure_linux_lf
+{
+
+    local _INPUT
+    local _TARGET_TMP
+    _INPUT="${1:?}"
+    _TARGET_TMP="${WM_CFG_SESSION_STORAGE_PATH}/{1}.tmp"
+
+    tr -d '\15\32' < "${_INPUT}" > "${_TARGET_TMP}"
+    cp "${_TARGET_TMP}" "${_INPUT}"
+}
+
+# host_dependency_management
+#
+# Sources dependencies from the ENTRYPOINT partition
+function host_dependency_management
 {
 
     if [[ "${WM_HOST_UPGRADE_PACKAGES}" == "true" ]]
     then
         web_notify "upgrading host packages"
-        ${WM_CFG_SUDO} apt-get update
-        ${WM_CFG_SUDO} apt-get upgrade -y
+        sudo apt-get update
+        sudo apt-get upgrade -y
         wm_config_set_entry "WM_HOST_UPGRADE_PACKAGES" "false"
     fi
-}
-
-## host_rm_win_linefeed
-function host_rm_win_linefeed
-{
-
-    local _INPUT
-    local _OUTPUT
-
-    _INPUT=${1}
-    _OUTPUT=${2}
-
-    tr -d '\15\32' < "${_INPUT}" > "${_OUTPUT}"
-}
-
-# host_install_dependencies
-#
-# Sources dependencies from the ENTRYPOINT partition
-function host_install_dependencies
-{
 
     if [[ "${WM_HOST_INSTALL_DEPENDENCIES}" == "true" ]]
     then
 
-        if [[ -f "${WM_CFG_SETTINGS_PATH}/host_dependencies.sh" ]]
+        if [[ ! -d "/home/${USER}/.local/bin" ]]
         then
-            web_notify "installing ${WM_CFG_SETTINGS_PATH}/host_dependencies.sh "
-
-            ${WM_CFG_SUDO} cp --no-preserve=mode,ownership \
-                "${WM_CFG_SETTINGS_PATH}/host_dependencies.sh" \
-                "${WM_CFG_SESSION_STORAGE_PATH}/host_dependencies.tmp"
-
-            host_rm_win_linefeed "${WM_CFG_SESSION_STORAGE_PATH}/host_dependencies.tmp" "${WM_CFG_INSTALL_PATH}/host_dependencies.sh"
-
-            chmod +x "${WM_CFG_INSTALL_PATH}/host_dependencies.sh"
-            ${WM_CFG_SUDO} "${WM_CFG_INSTALL_PATH}/host_dependencies.sh" || true
+            mkdir -p "/home/${USER}/.local/bin"
         fi
-
-        if [[ -f "${WM_CFG_HOST_PATH}/host_dependencies.sh" ]]
-        then
-            web_notify "installing ${WM_CFG_HOST_PATH}/host_dependencies.sh"
-            chmod +x "${WM_CFG_HOST_PATH}/host_dependencies.sh"
-            ${WM_CFG_SUDO}  "${WM_CFG_HOST_PATH}/host_dependencies.sh"
-        fi
-
-        host_pip_install "${WM_CFG_SETTINGS_PATH}/requirements.txt"
-        host_pip_install "${WM_CFG_HOST_PATH}/requirements.txt"
 
         export PATH=$PATH:/home/${USER}/.local/bin
+
+        if ! grep -Fxq "/home/${USER}/.local/bin" ~/.profile
+        then
+            echo "export PATH=$PATH:/home/${USER}/.local/bin" >> ~/.profile
+        fi
+
+        if [[ -f "${WM_CFG_HOST_DEPENDENCIES_PATH}/host_dependencies.sh" ]]
+        then
+            web_notify "installing ${WM_CFG_HOST_DEPENDENCIES_PATH}/host_dependencies.sh "
+            chmod +x "${WM_CFG_HOST_DEPENDENCIES_PATH}/host_dependencies.sh"
+            . "${WM_CFG_HOST_DEPENDENCIES_PATH}/host_dependencies.sh"
+        fi
+
+        host_pip_install "${WM_CFG_HOST_DEPENDENCIES_PATH}/requirements.txt"
         wm_config_set_entry "WM_HOST_INSTALL_DEPENDENCIES" "false"
         docker_add_user
 
-        if [[ "${WM_CFG_HOST_IS_RPI}" == "true" ]]
-        then
-            host_reboot 0
-            exit 0
-        else
-            echo "a reboot is mandatory for your user to gain acces to the docker engine"
-            exit 0
-        fi
+        echo "A reboot is mandatory for your user to gain access to the docker engine!!"
+        host_reboot 1
+        exit 0
     fi
 }
 
@@ -108,28 +135,26 @@ function host_pip_install
 
     if [[ -f "${_REQUIREMENTS}" ]]
     then
-        web_notify "installing ${_REQUIREMENTS}"
+        source "${WM_CFG_PYTHON_VIRTUAL_ENV}/bin/activate"
 
-        ${WM_CFG_SUDO} cp --no-preserve=mode,ownership \
-            "${_REQUIREMENTS}" \
-            "${WM_CFG_SESSION_STORAGE_PATH}/requirements.tmp"
-
-        host_rm_win_linefeed "${WM_CFG_SESSION_STORAGE_PATH}/requirements.tmp" "${WM_CFG_INSTALL_PATH}/requirements.txt"
-
-        pip3 install --user -r "${WM_CFG_INSTALL_PATH}/requirements.txt"
-        echo "export PATH=$PATH:/home/${USER}/.local/bin" >> ~/.profile
+        web_notify "installing python requirements ${_REQUIREMENTS} (under ${WM_CFG_PYTHON_VIRTUAL_ENV})"
+        pip3 install -r "${_REQUIREMENTS}"
     fi
 }
 
 
-# host_sync_clock
+# host_clock_management
 #
 # forces a ntp sync by restarting the ntp service
-function host_sync_clock
+function host_clock_management
 {
-    web_notify "restarting systemd-timesyncd"
-    ${WM_CFG_SUDO} systemctl status systemd-timesyncd >> "${WM_CFG_INSTALL_PATH}/.wirepas_session" || true
-    ${WM_CFG_SUDO} systemctl restart systemd-timesyncd  || true
+
+    if [[ "${WM_HOST_CLOCK_MANAGEMENT}" == "true" ]]
+    then
+        web_notify "restarting systemd-timesyncd"
+        systemctl status systemd-timesyncd >> "${WM_CFG_INSTALL_PATH}/.wirepas_session" || true
+        sudo systemctl restart systemd-timesyncd  || true
+    fi
 }
 
 
@@ -138,55 +163,61 @@ function host_sync_clock
 # starts or stops the wirepas updater
 function host_systemd_management
 {
-    web_notify "reloading systemd services"
 
-    if [[ "${WM_SYSTEMD_UPDATER_DISABLE}" == "true" ]]
+    if [[ "${WM_HOST_SYSTEMD_MANAGEMENT}" == "true" ]]
     then
-        web_notify "disabling wirepas-updater"
-        ${WM_CFG_SUDO} systemctl stop "${WM_SYSTEMD_UPDATER}" || true
-        ${WM_CFG_SUDO} systemctl disable "${WM_SYSTEMD_UPDATER}" || true
-        wm_config_set_entry "WM_SYSTEMD_UPDATER_DISABLE" "false"
-        exit 0
-    fi
 
-    if [[ "${WM_SYSTEMD_UPDATER_ENABLE}" == "true" ]]
+        web_notify "reloading systemd services"
+        if [[ "${WM_SYSTEMD_UPDATER_DISABLE}" == "true" ]]
+        then
+            web_notify "disabling wirepas-updater"
+            sudo systemctl stop "${WM_SYSTEMD_UPDATER}" || true
+            sudo systemctl disable "${WM_SYSTEMD_UPDATER}" || true
+            wm_config_set_entry "WM_SYSTEMD_UPDATER_DISABLE" "false"
+            exit 0
+        fi
+
+        if [[ "${WM_SYSTEMD_UPDATER_ENABLE}" == "true" ]]
+        then
+
+            local _TARGET
+            local _TARGET_TMP
+
+            _TARGET="/etc/systemd/system/${WM_SYSTEMD_UPDATER}.service"
+            _TARGET_TMP="${WM_CFG_SESSION_STORAGE_PATH}/${WM_SYSTEMD_UPDATER}.service.tmp"
+
+            wm_config_template_copy "${WM_SYSTEMD_UPDATER}" "${_TARGET_TMP}"
+            sudo cp --no-preserve=mode,ownership "${_TARGET_TMP}" "${_TARGET}"
+            rm "${_TARGET_TMP}"
+
+            sudo systemctl daemon-reload
+            sudo systemctl enable "${WM_SYSTEMD_UPDATER}"
+
+            wm_config_set_entry "WM_SYSTEMD_UPDATER_ENABLE"  "false"
+            host_schedule_future 1
+        fi
+    fi
+}
+
+# host_ip_management
+#
+# blacklists ipv6 module and reboot the host
+function host_ip_management
+{
+
+    if [[ "${WM_HOST_BLACKLIST_IPV6}" == "true" ]]
     then
 
         local _TARGET
         local _TARGET_TMP
 
-        _TARGET="/etc/systemd/system/${WM_SYSTEMD_UPDATER}.service"
-        _TARGET_TMP="${WM_CFG_SESSION_STORAGE_PATH}/${WM_SYSTEMD_UPDATER}.service.tmp"
+        _TARGET="/etc/sysctl.conf"
+        _TARGET_TMP=${WM_CFG_SESSION_STORAGE_PATH}/ipv6.tmp
 
-        wm_config_template_copy "${WM_SYSTEMD_UPDATER}" "${_TARGET_TMP}"
-        ${WM_CFG_SUDO} cp --no-preserve=mode,ownership "${_TARGET_TMP}" "${_TARGET}"
-        rm "${_TARGET_TMP}"
-
-        ${WM_CFG_SUDO} systemctl daemon-reload
-        ${WM_CFG_SUDO} systemctl enable "${WM_SYSTEMD_UPDATER}"
-
-        wm_config_set_entry "WM_SYSTEMD_UPDATER_ENABLE"  "false"
-        host_schedule_future 1
-    fi
-}
-
-# host_blacklist_ipv6
-#
-# blacklists ipv6 module and reboot the host
-function host_blacklist_ipv6
-{
-    local _TARGET
-    local _TARGET_TMP
-
-    _TARGET="/etc/sysctl.conf"
-    _TARGET_TMP=${WM_CFG_SESSION_STORAGE_PATH}/ipv6.tmp
-
-    if [[ "${WM_HOST_IPV6_DISABLE}" == "true" ]]
-    then
         web_notify "blacklisting ipv6"
 
-        ${WM_CFG_SUDO} cp "${_TARGET}" "${_TARGET_TMP}"
-        ${WM_CFG_SUDO} chown "$(id -u):$(id -g)" "${_TARGET_TMP}"
+        sudo cp "${_TARGET}" "${_TARGET_TMP}"
+        sudo chown "$(id -u):$(id -g)" "${_TARGET_TMP}"
 
         { \
             echo "net.ipv6.conf.all.disable_ipv6=1"; \
@@ -194,70 +225,73 @@ function host_blacklist_ipv6
             echo "net.ipv6.conf.lo.disable_ipv6=1";\
         } >> "${_TARGET_TMP}"
 
-        ${WM_CFG_SUDO} cp "${_TARGET_TMP}" "${_TARGET}"
-        ${WM_CFG_SUDO} chown root:root "${_TARGET}"
+        sudo cp "${_TARGET_TMP}" "${_TARGET}"
+        sudo chown root:root "${_TARGET}"
 
-        wm_config_set_entry "WM_HOST_IPV6_DISABLE"  "false"
+        wm_config_set_entry "WM_HOST_BLACKLIST_IPV6"  "false"
 
         host_reboot 0
         exit 0
     fi
 }
 
+# host_avahi_daemon_management
+#
+# configures the avahi daemon
+function host_avahi_daemon_management
+{
+    if [[ "${WM_HOST_AVAHI_DAEMON_MANAGEMENT}" == "true" ]]
+    then
+        web_notify "advertising avahi service: ${WM_CFG_HOST_DEPENDENCIES_PATH}/ssh.service"
+        sudo cp "${WM_CFG_HOST_DEPENDENCIES_PATH}/ssh.service" /etc/avahi/services/
+        sudo systemctl restart avahi-daemon.service
+    fi
+}
 
-# host_ssh_network_login
+
+# host_ssh_daemon_management
 #
 # sets the network logins for the main user
-function host_ssh_network_login
+function host_ssh_daemon_management
 {
-
-    local _SERVICES
-    local _SERVICE
-    local _TARGET
-    local _TARGET_TMP
-
-    local _SERVICES=( "${WM_HOST_AVAHI_SERVICES}" )
-
-    ${WM_CFG_SUDO} touch /boot/ssh
-
-    for _SERVICE in "${_SERVICES[@]}"
-    do
-        web_notify "advertising avahi service: ${_SERVICE}"
-        ${WM_CFG_SUDO} cp "${_SERVICE}" /etc/avahi/services/
-    done
-
-    ${WM_CFG_SUDO} systemctl restart avahi-daemon.service
-
-    if [[ "${WM_HOST_SSH_ENABLE_NETWORK_LOGIN}" == "true" ]]
+    if [[ "${WM_HOST_SSH_DAEMON_MANAGEMENT}" == "true" ]]
     then
-        ${WM_CFG_SUDO} sed -i "s#PasswordAuthentication no#PasswordAuthentication yes#" /etc/ssh/sshd_config
-    else
-        _TARGET="/etc/ssh/sshd_config"
-        _TARGET_TMP="${WM_CFG_SESSION_STORAGE_PATH}/sshd_config.tmp"
+        local _TARGET
+        local _TARGET_TMP
 
-        wm_config_template_copy sshd_config "${_TARGET_TMP}"
-        ${WM_CFG_SUDO} cp --no-preserve=mode,ownership "${_TARGET_TMP}" "${_TARGET}"
-        rm "${_TARGET_TMP}"
+        host_avahi_daemon_management
 
-        ${WM_CFG_SUDO} sed -i "s#PasswordAuthentication yes#PasswordAuthentication no#" /etc/ssh/sshd_config
+        if [[ "${WM_HOST_SSH_ENABLE_PASSWORD_LOGIN}" == "true" ]]
+        then
+            sudo sed -i "s#PasswordAuthentication no#PasswordAuthentication yes#" /etc/ssh/sshd_config
+        else
+            _TARGET="/etc/ssh/sshd_config"
+            _TARGET_TMP="${WM_CFG_SESSION_STORAGE_PATH}/sshd_config.tmp"
+
+            wm_config_template_copy sshd_config "${_TARGET_TMP}"
+            sudo cp --no-preserve=mode,ownership "${_TARGET_TMP}" "${_TARGET}"
+            rm "${_TARGET_TMP}"
+
+            sudo sed -i "s#PasswordAuthentication yes#PasswordAuthentication no#" /etc/ssh/sshd_config
+        fi
+
+        sudo systemctl restart ssh
     fi
-
-    ${WM_CFG_SUDO} systemctl restart ssh
 }
 
 
 # host_rpi_expand_filesystem
 #
 # expands the filesystem
-function host_expand_filesystem
+function host_filesystem_management
 {
-    if [[ "${WM_HOST_EXPAND_FILESYSTEM}" == "true" ]]
+    if [[ "${WM_HOST_FILESYSTEM_MANAGEMENT}" == "true" ]]
     then
         if [[ "${WM_CFG_HOST_IS_RPI}" == "true" ]]
         then
             web_notify "expanding filesystem"
-            wm_config_set_entry "WM_HOST_EXPAND_FILESYSTEM"  "false"
-            ${WM_CFG_SUDO} raspi-config --expand-rootfs
+            wm_config_set_entry "WM_HOST_FILESYSTEM_MANAGEMENT"  "false"
+            sudo raspi-config --expand-rootfs
             web_notify "I am rebooting to expand the filesystem"
             host_reboot 0
             exit
@@ -267,248 +301,236 @@ function host_expand_filesystem
     fi
 }
 
-# host_setup_hostname
+# host_hostname_management
 #
 # sets the system hostname
-function host_setup_hostname
+function host_hostname_management
 {
-    local _HOSTNAME
-    local _SET_HOSTNAME
-
-    _HOSTNAME=$(hostname)
-
-    if [[ ! -z "${WM_HOST_HOSTNAME}" && "${WM_HOST_HOSTNAME}" != "${_HOSTNAME}" ]]
+    if [[ "${WM_HOST_HOSTNAME_MANAGEMENT}" == "true" ]]
     then
-        ${WM_CFG_SUDO} hostnamectl set-hostname "${WM_HOST_HOSTNAME}"
-        _SET_HOSTNAME=$(hostname)
-        web_notify "changing hostname to: ${_SET_HOSTNAME}"
-        ${WM_CFG_SUDO} sed -i "s/${_HOSTNAME}/${_SET_HOSTNAME}/g" /etc/hostname
-        ${WM_CFG_SUDO} sed -i "s/${_HOSTNAME}/${_SET_HOSTNAME}/g" /etc/hosts
-        wm_config_set_entry "WM_HOST_HOSTNAME" "${WM_HOST_HOSTNAME}"
-        export WM_HOST_HOSTNAME="${_SET_HOSTNAME}"
-        ${WM_CFG_SUDO} systemctl restart avahi-daemon
-    else
-        echo "keeping hostname ${_HOSTNAME}"
+        local _HOSTNAME
+        local _SET_HOSTNAME
+
+        _HOSTNAME=$(hostname)
+
+        if [[ ! -z "${WM_HOST_HOSTNAME}" && "${WM_HOST_HOSTNAME}" != "${_HOSTNAME}" ]]
+        then
+            sudo hostnamectl set-hostname "${WM_HOST_HOSTNAME}"
+            _SET_HOSTNAME=$(hostname)
+            web_notify "changing hostname to: ${_SET_HOSTNAME}"
+            sudo sed -i "s/${_HOSTNAME}/${_SET_HOSTNAME}/g" /etc/hostname
+            sudo sed -i "s/${_HOSTNAME}/${_SET_HOSTNAME}/g" /etc/hosts
+            wm_config_set_entry "WM_HOST_HOSTNAME" "${WM_HOST_HOSTNAME}"
+            export WM_HOST_HOSTNAME="${_SET_HOSTNAME}"
+            sudo systemctl restart avahi-daemon
+        else
+            echo "keeping hostname ${_HOSTNAME}"
+        fi
     fi
 }
 
-# host_setup_wifi
+# host_wifi_management
 #
 # Enables or disables the wifi interface
 # An empty SSID or WM_WIFI_ENABLE to true will stop the wifi interface
-function host_setup_wifi
+function host_wifi_management
 {
-
-    local _TEMPLATE
-
-    if [[ "${WM_WIFI_ENABLE}" == "true" && ! -z "${WM_WIFI_AP_SSID}" ]]
+    if [[ "${WM_HOST_WIFI_MANAGEMENT}" == "true" ]]
     then
-        _TEMPLATE=${WM_WIFI_TEMPLATE:-"wpa_supplicant"}
 
-        web_notify "configuring WiFi client to: ${WM_WIFI_AP_SSID} / ${WM_WIFI_AP_PASSWORD}"
+        local _TEMPLATE
 
-        wm_config_template_copy "${_TEMPLATE}" "${WM_CFG_SESSION_STORAGE_PATH}/wpa_supplicant.conf"
-        ${WM_CFG_SUDO} cp --no-preserve=mode,ownership  "${WM_CFG_SESSION_STORAGE_PATH}/wpa_supplicant.conf" /etc/wpa_supplicant/wpa_supplicant.conf
-        ${WM_CFG_SUDO} wpa_cli -i wlan0 reconfigure || true
-        ifconfig wlan0 > "${WM_CFG_SESSION_STORAGE_PATH}/.wlan0.tmp" ||true
-
-        ${WM_CFG_SUDO} cp --no-preserve=mode,ownership "${WM_CFG_SESSION_STORAGE_PATH}/.wlan0.tmp" "${WM_CFG_SESSION_STORAGE_PATH}/wlan0.log"
-        ${WM_CFG_SUDO} rm "${WM_CFG_SESSION_STORAGE_PATH}/.wlan0.tmp"
-        ${WM_CFG_SUDO} rm "${WM_CFG_SESSION_STORAGE_PATH}/wpa_supplicant.conf"
-
-    else
-        web_notify "ensuring WiFi client is down"
-        ${WM_CFG_SUDO} ifdown wlan0 || true
-    fi
-
-}
-
-# host_setup_user
-#
-# evaluates the user passwords and public keys
-function host_setup_user
-{
-
-    local _SETUP_USER_NAME
-    local _SETUP_USER_PWD
-    local _SETUP_USER_PPKI
-    local _SSH_FOLDER
-
-    _SETUP_USER_NAME=${1:-}
-    _SETUP_USER_PWD=${2:-}
-    _SETUP_USER_PPKI=${3:-}
-    _SSH_FOLDER="/home/${_SETUP_USER_NAME}/.ssh/"
-
-    if [[ ! -z "${_SETUP_USER_NAME}"  && ! -z "${_SETUP_USER_PWD}" ]]
-    then
-        web_notify "applying new password for ${_SETUP_USER_NAME}:${_SETUP_USER_PWD}"
-        echo "${_SETUP_USER_NAME}:${_SETUP_USER_PWD}" | ${WM_CFG_SUDO} chpasswd
-    fi
-
-    if [[ ! -z "${_SETUP_USER_PPKI}" && ! -z "${_SETUP_USER_NAME}"  &&  ! -z "${_SETUP_USER_PWD}" ]]
-    then
-        if [[ ! -d "/home/${_SETUP_USER_NAME}/.ssh/" ]]
+        if [[ "${WM_WIFI_ENABLE}" == "true" && ! -z "${WM_WIFI_AP_SSID}" ]]
         then
-            ${WM_CFG_SUDO} mkdir -p "${_SSH_FOLDER}"
-        fi
+            _TEMPLATE=${WM_WIFI_TEMPLATE:-"wpa_supplicant"}
 
-        if [[ ! -f "/home/${_SETUP_USER_NAME}/.ssh/authorized_keys" ]]
-        then
-            ${WM_CFG_SUDO} touch "/home/${_SETUP_USER_NAME}/.ssh/authorized_keys"
-        fi
-
-        ${WM_CFG_SUDO} cp "/home/${_SETUP_USER_NAME}/.ssh/authorized_keys" "${WM_CFG_SESSION_STORAGE_PATH}/.authorized_keys.tmp"
-        ${WM_CFG_SUDO} chown "${USER}:${USER}" "${WM_CFG_SESSION_STORAGE_PATH}/.authorized_keys.tmp"
-
-        if grep -Fxq "${_SETUP_USER_PPKI}" "${WM_CFG_SESSION_STORAGE_PATH}/.authorized_keys.tmp"
-        then
-            web_notify "ssh key already authorized"
+            web_notify "configuring WiFi client to: ${WM_WIFI_AP_SSID} / ${WM_WIFI_AP_PASSWORD}"
+            wm_config_template_copy "${_TEMPLATE}" "${WM_CFG_SESSION_STORAGE_PATH}/wpa_supplicant.conf"
+            sudo cp --no-preserve=mode,ownership  "${WM_CFG_SESSION_STORAGE_PATH}/wpa_supplicant.conf" /etc/wpa_supplicant/wpa_supplicant.conf
+            sudo wpa_cli -i "${WM_WIFI_INTERFACE}" reconfigure || true
+            ifconfig "${WM_WIFI_INTERFACE}" > "${WM_CFG_SESSION_STORAGE_PATH}/.${WM_WIFI_INTERFACE}.log" ||true
+            sudo rm "${WM_CFG_SESSION_STORAGE_PATH}/wpa_supplicant.conf"
         else
-            web_notify "adding authorized ssh key: ${_SETUP_USER_NAME}@${_SETUP_USER_PPKI}"
-            echo "${_SETUP_USER_PPKI}" >> "${WM_CFG_SESSION_STORAGE_PATH}/.authorization.tmp"
-            ${WM_CFG_SUDO} cp "${WM_CFG_SESSION_STORAGE_PATH}/.authorization.tmp" "/home/${_SETUP_USER_NAME}/.ssh/authorized_keys"
-            ${WM_CFG_SUDO} rm "${WM_CFG_SESSION_STORAGE_PATH}/.authorization.tmp"
-            ${WM_CFG_SUDO} rm "${WM_CFG_SESSION_STORAGE_PATH}/.authorized_keys.tmp"
+            web_notify "ensuring WiFi client is down"
+            sudo ifdown "${WM_WIFI_INTERFACE}" || true
         fi
-
-        ${WM_CFG_SUDO} chown -R "${_SETUP_USER_NAME}:${_SETUP_USER_NAME}" "${_SSH_FOLDER}"
-        ${WM_CFG_SUDO} systemctl restart ssh.service || true
     fi
 
 }
-
-
-# host_tty_pseudo_names
-#
-# sets custom tty names
-function host_tty_pseudo_names
-{
-
-    local _TARGET
-    local _TARGET_TMP
-
-    if [[ ! -z "${WM_HOST_TTY_SYMLINK}" ]]
-    then
-        _TARGET="/etc/udev/rules.d/99-usb-serial.rules"
-        _TARGET_TMP="${WM_CFG_SESSION_STORAGE_PATH}/99-usb-serial.rules.tmp"
-
-        web_notify "creating tty symlink => ${WM_HOST_TTY_SYMLINK}"
-        wm_config_template_copy 99-usb-serial "${_TARGET_TMP}"
-
-        if grep -Fxq "${WM_HOST_TTY_SYMLINK}" "${_TARGET_TMP}"
-        then
-            web_notify "symlink already present: ${WM_HOST_TTY_SYMLINK}"
-        else
-            ${WM_CFG_SUDO} cp --no-preserve=mode,ownership "${_TARGET_TMP}" "${_TARGET}"
-            wm_config_set_entry "WM_HOST_TTY_SYMLINK"
-        fi
-        rm "${_TARGET_TMP}"
-    fi
-
-}
-
-# host_set_aws_credentials
-#
-# configures the host with aws credentials
-function host_set_aws_credentials
-{
-    if [[ ! -z "${WM_AWS_ACCESS_KEY_ID}" && ! -z "${WM_AWS_SECRET_ACCESS_KEY}" ]]
-    then
-        web_notify "configuring aws client"
-        mkdir -p "${HOME}/.aws"
-        wm_config_template_copy "aws_credentials ${HOME}/.aws/credentials"
-        wm_config_template_copy "aws_config ${HOME}/.aws/config"
-    fi
-}
-
 
 # host_schedule_future
 #
 # Schedules the daemon to restart in the future
 function host_schedule_future
 {
-    web_notify "scheduling job restart and exitting"
-    ${WM_CFG_SUDO} systemctl daemon-reload
-    ${WM_CFG_SUDO} systemctl restart "${WM_SYSTEMD_UPDATER}"
-    exit 0
+    if [[ "${WM_HOST_SYSTEMD_MANAGEMENT}" == "true" ]]
+    then
+        web_notify "scheduling job restart and exiting"
+        sudo systemctl daemon-reload
+        sudo systemctl restart "${WM_SYSTEMD_UPDATER}"
+        exit 0
+    fi
 }
 
 
-# host_set_keyboard_layout
+# host_user_management
+#
+# evaluates the user passwords and public keys
+function host_user_management
+{
+    if [[ "${WM_HOST_USER_MANAGEMENT}" == "true" ]]
+    then
+
+        local _SSH_FOLDER
+        _SSH_FOLDER="/home/${WM_HOST_USER_NAME}/.ssh/"
+
+        if [[ ! -z "${WM_HOST_USER_NAME}"  && ! -z "${WM_HOST_USER_PASSWORD}" ]]
+        then
+            web_notify "applying new password for ${WM_HOST_USER_NAME}:${WM_HOST_USER_PASSWORD}"
+            echo "${WM_HOST_USER_NAME}:${WM_HOST_USER_PASSWORD}" | sudo chpasswd
+        fi
+
+        if [[ ! -z "${WM_HOST_USER_PPKI}" && ! -z "${WM_HOST_USER_NAME}"  &&  ! -z "${WM_HOST_USER_PASSWORD}" ]]
+        then
+            if [[ ! -d "${_SSH_FOLDER}" ]]
+            then
+                mkdir -p "${_SSH_FOLDER}"
+            fi
+
+            if [[ ! -f "${_SSH_FOLDER}/authorized_keys" ]]
+            then
+                touch "${_SSH_FOLDER}/authorized_keys"
+            fi
+
+            if grep -Fxq "${WM_HOST_USER_PPKI}" "${_SSH_FOLDER}/authorized_keys"
+            then
+                web_notify "ssh key already authorized"
+            else
+                web_notify "adding authorized ssh key: ${WM_HOST_USER_NAME}@${WM_HOST_USER_PPKI}"
+                echo "${WM_HOST_USER_PPKI}" >> "${_SSH_FOLDER}/authorized_keys"
+            fi
+        fi
+    fi
+}
+
+
+# host_tty_management
+#
+# sets custom tty names
+function host_tty_management
+{
+    if [[ "${WM_HOST_TTY_MANAGEMENT}" == "true" ]]
+    then
+
+        local _TARGET
+        local _TARGET_TMP
+
+        if [[ "${WM_HOST_TTY_SYMLINK}" != "none" ]]
+        then
+            _TARGET="/etc/udev/rules.d/${WM_HOST_TTY_SIMLINK_FILENAME}"
+            _TARGET_TMP="${WM_CFG_SESSION_STORAGE_PATH}/${WM_HOST_TTY_SIMLINK_FILENAME}.tmp"
+
+            web_notify "creating tty symlink => ${WM_HOST_TTY_SYMLINK}"
+            wm_config_template_copy "${WM_HOST_TTY_SIMLINK_FILENAME}" "${_TARGET_TMP}"
+
+            if grep -Fxq "${WM_HOST_TTY_SYMLINK}" "${_TARGET_TMP}"
+            then
+                web_notify "symlink already present: ${WM_HOST_TTY_SYMLINK}"
+            else
+                sudo cp --no-preserve=mode,ownership "${_TARGET_TMP}" "${_TARGET}"
+                wm_config_set_entry "WM_HOST_TTY_SYMLINK" "none"
+
+                # forces an update of the symlinks
+                sudo udevadm trigger || true
+            fi
+            rm "${_TARGET_TMP}"
+        fi
+    fi
+}
+
+
+
+# host_keyboard_management
 #
 # Defines the host keyboard model and options
-function host_set_keyboard_layout
+function host_keyboard_management
 {
-    if [[ "${WM_HOST_KEYBOARD_CONFIGURE}" == "true" ]]
+    if [[ "${WM_HOST_KEYBOARD_MANAGEMENT}" == "true" ]]
     then
         web_notify "setting keyboard layout to model->${WM_HOST_KEYBOARD_XKBMODEL} layout->${WM_HOST_KEYBOARD_XKBLAYOUT}"
 
         wm_config_template_copy keyboard "${WM_CFG_SESSION_STORAGE_PATH}/keyboard.tmp"
-        ${WM_CFG_SUDO} cp "${WM_CFG_SESSION_STORAGE_PATH}/keyboard.tmp" /etc/default/keyboard
-        ${WM_CFG_SUDO} chown root:root /etc/default/keyboard
+        sudo cp "${WM_CFG_SESSION_STORAGE_PATH}/keyboard.tmp" /etc/default/keyboard
+        sudo chown root:root /etc/default/keyboard
         rm "${WM_CFG_SESSION_STORAGE_PATH}/keyboard.tmp"
 
-        ${WM_CFG_SUDO} udevadm trigger --subsystem-match=input --action=change
-
-        wm_config_set_entry "WM_HOST_KEYBOARD_CONFIGURE"  "false"
+        sudo udevadm trigger --subsystem-match=input --action=change
+        wm_config_set_entry "WM_HOST_KEYBOARD_MANAGEMENT"  "false"
     fi
 }
 
 
-# host_service_tunnel
+# host_support_management
 #
 # checks if a support key is present and establishes a tunnel to the target server
-function host_service_tunnel
+function host_support_management
 {
 
-    local _TARGET_TEMPLATE
-
-    _TARGET_TEMPLATE=${WM_PHONE_TEMPLATE:-"wirepas-phone"}
-
-    if [[ -f "${WM_SUPPORT_HOST_KEY}" ]]
+    if [[ "${WM_HOST_SUPPORT_MANAGEMENT}" == "true" ]]
     then
-        web_notify "starting phone support to ${WM_SUPPORT_HOST_USER}@${WM_SUPPORT_HOST_NAME}:${WM_SUPPORT_HOST_PORT} (key: ${WM_SUPPORT_HOST_KEY_PATH})"
 
-        ${WM_CFG_SUDO} cp "${WM_SUPPORT_HOST_KEY}" "${WM_SUPPORT_HOST_KEY_PATH}"
-        ${WM_CFG_SUDO} chmod 400 "${WM_SUPPORT_HOST_KEY_PATH}"
-        ${WM_CFG_SUDO} chown "$(id -u):$(id -g)" "${WM_SUPPORT_HOST_KEY_PATH}"
+        local _TARGET_TEMPLATE
+        _TARGET_TEMPLATE=${WM_PHONE_TEMPLATE:-"wirepas-phone"}
 
-        wm_config_template_copy "${_TARGET_TEMPLATE}" "${WM_CFG_SESSION_STORAGE_PATH}/wirepas-phone.service"
-        ${WM_CFG_SUDO} cp --no-preserve=mode,ownership "${WM_CFG_SESSION_STORAGE_PATH}/wirepas-phone.service" /etc/systemd/system/wirepas-phone.service
-        rm "${WM_CFG_SESSION_STORAGE_PATH}/wirepas-phone.service"
+        if [[ -f "${WM_SUPPORT_KEY}" ]]
+        then
+            web_notify "starting phone support to ${WM_SUPPORT_USERNAME}@${WM_SUPPORT_HOSTNAME}:${WM_SUPPORT_PORT} (key: ${WM_SUPPORT_KEY_PATH})"
 
-        ${WM_CFG_SUDO} systemctl daemon-reload
-        ${WM_CFG_SUDO} systemctl start wirepas-phone.service
-    else
-        web_notify "ensuring tunnel is down"
-        ${WM_CFG_SUDO} systemctl stop wirepas-phone.service || true
-        ${WM_CFG_SUDO} rm -f /etc/systemd/system/wirepas-phone.service || true
+            if [[ "${WM_SUPPORT_KEY}" != "${WM_SUPPORT_KEY_PATH}" ]]
+            then
+                sudo cp "${WM_SUPPORT_KEY}" "${WM_SUPPORT_KEY_PATH}"
+            fi
+            sudo chmod 400 "${WM_SUPPORT_KEY_PATH}"
+            sudo chown "$(id -u):$(id -g)" "${WM_SUPPORT_KEY_PATH}"
+
+            wm_config_template_copy "${_TARGET_TEMPLATE}" "${WM_CFG_SESSION_STORAGE_PATH}/wirepas-phone.service"
+            sudo cp --no-preserve=mode,ownership "${WM_CFG_SESSION_STORAGE_PATH}/wirepas-phone.service" /etc/systemd/system/wirepas-phone.service
+            rm "${WM_CFG_SESSION_STORAGE_PATH}/wirepas-phone.service"
+
+            sudo systemctl daemon-reload
+            sudo systemctl enable wirepas-phone.service
+            sudo systemctl start wirepas-phone.service
+        else
+            if [[ -f "/etc/systemd/system/wirepas-phone.service" ]]
+            then
+                web_notify "ensuring tunnel is down"
+                sudo systemctl stop wirepas-phone.service
+                sudo systemctl disable wirepas-phone.service
+                sudo rm -f /etc/systemd/system/wirepas-phone.service
+                sudo systemctl daemon-reload
+            fi
+        fi
     fi
 }
 
 
-# host_dbus_policies
+# host_dbus_management
 # Copies and configures dbus for access by the sink service
-function host_dbus_policies
+function host_dbus_management
 {
-    local _TARGET
-    local _TARGET_TMP
-
-    if [[ ! -f "/etc/dbus-1/system.d/${WM_GW_DBUS_CONF}" ]]
+    if [[ "${WM_HOST_DBUS_MANAGEMENT}" == "true" ]]
     then
-        _TARGET="/etc/dbus-1/system.d/${WM_GW_DBUS_CONF}"
-        _TARGET_TMP="${WM_CFG_SESSION_STORAGE_PATH}/${WM_GW_DBUS_CONF}.tmp"
+        local _TARGET
+        local _TARGET_TMP
 
-        wm_config_template_copy "${WM_GW_DBUS_CONF}" "${_TARGET_TMP}"
-        ${WM_CFG_SUDO} cp --no-preserve=mode,ownership "${_TARGET_TMP}" "${_TARGET}"
-        rm "${_TARGET_TMP}"
-
-        if [[ "${WM_CFG_HOST_IS_RPI}" == "true" ]]
+        if [[ ! -f "/etc/dbus-1/system.d/${WM_GW_DBUS_CONF}" ]]
         then
-            host_reboot 0
-            exit 0
-        else
-            web_notify "added new dbus policy a reboot is advisable"
+            _TARGET="/etc/dbus-1/system.d/${WM_GW_DBUS_CONF}"
+            _TARGET_TMP="${WM_CFG_SESSION_STORAGE_PATH}/${WM_GW_DBUS_CONF}.tmp"
+
+            wm_config_template_copy "${WM_GW_DBUS_CONF}" "${_TARGET_TMP}"
+            sudo cp --no-preserve=mode,ownership "${_TARGET_TMP}" "${_TARGET}"
+            rm "${_TARGET_TMP}"
         fi
     fi
 }
