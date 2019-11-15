@@ -21,6 +21,10 @@ function list_default_keys
 # The single quotation is intentionally used to avoid expansion
 function _ignored_values
 {
+    export USER
+    export HOME
+    export WM_GW_ID
+
     USER='${USER}'
     HOME='${HOME}'
     WM_GW_ID='`hostname`'
@@ -30,8 +34,8 @@ function replace_default
 {
     for _entry in $(env | grep WM_ )
     do
-        _key=$(echo ${_entry} | awk '{split($0,a,"="); print a[1]}')
-        _value=$(echo ${_entry} | awk '{split($0,a,"="); print a[2]}')
+        _key=$(echo "${_entry}" | awk '{split($0,a,"="); print a[1]}')
+        _value=$(echo "${_entry}" | awk '{split($0,a,"="); print a[2]}')
 
         if [[ "${_key}" != "WM_"* ]]
         then
@@ -44,7 +48,7 @@ function replace_default
         fi
 
         echo "Replacing ##${_key}_DEFAULT -> *default=${_value}*"
-        sed -i "s@##${_key}_DEFAULT\>@*default=${_value}*@" "${PARAM_TABLE}"
+        sed -i "s@##${_key}_DEFAULT@*default=${_value}*@" "${PARAM_TABLE}"
     done
 }
 
@@ -62,7 +66,7 @@ function replace_key
         fi
 
         echo "Replacing ##${_key} -> **${_key}**"
-        sed -i "s@##${_key}\>@**${_key}**@" "${PARAM_TABLE}"
+        sed -i "s@##${_key}@**${_key}**@" "${PARAM_TABLE}"
 
     done
 }
@@ -72,6 +76,8 @@ function update_target
 {
     PARAM_TABLE=${1}
     TARGET=${2}
+
+    _ignored_values
 
     set -o allexport
     source environment/default.env

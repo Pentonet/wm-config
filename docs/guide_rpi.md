@@ -1,5 +1,15 @@
 # Installing wm-config on a RPi
 
+<!-- MarkdownTOC -->
+
+1.  [Flashing Raspbian](#flashing-raspbian)
+2.  [Creating the custom.env file](#creating-the-customenv-file)
+3.  [Cloning and installing wm-config](#cloning-and-installing-wm-config)
+4.  [Executing wm-config](#executing-wm-config)
+5.  [Disabling password based logins](#disabling-password-based-logins)
+
+<!-- /MarkdownTOC -->
+
 These steps require that you have physical access to:
 
 1.  Raspberry Pi (RPi) with power and sdcard;
@@ -17,11 +27,11 @@ need to have a full fledge GUI for the purpose of running the gateway
 services.
 
 You can get the Raspbian image from the [official Raspberry Pi foundation
-website][https://www.raspberrypi.org/downloads/raspbian/].
+website][link_raspbian].
 
 Once the download completes, flash the sdcard that you will be using with
 the RPi. We recommend using
-[etcher for flashing][https://www.balena.io/etcher/].
+[etcher for flashing][link_etcher].
 
 After the flashing completes, enable ssh access by dropping an empty
 file named ssh inside the sdcard's /boot partition.
@@ -52,7 +62,7 @@ the IP printed at the end of the boot sequence or
 
 Before you continue throughout this section, please ensure that you have
 a MQTT broker running and that you can reach it from your network. There
-is no requirement from the gateway point of view regarding which broker
+is no requirement from the gateway's point of view regarding which broker
 to use, as long as it supports MQTT version 3.1.
 
 We will now create a custom.env file that will tell the gateway to send
@@ -68,24 +78,24 @@ Let's assume the following details about your MQTT broker:
 Open a text editor and copy the following settings:
 
 ```yaml
----
-# MQTT location
-WM_SERVICES_MQTT_HOSTNAME=mqttbroker.atmydomain.com
+   ---
+   # MQTT location
+   WM_SERVICES_MQTT_HOSTNAME=mqttbroker.atmydomain.com
 
-# MQTT credentials
-WM_SERVICES_MQTT_USERNAME=mqttuser
-WM_SERVICES_MQTT_PASSWORD=mqttuserpassword
-WM_SERVICES_MQTT_PORT=8883
+   # MQTT credentials
+   WM_SERVICES_MQTT_USERNAME=mqttuser
+   WM_SERVICES_MQTT_PASSWORD=mqttuserpassword
+   WM_SERVICES_MQTT_PORT=8883
 ```
 
 Next we set the gateway version by appending the following information to
 the file:
 
 ```yaml
-# Wirepas Linux (dbus) Gateway
-# Uncomment and set the following keys to specify the gateway build version
-WM_GW_VERSION=v1.2.0
-WM_GW_IMAGE=wirepas/gateway
+   # Wirepas Linux (dbus) Gateway
+   # Uncomment and set the following keys to specify the gateway build version
+   WM_GW_VERSION=v1.2.0
+   WM_GW_IMAGE=wirepas/gateway
 ```
 
 As a last step we change the RPi hostname from the default
@@ -94,36 +104,43 @@ hostname, *raspberry*, to  a custom one, *wm-config-rpi*.
 We do so by appending the following information file:
 
 ```yaml
-# Raspi settings
-WM_HOST_HOSTNAME="myrpi"
+   # Raspi settings
+   WM_HOST_HOSTNAME="myrpi"
 ```
 
 After these steps, your text editor should contain the following information:
 
 ```yaml
----
-# MQTT location
-WM_SERVICES_MQTT_HOSTNAME=mqttbroker.atmydomain.com
+   ---
+   # MQTT location
+   WM_SERVICES_MQTT_HOSTNAME=mqttbroker.atmydomain.com
 
-# MQTT credentials
-WM_SERVICES_MQTT_USERNAME=mqttuser
-WM_SERVICES_MQTT_PASSWORD=mqttuserpassword
-WM_SERVICES_MQTT_PORT=8883
+   # MQTT credentials
+   WM_SERVICES_MQTT_USERNAME=mqttuser
+   WM_SERVICES_MQTT_PASSWORD=mqttuserpassword
+   WM_SERVICES_MQTT_PORT=8883
 
-# Wirepas Linux (dbus) Gateway
-# Uncomment and set the following keys to specify the gateway build version
-WM_GW_VERSION=v1.2.0
-WM_GW_IMAGE=wirepas/gateway
+   # Wirepas Linux (dbus) Gateway
+   # Uncomment and set the following keys to specify the gateway build version
+   WM_GW_VERSION=v1.2.0
+   WM_GW_IMAGE=wirepas/gateway
 
-# If you want to use port 1883 please uncomment the following lines
-# WM_SERVICES_MQTT_PORT=1883
-# WM_SERVICES_ALLOW_UNSECURE=true
+   # If you want to use port 1883 please uncomment the following lines
+   # WM_SERVICES_MQTT_PORT=1883
+   # WM_SERVICES_ALLOW_UNSECURE=true
 
-# Raspi settings
-WM_HOST_HOSTNAME="myrpi"
+   # Raspi settings
+   WM_HOST_HOSTNAME="myrpi"
 ```
 
 Save it under your filesystem, eg, under *~/custom.env*.
+
+As an alternative, you can use the installation scripts interactive mode
+to create a minimal configuration file:
+
+```bash
+   setup.sh --interactive 
+```
 
 ## Cloning and installing wm-config
 
@@ -165,12 +182,8 @@ The installation of wm-config is now complete.
 
 ## Executing wm-config
 
-Confirm that custom.env is present under */boot/wirepas/custom.env* and
-that it matches the settings
-as [outlined above](#Creating-the-custom.env-file).
-
-If all looks good, call wm-config (from any directory)
-to start the installation on your RPi:
+Call wm-config (from any directory) to start the 
+installation on your RPi:
 
 ```bash
    wm-config
@@ -187,7 +200,7 @@ what the program is doing in the background.
 To do so, use the following command:
 
 ```bash
-   journalctl -uf wirrepas-updater.service
+   journalctl -uf wirepas-updater.service
 ```
 
 It will show and follow wm-config's output.
@@ -199,7 +212,9 @@ through it new hostname:
    ssh pi@myrpi.local
 ```
 
-The gateway services should also be up and running. Through wm-config:
+The gateway services should also be up and running. 
+
+Through wm-config:
 
 ```bash
    wm-config --status
@@ -216,7 +231,7 @@ The gateway services should also be up and running. Through wm-config:
 Leaving a RPi with the default password on is not a good idea.
 
 We recommend that you use public private key pairs, change the default
-password and disable password based ssh logins:
+password and disable password based ssh logins.
 
 For your convenience, all of these steps can be done automatically using
 wm-config and its configuration file.
@@ -266,3 +281,7 @@ changed. Confirm it by accessing the RPi with the private key:
 
 Remember, that all of these changes can be done by mounting the RPi
 sdcard on your desktop or laptop machine.
+
+[link_raspbian]: https://www.raspberrypi.org/downloads/raspbian/
+
+[link_etcher]: https://www.balena.io/etcher/
