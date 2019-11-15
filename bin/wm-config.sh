@@ -42,7 +42,7 @@ function _get_platform()
 
 # _import_modules
 #
-# fetch fucntions from the modules folder
+# fetch functions from the modules folder
 function _import_modules
 {
     local _CFILE
@@ -87,6 +87,7 @@ function _defaults
         fi
     fi
 
+    mkdir -p "${WM_CFG_SETTINGS_PATH}"
     mkdir -p "${WM_CFG_UPDATE_PATH}"
     mkdir -p "${WM_CFG_HOST_DEPENDENCIES_PATH}"
     mkdir -p "${WM_CFG_TEMPLATE_PATH}"

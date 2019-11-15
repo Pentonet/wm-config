@@ -17,7 +17,7 @@ function wm_config_load_settings
         set +o allexport
     else
         web_notify "could not find ${WM_CFG_SETTINGS_CUSTOM}"
-        mkdir -p "${WM_CFG_SETTINGS_CUSTOM}"
+        mkdir -p "${WM_CFG_SETTINGS_PATH}"
         cp "${WM_CFG_INSTALL_PATH}/environment/custom.env" "${WM_CFG_SETTINGS_CUSTOM}"
     fi
 
