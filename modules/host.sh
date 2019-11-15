@@ -152,6 +152,7 @@ function host_clock_management
     if [[ "${WM_HOST_CLOCK_MANAGEMENT}" == "true" ]]
     then
         web_notify "restarting systemd-timesyncd"
+        sudo systemctl daemon-reload
         systemctl status systemd-timesyncd >> "${WM_CFG_INSTALL_PATH}/.wirepas_session" || true
         sudo systemctl restart systemd-timesyncd  || true
     fi
@@ -240,7 +241,7 @@ function host_ip_management
 # configures the avahi daemon
 function host_avahi_daemon_management
 {
-    if [[ "${WM_HOST_AVAHI_DAEMON_MANAGEMENT}" == "true" ]]
+    if [[ "${WM_HOST_AVAHI_DAEMON_MANAGEMENT}" == "true" && ! -f /etc/avahi/services/ssh.service ]]
     then
         web_notify "advertising avahi service: ${WM_CFG_HOST_DEPENDENCIES_PATH}/ssh.service"
         sudo cp "${WM_CFG_HOST_DEPENDENCIES_PATH}/ssh.service" /etc/avahi/services/
@@ -347,8 +348,9 @@ function host_wifi_management
             web_notify "configuring WiFi client to: ${WM_WIFI_AP_SSID} / ${WM_WIFI_AP_PASSWORD}"
             wm_config_template_copy "${_TEMPLATE}" "${WM_CFG_SESSION_STORAGE_PATH}/wpa_supplicant.conf"
             sudo cp --no-preserve=mode,ownership  "${WM_CFG_SESSION_STORAGE_PATH}/wpa_supplicant.conf" /etc/wpa_supplicant/wpa_supplicant.conf
+            sudo ifconfig "${WM_WIFI_INTERFACE}" up || true
             sudo wpa_cli -i "${WM_WIFI_INTERFACE}" reconfigure || true
-            ifconfig "${WM_WIFI_INTERFACE}" > "${WM_CFG_SESSION_STORAGE_PATH}/.${WM_WIFI_INTERFACE}.log" ||true
+            ifconfig "${WM_WIFI_INTERFACE}" > "${WM_CFG_SESSION_STORAGE_PATH}/.${WM_WIFI_INTERFACE}.log" || true
             sudo rm "${WM_CFG_SESSION_STORAGE_PATH}/wpa_supplicant.conf"
         else
             web_notify "ensuring WiFi client is down"
@@ -390,7 +392,7 @@ function host_user_management
             echo "${WM_HOST_USER_NAME}:${WM_HOST_USER_PASSWORD}" | sudo chpasswd
         fi
 
-        if [[ ! -z "${WM_HOST_USER_PPKI}" && ! -z "${WM_HOST_USER_NAME}"  &&  ! -z "${WM_HOST_USER_PASSWORD}" ]]
+        if [[ ! -z "${WM_HOST_USER_PPKI}" && ! -z "${WM_HOST_USER_NAME}" ]]
         then
             if [[ ! -d "${_SSH_FOLDER}" ]]
             then
