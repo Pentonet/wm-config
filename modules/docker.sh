@@ -118,36 +118,28 @@ function docker_backwards_compat_sink_service()
 # pulls and recreates the services
 function docker_redeploy
 {
-    local _COMPOSE_PATH
-    local _AS_DAEMON
-    local _FORCE_RECREATE
-    local _cmd
+    local _compose_path
+    local _force_recreate
+    local _image_digest_local
+    local _image_digest_pull
 
-    _COMPOSE_PATH=${1:-"${WM_CFG_GATEWAY_PATH}/docker-compose.yml"}
-    _AS_DAEMON=${2:-"true"}
-    _FORCE_RECREATE=${3:-"${WM_DOCKER_FORCE_RECREATE}"}
+    _compose_path=${1:-"${WM_CFG_GATEWAY_PATH}/docker-compose.yml"}
+    _force_recreate=${WM_DOCKER_FORCE_RECREATE:-}
+    _image_digest_local=$(docker image ls "${WM_GW_IMAGE}:${WM_GW_VERSION}" --format "{{.ID}}: {{.Repository}}")
 
-    _cmd="yes | docker-compose -f ${_COMPOSE_PATH} pull --ignore-pull-failures || true"
-    web_notify "pulling updates to service images: ${_cmd}"
-    eval "${_cmd}"
+    web_notify "pulling updates to service images: ${_image_digest_local}"
+    yes | docker-compose -f "${_compose_path}" pull --ignore-pull-failures || true
 
-    if [[ "${_FORCE_RECREATE}" == "true" ]]
+    if [[ "${_force_recreate}" == "true" ]]
     then
-        FLAG_RECREATE="--force-recreate"
+        _flag_recreate="--force-recreate"
     else
-        FLAG_RECREATE=""
+        _flag_recreate=
     fi
 
-    if [[ "${_AS_DAEMON}" == "true" ]]
-    then
-        FLAG_DAEMON="-d"
-    else
-        FLAG_DAEMON=""
-    fi
-
-    _cmd="yes | docker-compose -f ${_COMPOSE_PATH} up ${FLAG_DAEMON} ${FLAG_RECREATE} --remove-orphans || true"
-    web_notify "starting composition: ${_cmd}"
-    eval "${_cmd}"
+    _image_digest_pull=$(docker image ls "${WM_GW_IMAGE}:${WM_GW_VERSION}" --format "{{.ID}}: {{.Repository}}")
+    web_notify "starting composition: ${_image_digest_pull}"
+    yes | docker-compose -f "${_compose_path}" up -d ${_flag_recreate} --remove-orphans || true
 }
 
 
@@ -177,7 +169,7 @@ function docker_fetch_settings
     if [[ ! -z "${WM_CFG_UPDATE_PATH}" && ! -z "${WM_CFG_UPDATER_IMAGE}" ]]
     then
         wm_config_template_copy "docker-compose.settings" "${WM_CFG_UPDATE_PATH}/docker-compose.yml"
-        docker_redeploy "${WM_CFG_UPDATE_PATH}/docker-compose.yml" "false" "true"
+        docker_redeploy "${WM_CFG_UPDATE_PATH}/docker-compose.yml"
         sudo systemctl daemon-reload
         sudo udevadm trigger
     fi
@@ -224,7 +216,7 @@ function docker_append_service_logging()
     local _COMPOSE_PATH
     _COMPOSE_PATH=${1}
 
-    if [[ ! -z "${WM_SERVICES_FLUENTD_HOSTNAME}" ]]
+    if [[ ! -z "${WM_SERVICES_FLUENTD_HOSTNAME}" && "${WM_SERVICES_FLUENTD_DOCKER_CLI}" == "true" ]]
     then
         wm_config_template_copy docker-compose.lxgw-fluentd-logging "${_COMPOSE_PATH}" ">>"
     else

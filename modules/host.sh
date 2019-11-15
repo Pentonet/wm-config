@@ -485,7 +485,6 @@ function host_support_management
         if [[ -f "${WM_SUPPORT_KEY}" ]]
         then
             web_notify "starting phone support to ${WM_SUPPORT_USERNAME}@${WM_SUPPORT_HOSTNAME}:${WM_SUPPORT_PORT} (key: ${WM_SUPPORT_KEY_PATH})"
-
             if [[ "${WM_SUPPORT_KEY}" != "${WM_SUPPORT_KEY_PATH}" ]]
             then
                 sudo cp "${WM_SUPPORT_KEY}" "${WM_SUPPORT_KEY_PATH}"

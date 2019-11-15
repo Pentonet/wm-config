@@ -7,9 +7,10 @@
         privileged: true
         stdin_open: true
         tty: true
+
         ${WM_GW_TRANSPORT_SERVICE_NETWORK}
 
-        restart: always
+        ${WM_GW_TRANSPORT_SERVICE_RESTART_POLICY}
 
         environment:
             - PYTHONUNBUFFERED=true
@@ -24,6 +25,7 @@
             - WM_SERVICES_CERTIFICATE_CHAIN=${WM_SERVICES_CERTIFICATE_CHAIN}
             - WM_SERVICES_GATEWAY_IGNORED_ENDPOINTS_FILTER=${WM_SERVICES_GATEWAY_IGNORED_ENDPOINTS_FILTER}
             - WM_SERVICES_GATEWAY_WHITENED_ENDPOINTS_FILTER=${WM_SERVICES_GATEWAY_WHITENED_ENDPOINTS_FILTER}
+            - WM_DEBUG_LEVEL=${WM_GW_DEBUG_LEVEL}
 
 
         volumes:

@@ -83,6 +83,7 @@ function _defaults
             rm -fv "${WM_CFG_SETTINGS_CUSTOM}"
             sudo cp --no-preserve=mode,ownership "${WM_CFG_SETTINGS_RPI_BOOT}" "${WM_CFG_SETTINGS_CUSTOM}"
             sudo chown "$(id -u):$(id -g)" "${WM_CFG_SETTINGS_CUSTOM}"
+            sudo mv "${WM_CFG_SETTINGS_RPI_BOOT}" "${WM_CFG_SETTINGS_RPI_BOOT}.loaded"
         fi
     fi
 

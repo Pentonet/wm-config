@@ -255,7 +255,7 @@ function wm_config_device_enumeration
             WM_GW_SINK_LIST+=("${_DEVICE}")
         done
     else
-        web_notify "Skipping device enumeration - setting sink to ${WM_GW_SINK_UART_PORT} (WM_GW_SINK_UART_PORT)"
+        web_notify "skipping device enumeration - setting sink port to ${WM_GW_SINK_UART_PORT}"
         WM_GW_SINK_LIST=( "${WM_GW_SINK_UART_PORT}" )
     fi
 }
