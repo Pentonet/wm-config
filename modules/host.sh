@@ -132,7 +132,6 @@ function host_pip_install
     if [[ -f "${_REQUIREMENTS}" ]]
     then
         source "${WM_CFG_PYTHON_VIRTUAL_ENV}/bin/activate"
-
         web_notify "installing python requirements ${_REQUIREMENTS} (under ${WM_CFG_PYTHON_VIRTUAL_ENV})"
         pip install -r "${_REQUIREMENTS}"
     fi

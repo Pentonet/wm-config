@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Copyright 2019 Wirepas Ltd
 
+set -e
+
 # install docker if not yet present
 if ! command -v docker
 then
@@ -38,9 +40,9 @@ then
     else
         # if the convenience script fails, please refer to
         # https://github.com/docker/for-linux/issues/709
-        curl -fsSL https://get.docker.com -o get-docker.sh || true
-        sudo sh get-docker.sh
-        rm get-docker.sh
+        sudo curl -fsSL https://get.docker.com -o "${HOME}/get-docker.sh"
+        sudo sh "${HOME}/get-docker.sh"
+        sudo rm -f "${HOME}/get-docker.sh"
     fi
 fi
 
@@ -53,9 +55,10 @@ sudo apt-get install -y \
 
 if ! command -v pip3
 then
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py || true
-    python3 get-pip.py --user
-    rm get-pip.py
+    sudo curl https://bootstrap.pypa.io/get-pip.py -o "${HOME}/get-pip.py"
+    sudo chown "${USER}:${USER}" "${HOME}/get-pip.py"
+    python3 "${HOME}/get-pip.py" --user
+    sudo rm -f "${HOME}/get-pip.py"
 fi
 
 if ! command -v virtualenv
