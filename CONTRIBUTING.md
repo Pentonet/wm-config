@@ -66,14 +66,14 @@ master history, please use rebase and merge. Otherwise, pick squash and merge.
 We would like to keep the branches under order. Please try to observe the
 following rules:
 
--   **feature-\<name\>** : for a branch related to feature *name*
+-   **feature-\\&lt;name>** : for a branch related to feature *name*
 
--   **fix-\<name\>** : for a branch that addresses the *name* bug
+-   **fix-\\&lt;name>** : for a branch that addresses the *name* bug
 
--   **update-\<name\>** : for a branch that aims to update *name*
+-   **update-\\&lt;name>** : for a branch that aims to update *name*
     documentation or supporting *name* files
 
--   **add-\<name\>** : for a branch that aims to add configuration file
+-   **add-\\&lt;name>** : for a branch that aims to add configuration file
     for an integration/tool *name*
 
 ## Coding conventions

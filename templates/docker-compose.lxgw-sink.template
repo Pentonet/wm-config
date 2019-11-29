@@ -1,24 +1,25 @@
 
-    wm-dbus-sink-${WM_SINK_UART_PORT_SERVICE_NAME}-id-${WM_SINK_ID}:
-        container_name: wm-dbus-sink-${WM_SINK_UART_PORT_SERVICE_NAME}-id-${WM_SINK_ID}
-        image: ${WM_LXGW_IMAGE}:${WM_LXGW_VERSION}
+    wm-gw-sink-${WM_GW_SINK_UART_PORT_NAME}-id-${WM_GW_SINK_ID}:
+        container_name: wm-gw-sink-${WM_GW_SINK_UART_PORT_NAME}-id-${WM_GW_SINK_ID}
+        image: ${WM_GW_IMAGE}:${WM_GW_VERSION}
 
-        user: root
+        ${WM_GW_SINK_SERVICE_USER}
         privileged: true
         stdin_open: true
         tty: true
+        ${WM_GW_SINK_SERVICE_RESTART_POLICY}
 
-        restart: always
+        ${WM_GW_SINK_SERVICE_NETWORK}
+
         environment:
             - WM_SINK_UART_PORT=${WM_SINK_UART_PORT}
             - WM_SINK_UART_BITRATE=${WM_SINK_UART_BITRATE}
             - WM_SINK_ID=${WM_SINK_ID}
+            - WM_DEBUG_LEVEL=${WM_GW_DEBUG_LEVEL}
 
         volumes:
             - /dev:/dev
             - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+            - ${WM_GW_SERVICES_USER_PATH}:/etc/wirepas/gateway
 
-        logging:
-           driver: journald
-
-        command: sink
+        command: ${WM_GW_SINK_SERVICE_CMD}

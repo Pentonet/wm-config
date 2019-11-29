@@ -7,9 +7,9 @@ Requires=network-online.target
 
 [Service]
 User=${WM_HOST_USER_NAME}
-ExecStart=/bin/bash ${WM_CFG_PERIODIC_WORK_PATH}/run.sh
+ExecStart=/bin/bash ${HOME}/.local/bin/wm-config
 Restart=always
-RestartSec=${WM_CFG_SYSTEMD_UPDATER_INTERVAL}s
+RestartSec=${WM_SYSTEMD_UPDATER_INTERVAL}s
 
 [Install]
 WantedBy=multi-user.target

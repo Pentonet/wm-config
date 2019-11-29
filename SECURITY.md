@@ -5,4 +5,4 @@
 Please report security vulnerabilities to opensource@wirepas.com with the
 following subject:
 
-\[SECURITY\] wirepas/wm-config - brief
+\[SECURITY] wirepas/wm-config - brief

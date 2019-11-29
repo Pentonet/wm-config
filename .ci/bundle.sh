@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-./pack.sh
+./setup.sh --pack

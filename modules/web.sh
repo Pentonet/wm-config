@@ -1,28 +1,26 @@
 #!/usr/bin/env bash
-# Wirepas Oy
+# Copyright 2019 Wirepas Ltd
 #
 # functions to interact with web services
 
+WM_CFG_WEBHOOK_POST_URL=${WM_CFG_WEBHOOK_POST_URL:-}
+
 function web_notify
 {
-    escaped_msg=$(echo ${1}|tr -d '"')
-    message=$(printf  "*$(hostname)@$(date --iso-8601=seconds)*: %s" ${escaped_msg} )
-    echo $message
+    local _ESCAPED_MSG
+    local _MESSAGE
 
-    if [[ ! -z "${WM_SLACK_WEBHOOK}" ]]
+    _ESCAPED_MSG=$(echo ${1}|tr -d '"')
+    _MESSAGE=$(printf  "*$(hostname)@$(date --iso-8601=seconds)*: %s" "${_ESCAPED_MSG}" )
+
+    echo "${_MESSAGE}"
+
+    if [[ ! -z "${WM_CFG_WEBHOOK_POST_URL}" ]]
     then
         curl -s -X POST \
              -H 'Content-type: application/json' \
-             --data "{\"text\": \"${message}\"}" \
-             "${WM_SLACK_WEBHOOK}"  > /dev/null || true
-    fi
-
-    if [[ ! -z "${WM_MSTEAMS_WEBHOOK}" ]]
-    then
-        curl -s -X POST \
-             -H 'Content-type: application/json' \
-             --data "{\"text\": \"${message}\"}" \
-             "${WM_MSTEAMS_WEBHOOK}"  > /dev/null || true
+             --data "{\"text\": \"${_MESSAGE}\"}" \
+             "${WM_CFG_WEBHOOK_POST_URL}"  > /dev/null || true
     fi
 }
 

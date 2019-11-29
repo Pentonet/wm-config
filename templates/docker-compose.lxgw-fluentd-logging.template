@@ -1,0 +1,10 @@
+        logging:
+            driver: "fluentd"
+            options:
+                fluentd-address: ${WM_SERVICES_FLUENTD_HOSTNAME}:${WM_SERVICES_FLUENTD_PORT}
+                tag: ${WM_SERVICES_FLUENTD_TAG}.${WM_SERVICES_FLUENTD_RECORD}
+                fluentd-async-connect: ${WM_SERVICES_FLUENTD_ASYNC_CONNECT}
+                fluentd-sub-second-precision: ${WM_SERVICES_FLUENTD_SUB_SECOND_PRECISION}
+                fluentd-buffer-limit: ${WM_SERVICES_FLUENTD_BUFFER_LIMIT}
+                fluentd-retry-wait: ${WM_SERVICES_FLUENTD_RETRY_WAIT}
+                fluentd-max-retries: ${WM_SERVICES_FLUENTD_MAX_RETRIES}
