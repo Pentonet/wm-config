@@ -167,6 +167,11 @@ function wm_config_set_entry
 # file is replace. Pass in an optional operator as a 3rd argument
 function wm_config_template_copy
 {
+    local _TEMPLATE_NAME
+    local _OUTPUT_PATH
+    local _OPERATOR
+    local _TEMPLATE
+
     # input name is basename
     _TEMPLATE_NAME=${1:-"defaults"}
     _OUTPUT_PATH=${2:-"template.output"}
@@ -175,11 +180,11 @@ function wm_config_template_copy
     # if set, changes the output filename
     mkdir -p "${WM_CFG_TEMPLATE_PATH}"
 
-    TEMPLATE=${WM_CFG_TEMPLATE_PATH}/${_TEMPLATE_NAME}.template
-    web_notify "generating ${_OUTPUT_PATH} based on ${TEMPLATE}"
+    _TEMPLATE=${WM_CFG_TEMPLATE_PATH}/${_TEMPLATE_NAME}.template
+    web_notify "generating ${_OUTPUT_PATH} based on ${_TEMPLATE}"
     rm -f "${_OUTPUT_PATH}.tmp"
     ( echo "cat <<EOF ${_OPERATOR} ${_OUTPUT_PATH}" && \
-      cat "${TEMPLATE}" && \
+      cat "${_TEMPLATE}" && \
       echo "EOF" \
     ) > "${_OUTPUT_PATH}.tmp"
     . "${_OUTPUT_PATH}.tmp"
