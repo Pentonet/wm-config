@@ -68,7 +68,6 @@ Dependencies needed by the tool are automatically installed if
 you allow it to do do.
 
 <!-- auto_start -->
-
 ## Customizing wm-config - creating a custom.env file
 
 The wm-config utility is highly configurable through a single environment file. The
@@ -90,32 +89,31 @@ understand how you can control where to publish data and which version of the ga
 
 The keys that allow you to change such behaviour are the following ones:
 
-| **Key**                             | **Description and default value**                                                                      |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| **WM_GW_IMAGE**                     | The name of the WM Gateway Docker image to pull  (_default=wirepas/gateway_)                           |
-| **WM_GW_VERSION**                   | The build or docker tag to use (_default=latest_)                                                      |
-| _MQTT hostname and credentials_     |                                                                                                        |
-| **WM_SERVICES_MQTT_HOSTNAME**       | A host where to push the gateway data, eg, MQTT broker hostname or ip  (_default=host.extwirepas.com_) |
-| **WM_SERVICES_MQTT_USERNAME**       | The MQTT username (_default=mqttuser_)                                                                 |
-| **WM_SERVICES_MQTT_PASSWORD**       | The MQTT's username password corresponding (_default=uiaidujfk1897fyeu023849sdh?(_)                    |
-| **WM_SERVICES_MQTT_PORT**           | Defines the MQTT port to use (unsecure 1883, secure 8883) (_default=8883_)                             |
-| **WM_SERVICES_MQTT_ALLOW_UNSECURE** | Must be set to true to allow unsecure connections, eg, to port 1883 (_default=unset_)                  |
+| **Key**                           | **Description and default value**                                                                               |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **WM_GW_IMAGE**                     | The name of the WM Gateway Docker image to pull  (*default=wirepas/gateway*)                                        |
+| **WM_GW_VERSION**                   | The build or docker tag to use (*default=latest*)                                                        |
+| *MQTT hostname and credentials*   |                                                                                                                 |
+| **WM_SERVICES_MQTT_HOSTNAME**       | A host where to push the gateway data, eg, MQTT broker hostname or ip  (*default=host.extwirepas.com*)    |
+| **WM_SERVICES_MQTT_USERNAME**       | The MQTT username (*default=mqttuser*)                                                         |
+| **WM_SERVICES_MQTT_PASSWORD**       | The MQTT's username password corresponding (*default=uiaidujfk1897fyeu023849sdh?(*)                                |
+| **WM_SERVICES_MQTT_PORT**           | Defines the MQTT port to use (unsecure 1883, secure 8883) (*default=8883*)                     |
+| **WM_SERVICES_MQTT_ALLOW_UNSECURE** | Must be set to true to allow unsecure connections, eg, to port 1883 (*default=unset*) |
 
 When using a Raspberry Pi, it is useful to set a unique hostname to allow easy ssh through the advertised avahi name.
 Besides that, you can also enable and disable password based access as well as private public key based access.
 
 Here are the keys for such purpose:
 
-| **Key**                               | **Description and default value**                                        |
-| ------------------------------------- | ------------------------------------------------------------------------ |
-| **WM_HOST_HOSTNAME**                  | Sets the hostname of the host (_default=wm-evk_)                         |
-| **WM_HOST_USER_PPKI**                 | The public key to authorize in the ssh authorized keys (_default=unset_) |
-| **WM_HOST_SSH_ENABLE_PASSWORD_LOGIN** | Enables ssh login using plain text passwords (_default=true_)            |
+| **Key**                             | **Description and default value**                                                          |
+| ----------------------------------- | ------------------------------------------------------------------------------------------ |
+| **WM_HOST_HOSTNAME**                  | Sets the hostname of the host (*default=wm-evk*)                                 |
+| **WM_HOST_USER_PPKI**                 | The public key to authorize in the ssh authorized keys (*default=unset*)       |
+| **WM_HOST_SSH_ENABLE_PASSWORD_LOGIN** | Enables ssh login using plain text passwords (*default=true*) |
 
 Please refer to [environment/custom.env][here_environment_custom] for an example on how to define a custom.env file.
 
 A full list of keys is available from [docs/settings.md][here_settings_list].
-
 <!-- auto_end -->
 
 ## Installation

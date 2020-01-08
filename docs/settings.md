@@ -1,5 +1,4 @@
 <!-- auto_start -->
-
 # List of settings
 
 The following tables contain the full set of environmental
@@ -7,9 +6,9 @@ keys used by wm-config:
 
 <!-- MarkdownTOC -->
 
--   [Host and dependency management](#host-and-dependency-management)
--   [Gateway and data broker settings](#gateway-and-data-broker-settings)
--   [Framework feature selection](#framework-feature-selection)
+- [Host and dependency management](#host-and-dependency-management)
+- [Gateway and data broker settings](#gateway-and-data-broker-settings)
+- [Framework feature selection](#framework-feature-selection)
 
 <!-- /MarkdownTOC -->
 
@@ -33,13 +32,13 @@ so under your custom.env file.
 
 ## Host and dependency management
 
-| _WM-CONFIG discovered variables_          | _Description_                                                                                                                                                                                           |
+| *WM-CONFIG discovered variables*          | *Description*                                                                                                                                                                                           |
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **WM_CFG_HOST_ARCH**                      | Host architecture                                                                                                                                                                                       |
 | **WM_CFG_HOST_MODEL**                     | Host model                                                                                                                                                                                              |
 | **WM_CFG_HOST_IS_RPI**                    | True when running on a RPi                                                                                                                                                                              |
 | ---                                       | ---                                                                                                                                                                                                     |
-| _WM-CONFIG static variables_              |                                                                                                                                                                                                         |
+| *WM-CONFIG static variables*              |                                                                                                                                                                                                         |
 | ---                                       | ---                                                                                                                                                                                                     |
 | **WM_CFG_VERSION**                        | Current WM-CONFIG version in use                                                                                                                                                                        |
 | **WM_CFG_ENTRYPOINT**                     | Path where to copy the shell entrypoint (./bin/wm-config.sh) ('default:${HOME}/.local/bin/wm-config')                                                                                                   |
@@ -52,114 +51,114 @@ so under your custom.env file.
 | **WM_CFG_TEMPLATE_PATH**                  | Path where to lookup template files. The templates are files that will be generated based on the current host's environment (default: '${WM_CFG_INSTALL_PATH}/templates')                               |
 | **WM_CFG_SESSION_STORAGE_PATH**           | Path where session logs are stored to (default: '${WM_CFG_SETTINGS_PATH}/.session')                                                                                                                     |
 | ---                                       | ---                                                                                                                                                                                                     |
-| _WM-CONFIG runtime configuration_         |                                                                                                                                                                                                         |
+| *WM-CONFIG runtime configuration*         |                                                                                                                                                                                                         |
 | ---                                       | ---                                                                                                                                                                                                     |
-| **WM_HOST_INSTALL_DEPENDENCIES**          | When _true_ the wm-config will run (if present) ${WM_CFG_HOST_DEPENDENCIES_PATH}/host_requiremens.sh and ${WM_CFG_HOST_DEPENDENCIES_PATH}/requirements.txt (##WM_CFG_HOST_INSTALL_DEPENDENCIES_DEFAULT) |
-| **WM_HOST_UPGRADE_PACKAGES**              | When _true_ the wm-config will ensure all host packages are upgraded (##WM_CFG_HOST_UPGRADE_DEFAULT)                                                                                                    |
-| **WM_CFG_STARTUP_DELAY**                  | Sets the amount of seconds to delay the execution of wm-config (_default=0_)                                                                                                                            |
-| **WM_CFG_REBOOT_DELAY**                   | Sets the amount of seconds to wait before taking an action, such as a status report (_default=2_)                                                                                                       |
-| **WM_CFG_PYTHON_VERSION**                 | Python version to use when creating the virtual environment (_default=python3_)                                                                                                                         |
-| **WM_CFG_PYTHON_VIRTUAL_ENV**             | Path where to create or find the python virtual environment where to install the wm-config dependencies (_default=${HOME}/.local/wirepas/virtualenv/wm-config_)                                         |
-| **WM_CFG_WEBHOOK_POST_URL**               | A webhook where to post information about the wm-config execution (_default=unset_)                                                                                                                     |
+| **WM_HOST_INSTALL_DEPENDENCIES**            | When *true* the wm-config will run (if present) ${WM_CFG_HOST_DEPENDENCIES_PATH}/host_requiremens.sh and ${WM_HOST_INSTALL_DEPENDENCIES_PATH}/requirements.txt (*default=true*) |
+| **WM_HOST_UPGRADE_PACKAGES**                | When *true* the wm-config will ensure all host packages are upgraded (*default=false*)                                                                                                    |
+| **WM_CFG_STARTUP_DELAY**                    | Sets the amount of seconds to delay the execution of wm-config (*default=0*)                                                                                                         |
+| **WM_CFG_REBOOT_DELAY**                     | Sets the amount of seconds to wait before taking an action, such as a status report (*default=2*)                                                                                     |
+| **WM_CFG_PYTHON_VERSION**                   | Python version to use when creating the virtual environment (*default=python3*)                                                                                                           |
+| **WM_CFG_PYTHON_VIRTUAL_ENV**               | Path where to create or find the python virtual environment where to install the wm-config dependencies (*default=${HOME}/.local/wirepas/virtualenv/wm-config*)                                                           |
+| **WM_CFG_WEBHOOK_POST_URL**                 | A webhook where to post information about the wm-config execution (*default=unset*)                                                                                                   |
 | ---                                       | ---                                                                                                                                                                                                     |
-| _WM-CONFIG updater_                       | ---                                                                                                                                                                                                     |
+| *WM-CONFIG updater*                       | ---                                                                                                                                                                                                     |
 | ---                                       | ---                                                                                                                                                                                                     |
-| **WM_CFG_FRAMEWORK_UPDATE**               | When _true_ the wm-config will pull an update image for the framework files (_default=false_)                                                                                                           |
-| **WM_CFG_UPDATER_VERSION**                | The wm-config release version to pull - image's tag  (_default=latest_)                                                                                                                                 |
-| **WM_CFG_UPDATER_IMAGE**                  | The registry and name of the docker image containing the wm-config files (_default=wirepas/wm-config_)                                                                                                  |
+| **WM_CFG_FRAMEWORK_UPDATE**                 | When *true* the wm-config will pull an update image for the framework files (*default=false*)                                                                                         |
+| **WM_CFG_UPDATER_VERSION**                  | The wm-config release version to pull - image's tag  (*default=latest*)                                                                                                                 |
+| **WM_CFG_UPDATER_IMAGE**                    | The registry and name of the docker image containing the wm-config files (*default=wirepas/wm-config*)                                                                                               |
 | ---                                       | ---                                                                                                                                                                                                     |
-| _Docker daemon configuration_             |                                                                                                                                                                                                         |
+| *Docker daemon configuration*             |                                                                                                                                                                                                         |
 | ---                                       | ---                                                                                                                                                                                                     |
-| **WM_DOCKER_STATUS_DELAY**                | The amount of seconds to wait before displaying the gateway service status (_default=2_)                                                                                                                |
-| **WM_DOCKER_USERNAME**                    | The user name to use when logging in with Docker (_default=unset_)                                                                                                                                      |
-| **WM_DOCKER_PASSWORD**                    | The user's password to use when logging in with docker (_default=unset_)                                                                                                                                |
-| **WM_DOCKER_DAEMON_JSON**                 | **Advanced** The JSON text to configure the docker daemon with (_default=unset_)                                                                                                                        |
-| **WM_DOCKER_CLEANUP**                     | Forces a cleanup of all running docker containers and performs a system prune  (_default=true_)                                                                                                         |
-| **WM_DOCKER_FORCE_RECREATE**              | Ensures that containers are recreated whenever the services state is monitored (_default=false_)                                                                                                        |
+| **WM_DOCKER_STATUS_DELAY**                  | The amount of seconds to wait before displaying the gateway service status (*default=2*)                                                                                           |
+| **WM_DOCKER_USERNAME**                      | The user name to use when logging in with Docker (*default=unset*)                                                                                                                         |
+| **WM_DOCKER_PASSWORD**                      | The user's password to use when logging in with docker (*default=unset*)                                                                                                                   |
+| **WM_DOCKER_DAEMON_JSON**                   | **Advanced** The JSON text to configure the docker daemon with (*default=unset*)                                                                                                        |
+| **WM_DOCKER_CLEANUP**                       | Forces a cleanup of all running docker containers and performs a system prune  (*default=true*)                                                                                            |
+| **WM_DOCKER_FORCE_RECREATE**                | Ensures that containers are recreated whenever the services state is monitored (*default=false*)                                                                                     |
 | ---                                       | ---                                                                                                                                                                                                     |
-| _Filesystem and access control_           |                                                                                                                                                                                                         |
+| *Filesystem and access control*           |                                                                                                                                                                                                         |
 | ---                                       | ---                                                                                                                                                                                                     |
 | **WM_HOST_FILESYSTEM_MANAGEMENT**         | When true expands the filesystem  (default: false (x86), true (raspi))                                                                                                                                  |
-| **WM_HOST_HOSTNAME**                      | Sets the hostname of the host (##WM_HOST_SET_HOSTNAME_DEFAULT)                                                                                                                                          |
-| **WM_HOST_USER_NAME**                     | The username of the host's admin user (_default=${USER}_)                                                                                                                                               |
-| **WM_HOST_USER_PASSWORD**                 | The password of the host's admin user (_default=unset_)                                                                                                                                                 |
-| **WM_HOST_USER_PPKI**                     | The public key to authorize in the ssh authorized keys (_default=unset_)                                                                                                                                |
-| **WM_HOST_SSH_ENABLE_PASSWORD_LOGIN**     | Enables ssh login using plain text passwords (_default=true_)                                                                                                                                           |
+| **WM_HOST_HOSTNAME**                        | Sets the hostname of the host (*default=wm-evk*)                                                                                                                                          |
+| **WM_HOST_USER_NAME**                       | The username of the host's admin user (*default=${USER}*)                                                                                                                                     |
+| **WM_HOST_USER_PASSWORD**                   | The password of the host's admin user (*default=unset*)                                                                                                                                 |
+| **WM_HOST_USER_PPKI**                       | The public key to authorize in the ssh authorized keys (*default=unset*)                                                                                                                    |
+| **WM_HOST_SSH_ENABLE_PASSWORD_LOGIN**       | Enables ssh login using plain text passwords (*default=true*)                                                                                                              |
 | ---                                       | ---                                                                                                                                                                                                     |
-| _Periodic job control (requires systemd)_ |                                                                                                                                                                                                         |
+| *Periodic job control (requires systemd)* |                                                                                                                                                                                                         |
 | ---                                       | ---                                                                                                                                                                                                     |
-| **WM_SYSTEMD_UPDATER**                    | The name of the systemd job that monitors the wm-config state (_default=wirepas-updater_)                                                                                                               |
-| **WM_SYSTEMD_UPDATER_INTERVAL**           | (_default=2592000_)                                                                                                                                                                                     |
-| **WM_SYSTEMD_UPDATER_ENABLE**             | When _true_ the systemd job will be enabled and started (_default=true_)                                                                                                                                |
-| **WM_SYSTEMD_UPDATER_DISABLE**            | When _true_ the systemd job will be disabled (_default=false_)                                                                                                                                          |
+| **WM_SYSTEMD_UPDATER**                      | The name of the systemd job that monitors the wm-config state (*default=wirepas-updater*)                                                                                                            |
+| **WM_SYSTEMD_UPDATER_INTERVAL**             | (*default=2592000*)                                                                                                                                                                 |
+| **WM_SYSTEMD_UPDATER_ENABLE**               | When *true* the systemd job will be enabled and started (*default=true*)                                                                                                           |
+| **WM_SYSTEMD_UPDATER_DISABLE**              | When *true* the systemd job will be disabled (*default=false*)                                                                                                                     |
 | ---                                       | ---                                                                                                                                                                                                     |
-| _Internet connectivity_                   |                                                                                                                                                                                                         |
+| *Internet connectivity*                   |                                                                                                                                                                                                         |
 | ---                                       | ----                                                                                                                                                                                                    |
 | **WM_HOST_BLACKLIST_IPV6**                | Blacklists the IPv6 module and reboots the host (default=false (x86), true (raspi))                                                                                                                     |
-| **WM_WIFI_ENABLE**                        | When true forces the WiFi interface to be down  (##WM_WIFI_DISABLE_DEFAULT)                                                                                                                             |
-| **WM_WIFI_AP_SSID**                       | The WiFi SSID where the host should connect to (_default=unset_)                                                                                                                                        |
-| **WM_WIFI_AP_PASSWORD**                   | The WiFi's SSID password (_default=unset_)                                                                                                                                                              |
+| **WM_WIFI_ENABLE**                          | When true forces the WiFi interface to be down  (##WWM_WIFI_ENABLE_DEFAULT)                                                                                                                             |
+| **WM_WIFI_AP_SSID**                         | The WiFi SSID where the host should connect to (*default=unset*)                                                                                                                              |
+| **WM_WIFI_AP_PASSWORD**                     | The WiFi's SSID password (*default=unset*)                                                                                                                                                |
 | ---                                       | ---                                                                                                                                                                                                     |
-| _For Wirepas support_                     |                                                                                                                                                                                                         |
+| *For Wirepas support*                     |                                                                                                                                                                                                         |
 | ---                                       | ---                                                                                                                                                                                                     |
-| **WM_SUPPORT_PORT**                       | For Wirepas support (_default=unset_)                                                                                                                                                                   |
-| **WM_SUPPORT_HOSTNAME**                   | For Wirepas support (_default=host.extwirepas.com_)                                                                                                                                                     |
-| **WM_SUPPORT_KEY**                        | For Wirepas support (_default=/support.pem_)                                                                                                                                                            |
-| **WM_SUPPORT_USERNAME**                   | For Wirepas support (_default=${USER}_)                                                                                                                                                                 |
-| **WM_SUPPORT_KEY_PATH**                   | For Wirepas support (_default=${HOME}/.ssh/support.pem_)                                                                                                                                                |
+| **WM_SUPPORT_PORT**                         | For Wirepas support (*default=unset*)                                                                                                                                                         |
+| **WM_SUPPORT_HOSTNAME**                     | For Wirepas support (*default=host.extwirepas.com*)                                                                                                                                                     |
+| **WM_SUPPORT_KEY**                          | For Wirepas support (*default=/support.pem*)                                                                                                                                                          |
+| **WM_SUPPORT_USERNAME**                     | For Wirepas support (*default=${USER}*)                                                                                                                                                     |
+| **WM_SUPPORT_KEY_PATH**                     | For Wirepas support (*default=${HOME}/.ssh/support.pem*)                                                                                                                                                     |
 | ---                                       | ---                                                                                                                                                                                                     |
-| _Keyboard settings_                       |                                                                                                                                                                                                         |
+| *Keyboard settings*                       |                                                                                                                                                                                                         |
 | ---                                       | ---                                                                                                                                                                                                     |
-| **WM_HOST_KEYBOARD_CONFIGURE**            | Sets the host's keyboard (##WM_HOST_SET_KEYBOARD_DEFAULT)                                                                                                                                               |
-| **WM_HOST_KEYBOARD_XKBMODEL**             | Defines the host's keyboard model (_default=pc105_)                                                                                                                                                     |
-| **WM_HOST_KEYBOARD_BACKSPACE**            | Defines the host's keyboard backspace (_default=guess_)                                                                                                                                                 |
-| **WM_HOST_KEYBOARD_XKBOPTIONS**           | Defines the host's keyboard options (_default=unset_)                                                                                                                                                   |
-| **WM_HOST_KEYBOARD_XKBLAYOUT**            | Defines the host's keyboard layout (_default=gb_)                                                                                                                                                       |
-| **WM_HOST_KEYBOARD_XKBVARIANT**           | Defines the host's keyboard variant (_default=unset_)                                                                                                                                                   |
+| **WM_HOST_KEYBOARD_CONFIGURE**              | Sets the host's keyboard (*default=false*)                                                                                                                                               |
+| **WM_HOST_KEYBOARD_XKBMODEL**               | Defines the host's keyboard model (*default=pc105*)                                                                                                                                 |
+| **WM_HOST_KEYBOARD_BACKSPACE**              | Defines the host's keyboard backspace (*default=guess*)                                                                                                                            |
+| **WM_HOST_KEYBOARD_XKBOPTIONS**             | Defines the host's keyboard options (*default=unset*)                                                                                                                             |
+| **WM_HOST_KEYBOARD_XKBLAYOUT**              | Defines the host's keyboard layout (*default=gb*)                                                                                                                               |
+| **WM_HOST_KEYBOARD_XKBVARIANT**             | Defines the host's keyboard variant (*default=unset*)                                                                                                                             |
 | **WM_HOST_AVAHI_DAEMON_MANAGEMENT**       | Where to source avahi services from (default=false (x86), true (raspi))                                                                                                                                 |
 
 ## Gateway and data broker settings
 
-| _MQTT broker settings_                         |                                                                                                                                        |
-| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **WM_SERVICES_MQTT_HOSTNAME**                  | A host where to push the gateway data, eg, MQTT broker hostname or ip  (_default=host.extwirepas.com_)                                 |
-| **WM_SERVICES_MQTT_USERNAME**                  | The MQTT username (_default=mqttuser_)                                                                                                 |
-| **WM_SERVICES_MQTT_PASSWORD**                  | The MQTT's username password corresponding (_default=uiaidujfk1897fyeu023849sdh?(_)                                                    |
-| **WM_SERVICES_MQTT_PORT**                      | Defines the MQTT port to use (unsecure 1883, secure 8883) (_default=8883_)                                                             |
-| **WM_SERVICES_MQTT_ALLOW_UNSECURE**            | Must be set to true to allow unsecure connections, eg, to port 1883 (_default=unset_)                                                  |
-| **WM_SERVICES_MQTT_CERTIFICATE_CHAIN**         | The container path where to find the root ca certificates (_default=unset_)                                                            |
-| ---                                            | ---                                                                                                                                    |
-| _Gateway metadata, transport and sink service_ |                                                                                                                                        |
-| ---                                            | ---                                                                                                                                    |
-| **WM_GW_STATE**                                | The state of the gateway services to enforce (start/stop) (_default=start_)                                                            |
-| **WM_GW_ID**                                   | The id used to identifying the gateway at the MQTT level (_default=`hostname`_)                                                        |
-| **WM_GW_MODEL**                                | Metadata about the gateway model (_default=wirepas-evk_)                                                                               |
-| **WM_GW_VERSION**                              | Metadata about the gateway version (_default=latest_)                                                                                  |
-| **WM_GW_WHITENED_ENDPOINTS_FILTER**            | List of endpoints whose payload should be zeroed out when published to the broker  (_default=unset_)                                   |
-| **WM_GW_IGNORED_ENDPOINTS_FILTER**             | List of endpoints that should not be published to the MQTT broker (_default=unset_)                                                    |
-| **WM_GW_IMAGE**                                | The name of the WM Gateway Docker image to pull  (_default=wirepas/gateway_)                                                           |
-| **WM_GW_VERSION**                              | The build or docker tag to use (_default=latest_)                                                                                      |
-| **WM_GW_SINK_UART_PORT**                       | The port where a Wirepas sink can be found from (_default=/dev/ttyWM_)                                                                 |
-| **WM_GW_SINK_ID**                              | The pseudo id of the sink served by the sink service (_default=0_)                                                                     |
-| **WM_GW_SERVICES_USER_PATH**                   | **Advanced** The path to create and overlay within the containers (_default=/user_)                                                    |
-| **WM_GW_SERVICES_ENV_FILE**                    | **Advanced** Location of the environment file used by the transport and sink service (_default=/services.env_)                         |
-| **WM_GW_TRANSPORT_SERVICE_CMD**                | **Advanced** The command to use with the transport service container (_default=transport_)                                             |
-| **WM_GW_TRANSPORT_SERVICE_NETWORK**            | **Advanced** The network where to attach the transport service container (_default=network_mode:_)                                     |
-| **WM_GW_SINK_SERVICE_CMD**                     | **Advanced** The command to use with the sink service container (_default=sink_)                                                       |
-| **WM_GW_SINK_PORT_RULE**                       | **Advanced** The sink ports to use during the auto enumerate (\*default=/dev/ttyACM\*\*)                                               |
-| **WM_GW_SINK_BLACKLIST**                       | **Advanced** A patter or device to ignore during the auto enumeration (_default=unset_)                                                |
-| **WM_GW_SINK_BITRATE_CONFIGURATION**           | **Advanced** An array with the bitrate to use for a given sink. The sink id will match the array index (_default=unset_)               |
-| **WM_GW_SINK_ENUMERATION**                     | **Advanced** Set to true to enable the automatic enumeration of tty ports - removes the need to specify a given port (_default=false_) |
-| **WM_GW_DBUS_CONF**                            | **Advanced** The DBUS configuration file to be present in the host environment (_default=com.wirepas.sink.conf_)                       |
-| **WM_GW_DBUS_CONF_USER**                       | **Advanced** The user that should be set within the DBUS configuration (_default=root_)                                                |
-| **WM_HOST_TTY_SYMLINK**                        | The serial alias to associate with a Wirepas complaint device attached to the host (_default=ttyWM_)                                   |
+| *MQTT broker settings*                         |                                                                                                                                                         |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **WM_SERVICES_MQTT_HOSTNAME**                    | A host where to push the gateway data, eg, MQTT broker hostname or ip  (*default=host.extwirepas.com*)                                            |
+| **WM_SERVICES_MQTT_USERNAME**                    | The MQTT username (*default=mqttuser*)                                                                                                 |
+| **WM_SERVICES_MQTT_PASSWORD**                    | The MQTT's username password corresponding (*default=uiaidujfk1897fyeu023849sdh?(*)                                                                        |
+| **WM_SERVICES_MQTT_PORT**                        | Defines the MQTT port to use (unsecure 1883, secure 8883) (*default=8883*)                                                             |
+| **WM_SERVICES_MQTT_ALLOW_UNSECURE**              | Must be set to true to allow unsecure connections, eg, to port 1883 (*default=unset*)                                         |
+| **WM_SERVICES_MQTT_CERTIFICATE_CHAIN**           | The container path where to find the root ca certificates (*default=unset*)                                                |
+| ---                                            | ---                                                                                                                                                     |
+| *Gateway metadata, transport and sink service* |                                                                                                                                                         |
+| ---                                            | ---                                                                                                                                                     |
+| **WM_GW_STATE**                                  | The state of the gateway services to enforce (start/stop) (*default=start*)                                                                       |
+| **WM_GW_ID**                                     | The id used to identifying the gateway at the MQTT level (*default=`hostname`*)                                                                           |
+| **WM_GW_MODEL**                                  | Metadata about the gateway model (*default=wirepas-evk*)                                                                                                |
+| **WM_GW_VERSION**                                | Metadata about the gateway version (*default=latest*)                                                                                            |
+| **WM_GW_WHITENED_ENDPOINTS_FILTER**              | List of endpoints whose payload should be zeroed out when published to the broker  (*default=unset*)                          |
+| **WM_GW_IGNORED_ENDPOINTS_FILTER**               | List of endpoints that should not be published to the MQTT broker (*default=unset*)                                            |
+| **WM_GW_IMAGE**                                  | The name of the WM Gateway Docker image to pull  (*default=wirepas/gateway*)                                                                                |
+| **WM_GW_VERSION**                                | The build or docker tag to use (*default=latest*)                                                                                                |
+| **WM_GW_SINK_UART_PORT**                         | The port where a Wirepas sink can be found from (*default=/dev/ttyWM*)                                                                        |
+| **WM_GW_SINK_ID**                                | The pseudo id of the sink served by the sink service (*default=0*)                                                                          |
+| **WM_GW_SERVICES_USER_PATH**                     | **Advanced** The path to create and overlay within the containers (*default=/user*)                                                  |
+| **WM_GW_SERVICES_ENV_FILE**                      | **Advanced** Location of the environment file used by the transport and sink service (*default=/services.env*)                                |
+| **WM_GW_TRANSPORT_SERVICE_CMD**                  | **Advanced** The command to use with the transport service container (*default=transport*)                                            |
+| **WM_GW_TRANSPORT_SERVICE_NETWORK**              | **Advanced** The network where to attach the transport service container (*default=network_mode:*)                                    |
+| **WM_GW_SINK_SERVICE_CMD**                       | **Advanced** The command to use with the sink service container (*default=sink*)                                                      |
+| **WM_GW_SINK_PORT_RULE**                         | **Advanced** The sink ports to use during the auto enumerate (*default=/dev/ttyACM**)                                                           |
+| **WM_GW_SINK_BLACKLIST**                         | **Advanced** A patter or device to ignore during the auto enumeration (*default=unset*)                                                  |
+| **WM_GW_SINK_BITRATE_CONFIGURATION**             | **Advanced** An array with the bitrate to use for a given sink. The sink id will match the array index (*default=unset*)     |
+| **WM_GW_SINK_ENUMERATION**                       | **Advanced** Set to true to enable the automatic enumeration of tty ports - removes the need to specify a given port (*default=false*) |
+| **WM_GW_DBUS_CONF**                              | **Advanced** The DBUS configuration file to be present in the host environment (*default=com.wirepas.sink.conf*)                                              |
+| **WM_GW_DBUS_CONF_USER**                         | **Advanced** The user that should be set within the DBUS configuration (*default=root*)                                                 |
+| **WM_HOST_TTY_SYMLINK**                          | The serial alias to associate with a Wirepas complaint device attached to the host (*default=ttyWM*)                                      |
 
 ## Framework feature selection
 
-The feature keys enable or disable certain functionality of the framework, _regardless_ of the other keys' values.
+The feature keys enable or disable certain functionality of the framework, *regardless* of the other keys' values.
 
-| _WM-CONFIG feature_                 | _Description_                                                                                                |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| *WM-CONFIG feature*             | *Description*                                                                                                |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | **WM_HOST_REBOOT**                  | When true, reboot requests will be automatically scheduled                                                   |
 | **WM_HOST_CLOCK_MANAGEMENT**        | (Requires timesyncd) When true, forces the time daemon to sync                                               |
 | **WM_HOST_SYSTEMD_MANAGEMENT**      | (Requires systemd) When true, allows systemd jobs to be setup                                                |
@@ -176,6 +175,15 @@ The feature keys enable or disable certain functionality of the framework, _rega
 | **WM_HOST_DBUS_MANAGEMENT**         | When true, the framework will copy the DBUS management files under the host environment                      |
 | **WM_HOST_DOCKER_PRUNE_ALL**        | When true, the framework will prune any docker images that are not currently being used by any container     |
 
-[here_environment_feature]: ../environment/feature.env
+<!--- bound for deprecation
 
+| **Variable**         | **Definition**                 |
+| --- | --- |
+| ##WM_DOCKER_REGISTRY | (##WM_DOCKER_REGISTRY_DEFAULT) |
+| ### BITRATE_CONFIGURATION
+| ##WM_GW_SINK_UART_BITRATE      | The baudrate to use when communicating with the sink device (##WM_GW_SINK_UART_BITRATE_DEFAULT)
+
+ -->
+
+[here_environment_feature]: ../environment/feature.env
 <!-- auto_end -->
