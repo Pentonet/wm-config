@@ -15,6 +15,7 @@
             - WM_SINK_UART_PORT=${WM_SINK_UART_PORT}
             - WM_SINK_UART_BITRATE=${WM_SINK_UART_BITRATE}
             - WM_SINK_ID=${WM_SINK_ID}
+            - WM_GW_SINK_MAX_POLL_FAIL_DURATION=${WM_GW_SINK_MAX_POLL_FAIL_DURATION:-}
             - WM_DEBUG_LEVEL=${WM_GW_DEBUG_LEVEL}
 
         volumes:
