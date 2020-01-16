@@ -50,8 +50,8 @@ fi
 sudo apt-get update
 sudo apt-get install -y \
                     python3 \
-                    python3-dev \
-                    python3-distutils
+                    python3-dev 
+sudo apt-get install -y python3-distutils || true
 
 if ! command -v pip3
 then
