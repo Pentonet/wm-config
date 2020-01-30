@@ -10,7 +10,6 @@ then
     then
         # make sure everything is upgraded before starting
         sudo apt-get update
-        sudo apt-get upgrade -y
         sudo apt-get install -y \
              apt-transport-https \
              ca-certificates \
