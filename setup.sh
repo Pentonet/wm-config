@@ -153,7 +153,7 @@ function _defaults
     export PATH
 
     WM_SETUP_SKIP_CALL=false
-    WM_CFG_VERSION="2.0.2"
+    WM_CFG_VERSION="2.0.3"
 
     USER_SETTINGS_CUSTOM="${HOME}/custom.env"
 
