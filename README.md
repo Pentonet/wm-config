@@ -1,3 +1,6 @@
+:warning: | Under consideration to be deprecated! The current wm-config repository is planned to be replaced by a simpler way to set up a gateway. Please note that this existing wm-config functionality will not be supported after a new way is introduced. More on this as work proceeds.
+:---: | :---
+
 # WM Config
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d0cc4a802858493e94a72165e1da1c5c)](https://www.codacy.com/manual/wirepas/wm-config?utm_source=github.com&utm_medium=referral&utm_content=wirepas/wm-config&utm_campaign=Badge_Grade)
